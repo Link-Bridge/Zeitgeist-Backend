@@ -15,11 +15,12 @@ Welcome to the Zeitgeist API repository, the backbone of our React-based web exp
 To get started with the Zeitgeist API, clone this repository to your local machine. Ensure you have Node.js installed, then follow these steps:
 
 1. Install dependencies:
-    ```bash
-    pnpm install
-    ```
+
+   ```bash
+   pnpm install
+   ```
 
 2. Start the server:
-    ```bash
-    pnpm run dev
-    ```
+   ```bash
+   pnpm run dev
+   ```
