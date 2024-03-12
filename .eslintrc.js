@@ -8,13 +8,13 @@ module.exports = {
   plugins: ['@typescript-eslint/eslint-plugin', 'prettier'],
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended', // Asegura que esto esté al final
+    'plugin:prettier/recommended',
   ],
   root: true,
   env: {
     node: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['dist', '.eslintrc.js'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
