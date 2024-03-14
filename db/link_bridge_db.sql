@@ -13,6 +13,7 @@ CREATE TYPE company_type_enum AS ENUM('I NEED SUPPORT IN THIS OPTION', 'SOCIEDAD
 CREATE TYPE management_form_enum AS ENUM('GENERAL MANAGER ', 'BOARD OF DIRECTORS');
 CREATE TYPE power_attorney_enum AS ENUM('POWER OF ATTORNEY FOR LAWSUITS AND COLLECTIONS', 'POWER OF ATTORNEY FOR ACTS OF ADMINISTRATION TO BE EXERCISED WITH PUBLIC AUTHORITIES', 'POWER OF ATTORNEY FOR ACTS OF ADMINISTRATION TO BE EXERCISED WITH PARTICULARS', 'POWER TO SUBSCRIBE AND GRANT NEGOTIABLE INSTRUMENTS AND OPEN BANK ACCOUNTS', 'GENERAL POWER OF ATTORNEY FOR LAWSUITS AND COLLECTIONS AND ACTS OF ADMINISTRATION IN LABOR MATTERS IN THE NATURE OF EMPLOYERS REPRESENTATIVE', 'POWER OF ATTORNEY FOR ACTS OF OWNERSHIP', 'FACULTY TO GRANT ALL OF HIS POWERS OF ATTORNEY', 'Other');
 CREATE TYPE grant_power_enum AS ENUM('YES', 'NO');
+
 CREATE TABLE Employee (
     id uuid NOT NULL UNIQUE PRIMARY KEY,
     first_name VARCHAR(70) NOT NULL,
@@ -21,7 +22,9 @@ CREATE TABLE Employee (
     phone_number VARCHAR(15) UNIQUE,
     image_url VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_deparment uuid,
+    id_role uuid NOT NULL
 );
 
 CREATE TABLE Role (
@@ -45,7 +48,9 @@ CREATE TABLE Company (
     phone_number VARCHAR(15),
     landline_phone VARCHAR(15),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_company_direct_contact uuid,
+    id_form uuid
 );
 
 CREATE TABLE Company_direct_contact (
@@ -71,8 +76,8 @@ CREATE TABLE Project (
     periodicity prd DEFAULT NULL,
     is_chargeable BOOLEAN DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
-    
+    updated_at TIMESTAMP,
+    id_company uuid NOT NULL
 );
 
 CREATE TABLE Task (
@@ -85,13 +90,16 @@ CREATE TABLE Task (
     end_date DATE,
     worked_hours NUMERIC(8,2),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_project uuid NOT NULL
 );
 
 CREATE TABLE Employee_task (
     id uuid NOT NULL UNIQUE PRIMARY KEY,    
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_employee uuid NOT NULL,
+    id_task uuid NOT NULL
 );
 
 CREATE TABLE Comment (
@@ -99,6 +107,7 @@ CREATE TABLE Comment (
     message VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at TIMESTAMP
+    id_employee uuid NOT NULL
 );
 
 CREATE TABLE Expense_report(
@@ -109,7 +118,8 @@ CREATE TABLE Expense_report(
     status expense_stat, 
     total_amount NUMERIC(8, 2),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_employee uuid NOT NULL
 );
 
 CREATE TABLE Expense (
@@ -121,7 +131,9 @@ CREATE TABLE Expense (
     category VARCHAR(70),
     date DATE NOT NULL, 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_report uuid NOT NULL,
+    id_file uuid
 );
 
 CREATE TABLE File (
@@ -136,13 +148,17 @@ CREATE TABLE File (
 CREATE TABLE Employee_notification (
     id uuid NOT NULL UNIQUE PRIMARY KEY,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_employee uuid NOT NULL,
+    id_notification uuid NOT NULL
 );
 
 CREATE TABLE Employee_task (
     id NOT NULL UNIQUE PRIMARY KEY,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    id_employee uuid NOT NULL,
+    id_task uuid NOT NULL
 );
 
 CREATE TABLE Notification (
@@ -208,3 +224,34 @@ CREATE TABLE Form (
     updated_at TIMESTAMP
 );
 
+ALTER TABLE Employee
+ADD FOREIGN KEY(id_role) REFERENCES Role(id),
+ADD FOREIGN KEY(id_department) REFERENCES Department(id);
+
+ALTER TABLE Company
+ADD FOREIGN KEY(id_company_direct_contact) REFERENCES Company_direct_contact(id),
+ADD FOREIGN KEY(id_form) REFERENCES Form(id);
+
+ALTER TABLE Project
+ADD FOREIGN KEY(id_company) REFERENCES Company(id);
+
+ALTER TABLE Task
+ADD FOREIGN KEY(id_project) REFERENCES Project(id);
+
+ALTER TABLE Comment
+ADD FOREIGN KEY(id_employee) REFERENCES Employee(id);
+
+ALTER TABLE Expense
+ADD FOREIGN KEY(id_report) REFERENCES Report(id),
+ADD FOREIGN KEY(id_file) REFERENCES File(id);
+
+ALTER TABLE Expense_report
+ADD FOREIGN KEY(id_employee) REFERENCES Employee(id);
+
+ALTER TABLE Employee_notification
+ADD FOREIGN KEY(id_employee) REFERENCES Employee(id),
+ADD FOREIGN KEY(id_notification) REFERENCES Notification(id);
+
+ALTER TABLE Employee_task
+ADD FOREIGN KEY(id_employee) REFERENCES Employee(id),
+ADD FOREIGN KEY(id_task) REFERENCES Task(id);
