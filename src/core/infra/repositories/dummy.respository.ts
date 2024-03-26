@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+import { Prisma } from '../../..';
 import { Dummy } from '../../domain/entities/dummy.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 
@@ -20,7 +22,7 @@ export class DummyRepository {
        * @warning El codigo de abajo es para Prisma. Asi lo vamos a usar
        */
 
-      // const data = prisma.dummy.findMany();
+      // const data = Prisma.Dummy.findMany();
 
       // if (!data) {
       //     throw new NotFoundError(RESOURCE_NAME)
@@ -33,7 +35,7 @@ export class DummyRepository {
        */
       return Promise.resolve([
         {
-          id: 1,
+          id: randomUUID(),
           name: 'Joe Doe',
         },
       ]);

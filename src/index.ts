@@ -6,7 +6,7 @@ import baseRouter from './api/routes/index.routes';
 import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
 
-export const Prisma = new PrismaClient();
+export const Prisma: PrismaClient = new PrismaClient(); // Instancia de Prisma Client, uso global
 const app: Express = express();
 
 const HOST: string = process.env[EnvConfigKeys.HOST] || 'localhost';
