@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,234 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model comment {
+  id          String    @id @db.Uuid
+  message     String    @db.VarChar(255)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  id_employee String    @db.Uuid
+  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model company {
+  id                        String                  @id @db.Uuid
+  name                      String                  @db.VarChar(255)
+  email                     String?                 @unique @db.VarChar(180)
+  phone_number              String?                 @db.VarChar(15)
+  landline_phone            String?                 @db.VarChar(15)
+  created_at                DateTime                @default(now()) @db.Timestamp(6)
+  updated_at                DateTime?               @db.Timestamp(6)
+  id_company_direct_contact String?                 @db.Uuid
+  id_form                   String?                 @db.Uuid
+  company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  form                      form?                   @relation(fields: [id_form], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  project                   project[]
+}
+
+model company_direct_contact {
+  id           String    @id @db.Uuid
+  first_name   String    @db.VarChar(70)
+  last_name    String    @db.VarChar(70)
+  email        String    @unique @db.VarChar(180)
+  phone_number String?   @db.VarChar(15)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @db.Timestamp(6)
+  company      company[]
+}
+
+model department {
+  id         String     @id @db.Uuid
+  title      String     @db.VarChar(256)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime?  @db.Timestamp(6)
+  employee   employee[]
+}
+
+model employee {
+  id                    String                  @id @db.Uuid
+  first_name            String                  @db.VarChar(70)
+  last_name             String                  @db.VarChar(70)
+  email                 String                  @unique @db.VarChar(180)
+  phone_number          String?                 @unique @db.VarChar(15)
+  image_url             String?                 @db.VarChar(255)
+  created_at            DateTime                @default(now()) @db.Timestamp(6)
+  updated_at            DateTime?               @db.Timestamp(6)
+  id_department         String?                 @db.Uuid
+  id_role               String                  @db.Uuid
+  comment               comment[]
+  department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_notification employee_notification[]
+  employee_task         employee_task[]
+  expense_report        expense_report[]
+}
+
+model employee_notification {
+  id              String       @id @db.Uuid
+  created_at      DateTime     @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?    @db.Timestamp(6)
+  id_employee     String       @db.Uuid
+  id_notification String       @db.Uuid
+  employee        employee     @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notification    notification @relation(fields: [id_notification], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model employee_task {
+  id          String    @id @db.Uuid
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  id_employee String    @db.Uuid
+  id_task     String    @db.Uuid
+  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  task        task      @relation(fields: [id_task], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model expense {
+  id             String         @id @db.Uuid
+  title          String         @db.VarChar(70)
+  justification  String         @db.VarChar(255)
+  total_amount   Decimal        @db.Decimal(18, 2)
+  status         String?        @db.VarChar(256)
+  category       String?        @db.VarChar(70)
+  date           DateTime       @db.Date
+  created_at     DateTime       @default(now()) @db.Timestamp(6)
+  updated_at     DateTime?      @db.Timestamp(6)
+  id_report      String         @db.Uuid
+  id_file        String?        @db.Uuid
+  file           file?          @relation(fields: [id_file], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model expense_report {
+  id           String    @id @db.Uuid
+  description  String    @db.VarChar(255)
+  start_date   DateTime  @db.Date
+  end_date     DateTime? @db.Date
+  status       String?   @db.VarChar(256)
+  total_amount Decimal?  @db.Decimal(8, 2)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @db.Timestamp(6)
+  id_employee  String    @db.Uuid
+  expense      expense[]
+  employee     employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model file {
+  id          String    @id @db.Uuid
+  description String?   @db.VarChar(256)
+  format      String    @default(".zip") @db.VarChar(256)
+  url         String    @unique @db.VarChar(256)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  expense     expense[]
+}
+
+model form {
+  id                             String    @id @db.Uuid
+  title                          String    @db.VarChar(70)
+  email                          String?   @unique @db.VarChar(180)
+  client_name                    String?   @db.VarChar(70)
+  applicant_name                 String?   @db.VarChar(70)
+  phone_num                      String?   @unique @db.VarChar(15)
+  landline_num                   String?   @unique @db.VarChar(15)
+  address                        String?   @unique @db.VarChar(256)
+  passport                       String?   @unique @db.VarChar(70)
+  company_names                  String?   @db.VarChar(256)
+  company_type                   String?   @db.VarChar(256)
+  corporate_purpose              String?   @db.VarChar(70)
+  mexican_address                String?   @unique @db.VarChar(256)
+  fixed_capital_stock            Decimal?  @db.Decimal(18, 2)
+  variable_capital_stock         Decimal?  @db.Decimal(18, 2)
+  values_per_share               Decimal?  @db.Decimal(18, 2)
+  num_shares_per_shareholder     String?   @db.VarChar(256)
+  partner_capital_stock          String?   @db.VarChar(256)
+  management_form                String?   @db.VarChar(256)
+  general_manager_name           String?   @db.VarChar(70)
+  power_attorney_general_manager String?   @db.VarChar(256)
+  special_clause_general_manager String?   @db.VarChar(256)
+  chairman_name                  String?   @db.VarChar(70)
+  power_attorney_chairman        String?   @db.VarChar(256)
+  special_clause_chairman        String?   @db.VarChar(256)
+  secretary_board_name           String?   @db.VarChar(70)
+  power_attorney_secretary_board String?   @db.VarChar(256)
+  special_clause_secretary_board String?   @db.VarChar(256)
+  names_board_members            String?   @db.VarChar(256)
+  supervisory_board_names        String?   @db.VarChar(256)
+  power_attorney_zeitgeist_team  String?   @db.VarChar(256)
+  special_clause_zeitgeist_team  String?   @db.VarChar(256)
+  grant_power_attorney_other     String?   @db.VarChar(256)
+  name_attorney_one              String?   @db.VarChar(70)
+  power_attorney_one             String?   @db.VarChar(256)
+  special_clause_attorney_one    String?   @db.VarChar(256)
+  name_attorney_two              String?   @db.VarChar(70)
+  power_attorney_two             String?   @db.VarChar(256)
+  special_clause_attorney_two    String?   @db.VarChar(256)
+  name_attorney_three            String?   @db.VarChar(70)
+  power_attorney_three           String?   @db.VarChar(256)
+  special_clause_attorney_three  String?   @db.VarChar(256)
+  name_attorney_four             String?   @db.VarChar(70)
+  power_attorney_four            String?   @db.VarChar(256)
+  special_clause_attorney_four   String?   @db.VarChar(256)
+  name_attorney_five             String?   @db.VarChar(70)
+  power_attorney_five            String?   @db.VarChar(256)
+  special_clause_attorney_five   String?   @db.VarChar(256)
+  questionnaire_questions        String?   @db.VarChar(256)
+  additional_questions           String?   @db.VarChar(256)
+  created_at                     DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                     DateTime? @db.Timestamp(6)
+  company                        company[]
+}
+
+model notification {
+  id                    String                  @id @db.Uuid
+  title                 String                  @db.VarChar(70)
+  body                  String                  @db.VarChar(256)
+  created_at            DateTime                @default(now()) @db.Timestamp(6)
+  updated_at            DateTime?               @db.Timestamp(6)
+  employee_notification employee_notification[]
+}
+
+model project {
+  id            String    @id @db.Uuid
+  name          String    @db.VarChar(70)
+  matter        String?   @db.VarChar(70)
+  description   String?   @db.VarChar(255)
+  status        String    @default("Not started") @db.VarChar(256)
+  category      String    @default("-") @db.VarChar(256)
+  start_date    DateTime  @db.Date
+  end_date      DateTime? @db.Date
+  total_hours   Decimal?  @db.Decimal(8, 2)
+  periodicity   String?   @db.VarChar(256)
+  is_chargeable Boolean?
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime? @db.Timestamp(6)
+  id_company    String    @db.Uuid
+  company       company   @relation(fields: [id_company], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  task          task[]
+}
+
+model role {
+  id         String     @id @db.Uuid
+  title      String     @default("Sin rol") @db.VarChar(256)
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+  updated_at DateTime?  @db.Timestamp(6)
+  employee   employee[]
+}
+
+model task {
+  id            String          @id @db.Uuid
+  title         String          @db.VarChar(70)
+  description   String          @db.VarChar(256)
+  status        String          @db.VarChar(256)
+  waiting_for   String?         @db.VarChar(70)
+  start_date    DateTime        @db.Date
+  end_date      DateTime?       @db.Date
+  worked_hours  Decimal?        @db.Decimal(8, 2)
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  updated_at    DateTime?       @db.Timestamp(6)
+  id_project    String          @db.Uuid
+  employee_task employee_task[]
+  project       project         @relation(fields: [id_project], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

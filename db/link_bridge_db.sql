@@ -1,19 +1,6 @@
     --CREATE DATABASE LinkBridge;
     --USE LinkBridge;
 
-    CREATE TYPE rol AS ENUM('Administrador', 'Colaborador', 'Sin rol');
-    CREATE TYPE depto AS ENUM('Legal', 'Contable', 'Directivo');
-    CREATE TYPE project_stat AS ENUM('In quoation','Accepted', 'Not started', 'In process', 'Under revision', 'Delayed', 'Postponed', 'Done', 'Cancelled', '-');
-    CREATE TYPE task_stat AS ENUM('Not started', 'In process', 'Under revision', 'Delayed', 'Postponed', 'Done', 'Cancelled');
-    CREATE TYPE expense_stat AS ENUM('Pending', 'Payed', 'Rejected');
-    CREATE TYPE ctg AS ENUM('Client', 'Zeitgeist  internal', 'Academic connection', 'Government', 'Supplier', 'Event', 'Fairs/Conferences', '-');
-    CREATE TYPE prd AS ENUM('1 day', '1 week', '2 weeks', '1 month', '2 months', '4 months', '6 months', '12 months', 'When needed');
-    CREATE TYPE file_format AS ENUM('.zip');
-    CREATE TYPE company_type_enum AS ENUM('I NEED SUPPORT IN THIS OPTION', 'SOCIEDAD DE RESPONSABILIDAD LIMITADA DE CAPITAL VARIABLE', 'SOCIEDAD ANÓNIMA DE CAPITAL VARIABLE', 'SOCIEDAD POR ACCIONES SIMPLIFICADA DE CAPITAL VARIABLE');
-    CREATE TYPE management_form_enum AS ENUM('GENERAL MANAGER ', 'BOARD OF DIRECTORS');
- -- CREATE TYPE power_attorney_enum AS ENUM('POWER OF ATTORNEY FOR LAWSUITS AND COLLECTIONS', 'POWER OF ATTORNEY FOR ACTS OF ADMINISTRATION TO BE EXERCISED WITH PUBLIC AUTHORITIES', 'POWER OF ATTORNEY FOR ACTS OF ADMINISTRATION TO BE EXERCISED WITH PARTICULARS', 'POWER TO SUBSCRIBE AND GRANT NEGOTIABLE INSTRUMENTS AND OPEN BANK ACCOUNTS', 'GENERAL POWER OF ATTORNEY FOR LAWSUITS AND COLLECTIONS AND ACTS OF ADMINISTRATION IN LABOR MATTERS IN THE NATURE OF EMPLOYERS REPRESENTATIVE', 'POWER OF ATTORNEY FOR ACTS OF OWNERSHIP', 'FACULTY TO GRANT ALL OF HIS POWERS OF ATTORNEY', 'Other');
-    CREATE TYPE grant_power_enum AS ENUM('YES', 'NO');
-
     CREATE TABLE Employee (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
         first_name VARCHAR(70) NOT NULL,
@@ -21,7 +8,7 @@
         email VARCHAR(180) NOT NULL UNIQUE,
         phone_number VARCHAR(15) UNIQUE,
         image_url VARCHAR(255),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_department uuid,
         id_role uuid NOT NULL
@@ -29,15 +16,15 @@
 
     CREATE TABLE Role (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
-        title rol NOT NULL DEFAULT 'Sin rol',
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        title VARCHAR(256) NOT NULL DEFAULT 'Sin rol',
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
     CREATE TABLE Department (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
-        title depto NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        title VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
@@ -47,7 +34,7 @@
         email VARCHAR(180) UNIQUE,
         phone_number VARCHAR(15),
         landline_phone VARCHAR(15),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company_direct_contact uuid,
         id_form uuid
@@ -59,7 +46,7 @@
         last_name VARCHAR(70) NOT NULL,
         email VARCHAR(180) NOT NULL UNIQUE,
         phone_number VARCHAR(15),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
@@ -68,14 +55,14 @@
         name VARCHAR(70) NOT NULL,
         matter VARCHAR(70),
         description VARCHAR(255),
-        status project_stat NOT NULL DEFAULT 'Not started',
-        category ctg NOT NULL DEFAULT '-',
+        status VARCHAR(256) NOT NULL DEFAULT 'Not started',
+        category VARCHAR(256) NOT NULL DEFAULT '-',
         start_date DATE NOT NULL,
         end_date DATE,
         total_hours NUMERIC(8,2),
-        periodicity prd DEFAULT NULL,
+        periodicity VARCHAR(256) DEFAULT NULL,
         is_chargeable BOOLEAN DEFAULT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company uuid NOT NULL
     );
@@ -84,12 +71,12 @@
         id uuid NOT NULL UNIQUE PRIMARY KEY,
         title VARCHAR(70) NOT NULL,
         description VARCHAR(256) NOT NULL,
-        status task_stat NOT NULL,
+        status VARCHAR(256) NOT NULL,
         waiting_for VARCHAR(70),
         start_date DATE NOT NULL,
         end_date DATE,
         worked_hours NUMERIC(8,2),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_project uuid NOT NULL
     );
@@ -98,7 +85,7 @@
     CREATE TABLE Comment (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
         message VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_employee uuid NOT NULL
     );
@@ -108,9 +95,9 @@
         description VARCHAR(255) NOT NULL,
         start_date DATE NOT NULL,
         end_date DATE,
-        status expense_stat, 
+        status VARCHAR(256), 
         total_amount NUMERIC(8, 2),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_employee uuid NOT NULL
     );
@@ -120,10 +107,10 @@
         title VARCHAR(70) NOT NULL,
         justification VARCHAR(255) NOT NULL,
         total_amount NUMERIC(18,2) NOT NULL,
-        status expense_stat,
+        status VARCHAR(256),
         category VARCHAR(70),
         date DATE NOT NULL, 
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_report uuid NOT NULL,
         id_file uuid
@@ -132,15 +119,15 @@
     CREATE TABLE File (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
         description VARCHAR(256),
-        format file_format NOT NULL DEFAULT '.zip',
+        format VARCHAR(256) NOT NULL DEFAULT '.zip',
         url VARCHAR(256) NOT NULL UNIQUE,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
     CREATE TABLE Employee_notification (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_employee uuid NOT NULL,
         id_notification uuid NOT NULL
@@ -148,7 +135,7 @@
 
     CREATE TABLE Employee_task (
         id uuid NOT NULL UNIQUE PRIMARY KEY,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_employee uuid NOT NULL,
         id_task uuid NOT NULL
@@ -158,7 +145,7 @@
         id uuid NOT NULL UNIQUE PRIMARY KEY,
         title VARCHAR(70) NOT NULL,
         body VARCHAR(256) NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
@@ -173,7 +160,7 @@
         address VARCHAR(256) UNIQUE,
         passport VARCHAR(70) UNIQUE,
         company_names VARCHAR(256),
-        company_type company_type_enum,
+        company_type VARCHAR(256),
         corporate_purpose VARCHAR(70),
         mexican_address VARCHAR(256) UNIQUE,
         fixed_capital_stock NUMERIC(18,2),
@@ -181,7 +168,7 @@
         values_per_share NUMERIC(18,2),
         num_shares_per_shareholder VARCHAR(256),
         partner_capital_stock VARCHAR(256),
-        management_form management_form_enum,
+        management_form VARCHAR(256),
         general_manager_name VARCHAR(70),
         power_attorney_general_manager VARCHAR(256)  ,
         special_clause_general_manager VARCHAR(256),
@@ -195,7 +182,7 @@
         supervisory_board_names VARCHAR(256),
         power_attorney_zeitgeist_team VARCHAR(256)  ,
         special_clause_zeitgeist_team VARCHAR(256),
-        grant_power_attorney_other grant_power_enum,
+        grant_power_attorney_other VARCHAR(256),
         name_attorney_one VARCHAR(70),
         power_attorney_one VARCHAR(256)  ,
         special_clause_attorney_one VARCHAR(256),
@@ -213,7 +200,7 @@
         special_clause_attorney_five VARCHAR(256),
         questionnaire_questions VARCHAR(256),
         additional_questions VARCHAR(256),
-        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP
     );
 
