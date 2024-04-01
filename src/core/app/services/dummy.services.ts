@@ -7,7 +7,7 @@ import { DummyRepository } from '../../infra/repositories/dummy.respository';
  * basicamente la interfaz es igual a la entidad Dummy solo si se interacuta con la entidad
  */
 export interface DummyData {
-  id: number;
+  id: string;
   name: string;
 }
 
