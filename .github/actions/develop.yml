@@ -1,0 +1,65 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+      
+    - name: Install pnpm
+      run: npm install -g pnpm
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Check for leaked secrets
+      uses: zricethezav/gitleaks-action@v1.6.0
+
+    - name: Compile
+      run: pnpm run build
+
+    - name: Run Test
+      run: pnpm test
+
+    # - name: Run Test
+    #   id: run_test
+    #   run: |
+    #     echo "## Running Tests" > test_results.md
+    #     pnpm test > test_results.md 2>&1 || echo "Tests failed" >> test_results.md
+    #     echo "::set-output name=result::$(cat test_results.md)"
+    #   env:
+    #     CI: true
+
+    # - name: Comment PR with test results
+    #   if: github.event_name == 'pull_request'
+    #   uses: unsplash/comment-on-pr@master
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     msg: |
+    #       📝 **Test Results:**
+    #       ```
+    #       ${{ steps.run_test.outputs.result }}
+    #       ```
+    #     check_for_duplicate_messages: true
+
+    env:
+      CI: true
