@@ -39,27 +39,29 @@ jobs:
     - name: Run Test
       run: pnpm test
 
-    # - name: Run Test
-    #   id: run_test
-    #   run: |
-    #     echo "## Running Tests" > test_results.md
-    #     pnpm test > test_results.md 2>&1 || echo "Tests failed" >> test_results.md
-    #     echo "::set-output name=result::$(cat test_results.md)"
-    #   env:
-    #     CI: true
+  - name: Run Tests and Capture Results
+      id: run_tests
+      run: |
+        if pnpm test; then
+          echo "Tests passed successfully" > test_results.md
+          echo "::set-output name=result::$(cat test_results.md)"
+        else
+          echo "Tests failed" > test_results.md
+          echo "::set-output name=result::$(cat test_results.md)"
+          exit 1
+        fi
+      env:
+        CI: true
 
-    # - name: Comment PR with test results
-    #   if: github.event_name == 'pull_request'
-    #   uses: unsplash/comment-on-pr@master
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     msg: |
-    #       📝 **Test Results:**
-    #       ```
-    #       ${{ steps.run_test.outputs.result }}
-    #       ```
-    #     check_for_duplicate_messages: true
-
-    env:
-      CI: true
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request'
+      uses: unsplash/comment-on-pr@v1.2.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        msg: |
+          📝 **Test Results:**
+          ```
+          ${{ steps.run_tests.outputs.result }}
+          ```
+        check_for_duplicate_messages: true

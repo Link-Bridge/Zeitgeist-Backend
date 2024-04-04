@@ -12,12 +12,12 @@
 
 export interface Dummy {
   /**
-   * @param id {string} - Identificador de la entidad se cambia a UUID
+   * @param id: string - Identificador único del Dummy
    */
   id: string;
 
   /**
-   * @param name {string} - Nombre del Dummy
+   * @param name: string - Nombre del Dummy
    */
   name: string;
 }
