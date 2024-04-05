@@ -12,7 +12,7 @@ export interface DummyData {
 }
 
 export class DummyService {
-  constructor(private readonly dummyRepository: DummyRepository) {}
+  constructor(private readonly dummyRepository: DummyRepository = new DummyRepository()) {}
 
   /**
    * @brief Esta función es para obtener todos los registros de la entidad Dummy
