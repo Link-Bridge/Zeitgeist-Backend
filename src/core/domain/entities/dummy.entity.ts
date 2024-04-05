@@ -7,12 +7,17 @@
  * @return void
  *
  * @description La estructura basicamente es lo que esta en el MER,
- * usar tipos de datos primitivos (number, string, boolean, etc)
+ * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-export class Dummy {
-  constructor(
-    public id: string,
-    public name: string
-  ) {}
+export interface Dummy {
+  /**
+   * @param id: string - Identificador único del Dummy
+   */
+  id: string;
+
+  /**
+   * @param name: string - Nombre del Dummy
+   */
+  name: string;
 }
