@@ -1,13 +1,8 @@
 import { Request, Response } from 'express';
 import { DummyService } from '../../core/app/services/dummy.services';
-import { DummyRepository } from '../../core/infra/repositories/dummy.respository';
 
 export class DummyController {
-  private readonly dummyService: DummyService;
-  constructor() {
-    // Aquí se inyecta el repositorio al servicio
-    this.dummyService = new DummyService(new DummyRepository());
-  }
+  constructor(private readonly dummyService: DummyService = new DummyService()) {}
 
   public async getDummyData(req: Request, res: Response) {
     try {

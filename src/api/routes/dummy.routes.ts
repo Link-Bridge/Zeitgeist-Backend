@@ -4,7 +4,7 @@ import { DummyController } from '../controllers/dummy.controller'; // Asegúrate
 export class DummyRouter {
   public router: Router;
 
-  constructor(private dummyController: DummyController) {
+  constructor(private dummyController: DummyController = new DummyController()) {
     this.router = Router();
     this.initializeRoutes();
   }
@@ -37,7 +37,7 @@ export class DummyRouter {
    *                     example: "Dato Dummy"
    */
 
-  initializeRoutes(): void {
+  private initializeRoutes(): void {
     this.router.get('/data', (req, res) => this.dummyController.getDummyData(req, res));
   }
 }
