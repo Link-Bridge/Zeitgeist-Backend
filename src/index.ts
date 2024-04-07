@@ -42,7 +42,7 @@ io.on('connection', socket => {
       socket.emit('status', 'Finalizando conexión...');
       socket.disconnect(true);
     }
-  }, 1000);
+  }, 3600);
 
   socket.on('disconnect', () => {
     console.log('Cliente desconectado:', socket.id);
