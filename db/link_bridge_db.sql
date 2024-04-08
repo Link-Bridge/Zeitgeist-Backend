@@ -37,7 +37,8 @@
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company_direct_contact uuid,
-        id_form uuid
+        id_form uuid,
+        archived boolean NOT NULL DEFAULT FALSE
     );
 
     CREATE TABLE Company_direct_contact (
@@ -64,7 +65,8 @@
         is_chargeable BOOLEAN DEFAULT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
-        id_company uuid NOT NULL
+        id_company uuid NOT NULL,
+        area VARCHAR(256)
     );
 
     CREATE TABLE Task (
