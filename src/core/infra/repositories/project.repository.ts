@@ -3,7 +3,7 @@ import { Prisma } from '../../..';
 import { Report } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 
-async function findReport (id: string) : Promise<any> { //<Report> {
+async function findReport (id: string) : Promise<Report> {
     const is_accepted = await Prisma.project.findUnique({
         where: {
             id:id,
@@ -17,14 +17,15 @@ async function findReport (id: string) : Promise<any> { //<Report> {
         throw new NotFoundError('Report');
     }
 
-    let data: any //Report;
+    let data: Report;
 
     if (is_accepted.status === 'In quotation'){
-        data = await Prisma.project.findUnique({
+        let raw = await Prisma.project.findUnique({
             where: {
                 id:id,
             },
             select: {
+                id: true,
                 name: true,
                 status: true,
                 total_hours: true,
@@ -39,9 +40,42 @@ async function findReport (id: string) : Promise<any> { //<Report> {
             },
             
         });
-
+        
+        if (raw){
+            const project = {...raw, total_hours: Number(raw.total_hours), company: raw.company.name};
+            data = {project : project};
+        } else {
+            throw new NotFoundError('Report');
+        }
+        
     } else {
-        data = undefined;
+        let raw = await Prisma.project.findUnique({
+            where: {
+                id:id,
+            },
+            select: {
+                id: true,
+                name: true,
+                status: true,
+                total_hours: true,
+                start_date: true,
+
+                company: {
+                    select: {
+                        name: true,
+                    }
+                },
+
+            },
+            
+        });
+        
+        if (raw){
+            const project = {...raw, total_hours: Number(raw.total_hours), company: raw.company.name};
+            data = {project : project};
+        } else {
+            throw new NotFoundError('Report');
+        }
     }
 
     return data;

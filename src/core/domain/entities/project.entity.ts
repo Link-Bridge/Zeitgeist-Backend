@@ -1,3 +1,5 @@
+import { Decimal } from "@prisma/client/runtime/library";
+
 interface Project {
     id: string;
     name: string;
@@ -8,9 +10,9 @@ interface Project {
     start_date: Date;
     end_date?: Date;
     total_hours?: Number;
-    periodicity: string;
+    periodicity?: string;
     is_chargeable?: boolean;
-    company_name: string;
+    company: string;
 
 }
 
