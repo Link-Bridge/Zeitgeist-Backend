@@ -37,6 +37,27 @@ async function findById(id: string): Promise<EmployeeEntity> {
     }
 }
 
+async function updateRoleById(id: string, roleId: string): Promise<EmployeeEntity> {
+    try {
+        const data = await Prisma.employee.update({
+            where: {
+                id: id,
+            },
+            data: {
+                id_role: roleId
+            }
+        });
+
+        if (!data) {
+            throw new NotFoundError(RESOURCE_NAME);
+        }
+
+        return mapEmployeeEntityFromDbModel(data);
+    } catch (error: unknown) {
+        throw new Error('Employee repository error');
+    }
+}
+
 async function findByEmail(email: string): Promise<EmployeeEntity> {
     try {
         const data = await Prisma.employee.findUnique({
