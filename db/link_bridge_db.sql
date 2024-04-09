@@ -34,11 +34,11 @@
         email VARCHAR(180) UNIQUE,
         phone_number VARCHAR(15),
         landline_phone VARCHAR(15),
+        archived boolean NOT NULL DEFAULT FALSE,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company_direct_contact uuid,
-        id_form uuid,
-        archived boolean NOT NULL DEFAULT FALSE
+        id_form uuid
     );
 
     CREATE TABLE Company_direct_contact (
@@ -63,10 +63,10 @@
         total_hours NUMERIC(8,2),
         periodicity VARCHAR(256) DEFAULT NULL,
         is_chargeable BOOLEAN DEFAULT NULL,
+        area VARCHAR(256),
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
-        id_company uuid NOT NULL,
-        area VARCHAR(256)
+        id_company uuid NOT NULL
     );
 
     CREATE TABLE Task (
