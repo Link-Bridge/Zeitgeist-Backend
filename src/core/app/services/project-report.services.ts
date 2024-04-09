@@ -1,4 +1,4 @@
-import { Report } from '../../domain/entities/project.entity';
+import { Report } from '../../domain/entities/report.entity';
 import { ReportRepository } from '../../infra/repositories/report.repository';
 
 async function getReport(id: string): Promise<Report> {

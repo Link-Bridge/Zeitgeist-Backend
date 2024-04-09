@@ -1,5 +1,5 @@
 import { Prisma } from '../../..';
-import { Report, Statistics } from '../../domain/entities/project.entity';
+import { Report, Statistics } from '../../domain/entities/report.entity';
 import { TaskRepository } from './tasks.repository';
 import { ProjectRepository } from './project.repository';
 

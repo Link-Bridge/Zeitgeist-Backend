@@ -1,5 +1,5 @@
 import { Prisma } from '../../..';
-import { Task } from '../../domain/entities/project.entity';
+import { Task } from '../../domain/entities/task.entity';
 
 async function findTasks (id_project: string) : Promise<Task[]> {
     let tasks: Task[] = [];
