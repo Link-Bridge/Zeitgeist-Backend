@@ -29,6 +29,7 @@ model company {
   company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
   form                      form?                   @relation(fields: [id_form], references: [id], onDelete: NoAction, onUpdate: NoAction)
   project                   project[]
+  archived                  Boolean        
 }
 
 model company_direct_contact {
@@ -211,6 +212,7 @@ model project {
   id_company    String    @db.Uuid
   company       company   @relation(fields: [id_company], references: [id], onDelete: NoAction, onUpdate: NoAction)
   task          task[]
+  area          String?    @db.VarChar(256)
 }
 
 model role {
