@@ -1,14 +1,14 @@
 import { Report } from '../../domain/entities/project.entity';
-import { findReport } from '../../infra/repositories/project.repository';
+import { ReportRepository } from '../../infra/repositories/report.repository';
 
 async function getReport(id: string): Promise<Report> {
     try {
-        const data = await findReport(id);
+        const data = await ReportRepository.findReport(id);
         return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error: ', error);
         throw new Error('An unexpected error occurred');
     }
 }
 
-export { getReport };
+export const ProjectReportService = { getReport };

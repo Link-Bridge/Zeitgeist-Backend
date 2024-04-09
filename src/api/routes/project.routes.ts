@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getReportData } from '../controllers/project.controller';
+import { ProjectController } from '../controllers/project.controller';
 
 const router = Router();
 
-router.get('/report/:id', getReportData);
+router.get('/report/:id', ProjectController.getReportData);
 
-export { router as ProjectRouter};
+export { router as ProjectRouter };

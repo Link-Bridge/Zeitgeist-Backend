@@ -3,7 +3,6 @@ import express, { Express } from 'express';
 import swaggerJSDoc, { OAS3Options } from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { baseRouter } from './api/routes/index.routes';
-
 import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
 
