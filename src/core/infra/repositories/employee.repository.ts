@@ -82,4 +82,4 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export { create, findAll, findByEmail, findById };
+export const EmployeeRepository = { create, findAll, findByEmail, findById };
