@@ -1,37 +1,34 @@
-import { Decimal } from "@prisma/client/runtime/library";
-
-interface Project {
+export interface Project {
     id: string;
     name: string;
-    matter?: string;
-    description?: string;
+    matter?: string | null;
+    description?: string | null;
     status: string;
-    category?: string;
+    category?: string | null;
     start_date: Date;
-    end_date?: Date;
-    total_hours?: Number;
-    periodicity?: string;
-    is_chargeable?: boolean;
+    end_date?: Date | null;
+    total_hours?: Number | null;
+    periodicity?: string | null;
+    is_chargeable?: boolean | null;
     company: string;
 
 }
 
-interface Task {
+export interface Task {
     id: string;
     title: string;
     description: string;
     status: string;
-    waiting_for?: string;
+    waiting_for?: string | null;
     start_date: Date;
-    end_date?: Date;
-    worked_hours?: Number;
+    end_date?: Date | null;
+    worked_hours?: Number | null;
     employee_first_name: string;
     employee_last_name: string;
-    
 }
 
 
 export interface Report {
     project: Project;
-    tasks?: Task[];
+    tasks?: Task[] | null;
 }
