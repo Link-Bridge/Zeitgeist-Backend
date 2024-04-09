@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { updateUserRol as updateUserRolService } from "../../core/app/services/admin-rol.services";
 
 interface IUpdateUserRolBody {
     userId?: string
@@ -22,8 +23,8 @@ async function updateUserRol(req: Request, res: Response) {
             throw new Error("Role id is undefined");
         };
 
-        // TODO: connect with service
-
+        // Connect with service
+        await updateUserRolService(userId, roleId);
         res.status(200).json({ data: null });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
