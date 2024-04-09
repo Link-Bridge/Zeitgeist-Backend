@@ -27,8 +27,19 @@ export interface Task {
     employee_last_name: string;
 }
 
+export interface Statistics {
+    total: Number
+    done: Number,
+    in_progress: Number,
+    under_revision: Number,
+    delayed: Number,
+    postponed: Number,
+    not_started: Number,
+    cancelled: Number
+}
 
 export interface Report {
     project: Project;
     tasks?: Task[] | null;
+    statistics?: Statistics | null;
 }

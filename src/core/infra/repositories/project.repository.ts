@@ -1,7 +1,20 @@
 import { randomUUID } from 'crypto';
 import { Prisma } from '../../..';
-import { Report, Task } from '../../domain/entities/project.entity';
+import { Report, Task, Statistics } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
+
+function initilizeStatistics(): Statistics {
+    return {
+        total: 0,
+        done: 0,
+        in_progress: 0,
+        under_revision: 0,
+        delayed: 0,
+        postponed: 0,
+        not_started: 0,
+        cancelled: 0,
+    };
+}
 
 async function findReport (id: string) : Promise<Report> {
     const is_accepted = await Prisma.project.findUnique({
@@ -104,17 +117,33 @@ async function findReport (id: string) : Promise<Report> {
             },
         });
 
+        let raw_statistics = await Prisma.task.groupBy({
+            where: {
+                id_project: id
+            },
+            by: ['status'],
+            _count: {
+                _all: true,
+            },
+        });
+        
         if (raw_project){
             const project = {...raw_project, total_hours: Number(raw_project.total_hours), company: raw_project.company.name};
+            let statistics: Statistics = initilizeStatistics();
             let tasks: Task[] = [];
-
+            
             for(let i = 0; i < raw_tasks.length; i++){
                 const task : Task = {...raw_tasks[i].task, worked_hours: Number(raw_tasks[i].task.worked_hours), employee_first_name: raw_tasks[i].employee.first_name, employee_last_name: raw_tasks[i].employee.last_name}
                 tasks.push(task);
-                console.log(`TASK ${i}`, task);
             }
             
-            data = {project: project, tasks: tasks};
+            statistics.total = raw_tasks.length;
+            for(let i = 0; i < raw_statistics.length; i++){
+                let key: string = raw_statistics[i].status.replace(' ', '_');
+                statistics[key as keyof Statistics] = Number(raw_statistics[i]._count._all);
+            }
+            
+            data = {project: project, tasks: tasks, statistics: statistics};
             
         } else {
             throw new NotFoundError('Report');
