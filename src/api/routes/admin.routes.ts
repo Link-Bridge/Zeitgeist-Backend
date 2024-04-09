@@ -1,5 +1,8 @@
 import { Router } from 'express';
+import { updateUserRol } from "../controllers/admin.controller";
 
 const router = Router();
 
-export { router as AdminRouter};
+router.put("/rol", updateUserRol);
+
+export { router as AdminRouter };
