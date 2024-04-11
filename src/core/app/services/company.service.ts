@@ -1,4 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
