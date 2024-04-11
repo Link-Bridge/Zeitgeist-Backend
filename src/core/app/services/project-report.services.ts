@@ -5,6 +5,16 @@ import { EmployeeRepository } from '../../infra/repositories/employee.repository
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 
+/**
+ * @brief Esta función inicializa las estadísticas de un reporte
+ * 
+ * @param total: Number 
+ * 
+ * @return ProjectStatistics
+ * 
+ * @description Las tareas se agrupan segun su estatus y se inicializan en 0.
+ * 
+ */
 function initilizeStatistics(total: Number): ProjectStatistics { 
     const raw : ProjectStatistics = { 
         total: total,
@@ -19,6 +29,20 @@ function initilizeStatistics(total: Number): ProjectStatistics {
     return raw;
 }
 
+
+/**
+ * @brief Esta función genera el reporte de un proyecto
+ * 
+ * @param id: string 
+ * 
+ * @return Report
+ * 
+ * @description Se hace la distinción entre un proyecto en cotización o 
+ * cancelado y un proyecto en cualquier otro estatus. El reporte de un proyecto en cotización
+ * o cancelado retorna datos generales del proyecto y los demás incluyen tareas asociadas
+ * al proyecto y sus estadísticas.
+ * 
+ */
 async function getReport(id: string): Promise<Report> {
     try {
         let report : Report;

@@ -5,7 +5,7 @@ async function getReportData(req: Request, res: Response) {
     try {
         const data = await ProjectReportService.getReport(req.params.id);
         res.status(200).json({ data: data });
-    } catch (error: any) { // unknown???
+    } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
