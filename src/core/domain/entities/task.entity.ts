@@ -5,19 +5,19 @@
  * @param title: string
  * @param description: string
  * @param status: string
- * @param waiting_for: string
- * @param castart_datetegory: Date
- * @param end_date: Date
- * @param worked_hours: Number
- * @param created_at: Date
- * @param updated_at: Date
- * @param id_project: string
+ * @param waitingFor: string
+ * @param startDate: Date
+ * @param endDate: Date
+ * @param workedHours: Number
+ * @param createdAt: Date
+ * @param updatedAt: Date
+ * @param idProject: string
  *
  * @return void
  *
- * @description La estructura básicamente es lo que esta en el MER,
+ * @description La estructura contiene los datos del esquema de Task,
  * pero se identifican como atributos opcionales aquellos que no
- * son requeridos por un reporte.
+ * son requeridos por una tarea.
  * 
  */
 
@@ -43,38 +43,38 @@ export interface Task {
     status: string;
 
   /**
-   * @param waiting_for: string - Empleado necesario para poder continuar con la tarea
+   * @param waitingFor: string - Empleado necesario para poder continuar con la tarea
    */
-    waiting_for?: string;
+    waitingFor?: string;
 
   /**
-   * @param start_date: Date - Fecha de inicio de la tarea
+   * @param startDate: Date - Fecha de inicio de la tarea
    */
-    start_date: Date;
+    startDate: Date;
 
   /**
-   * @param end_date: Date - Fecha de fin de la tarea
+   * @param endDate: Date - Fecha de fin de la tarea
    */
-    end_date?: Date;
+    endDate?: Date;
 
   /**
-   * @param worked_hours: Number - Horas trabajadas en la tarea
+   * @param workedHours: Number - Horas trabajadas en la tarea
    */
-    worked_hours?: Number;
+    workedHours?: Number;
 
   /**
-   * @param created_at: Date - Fecha de registro de la tarea
+   * @param createdAt: Date - Fecha de registro de la tarea
    */
-  created_at: Date;
+  createdAt: Date;
 
   /**
-   * @param updated_at: Date - Última fecha de modificación
+   * @param updatedAt: Date - Última fecha de modificación
    */
 
-  updated_at?: Date;
+  updatedAt?: Date;
     
   /**
-   * @param id_project: string - Identificador único del proyecto asociado
+   * @param idProject: string - Identificador único del proyecto asociado
    */
-  id_project: string;
+  idProject: string;
 }

@@ -7,18 +7,22 @@
  * @param description: string
  * @param status: string
  * @param category: string
- * @param start_date: Date
- * @param end_date: Date
- * @param total_hours: Number
+ * @param startDate: Date
+ * @param endDate: Date
+ * @param totalHours: Number
  * @param periodicity: string
- * @param is_chargeable: Boolean
- * @param company: string
+ * @param isChargeable: Boolean
+ * @param area: string
+ * @param createdAt: Date
+ * @param updatedAt: Date
+ * @param idCompany: string
  *
  * @return void
  *
- * @description La estructura básicamente es lo que esta en el MER,
- * pero se clasifican como atributos opcionales aquellos que varían 
- * entre los proyectos en cotización y los aceptados.
+ * @description La estructura contiene los datos del esquema de Project,
+ * pero se identifican como atributos opcionales aquellos que no
+ * son requeridos por un proyecto.
+ * 
  */
 
 export interface Project {
@@ -53,19 +57,19 @@ export interface Project {
     category?: string | null;
 
   /**
-   * @param start_date: Date - Fecha de inicio del proyecto
+   * @param startDate: Date - Fecha de inicio del proyecto
    */
-    start_date: Date;
+    startDate: Date;
 
   /**
-   * @param end_date: Date - Fecha de fin del proyecto
+   * @param endDate: Date - Fecha de fin del proyecto
    */
-    end_date?: Date | null;
+    endDate?: Date | null;
 
   /**
-   * @param total_hours: Number - Total de horas trabajadas en el proyecto
+   * @param totalHours: Number - Total de horas trabajadas en el proyecto
    */
-    total_hours?: Number | null;
+    totalHours?: Number | null;
 
   /**
    * @param periodicity: string - Periodcidad del proyecto
@@ -73,12 +77,28 @@ export interface Project {
     periodicity?: string | null;
 
   /**
-   * @param is_chargeable: boolean - Indica si el proyecto es cobrable
+   * @param isChargeable: boolean - Indica si el proyecto es cobrable
    */
-    is_chargeable?: boolean | null;
+    isChargeable?: boolean | null;
 
   /**
-   * @param company: string - Compañía asociada al proyecto
+   * @param area: string - Area asociada al proyecto
    */
-    company: string;
+    area?: string;
+
+  /**
+   * @param createdAt: Date - Fecha de registro de la tarea
+   */
+    createdAt: Date;
+
+    /**
+     * @param updatedAt: Date - Última fecha de modificación
+     */
+  
+    updatedAt?: Date;
+      
+    /**
+     * @param idCompany: string - Identificador único de la compañia asociada al proyecto
+     */
+    idCompany: string;
 }

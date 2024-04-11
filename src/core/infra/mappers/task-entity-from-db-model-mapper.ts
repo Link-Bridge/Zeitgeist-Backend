@@ -7,13 +7,12 @@ export function mapTaskEntityFromDbModel(model: task): Task {
     title: model.title,
     description: model.description,
     status: model.status,
-    waiting_for: model.waiting_for ? model.waiting_for : undefined,
-    start_date: model.start_date,
-    end_date: model.end_date ? model.end_date : undefined,
-    worked_hours: Number(model.worked_hours) ? Number(model.worked_hours) : undefined,
-    created_at: model.created_at,
-    updated_at: model.updated_at ? model.updated_at : undefined,
-    id_project: model.id_project,
-
+    waitingFor: model.waiting_for ? model.waiting_for : undefined,
+    startDate: model.start_date,
+    endDate: model.end_date ? model.end_date : undefined,
+    workedHours: Number(model.worked_hours) ? Number(model.worked_hours) : undefined,
+    createdAt: model.created_at,
+    updatedAt: model.updated_at ? model.updated_at : undefined,
+    idProject: model.id_project,
   };
 }
