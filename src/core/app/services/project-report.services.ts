@@ -5,8 +5,8 @@ import { EmployeeRepository } from '../../infra/repositories/employee.repository
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 
-function initilizeStatistics(total: Number): ProjectStatistics {
-    const raw : ProjectStatistics = {
+function initilizeStatistics(total: Number): ProjectStatistics { 
+    const raw : ProjectStatistics = { 
         total: total,
         done: 0,
         inprogress: 0,
@@ -42,28 +42,26 @@ async function getReport(id: string): Promise<Report> {
             for(let i = 0; i < rawTasks.length; i++){
                 let task : Task = rawTasks[i];
 
-                const rawEmployeeTask = employeeTask.find((record) => {
-                    record.idTask === rawTasks[i].id;
-                    return record;
+                const rawEmployeeTask = employeeTask.find((record) => { 
+                    if (record.idTask === rawTasks[i].id) return record;
                 });
                 
                 if(rawEmployeeTask) {
                     const employee = employees.find((record) => {
-                        (record.id === rawEmployeeTask.idEmployee && rawTasks[i].id === rawEmployeeTask.idTask);
-                        return record;
+                        if(record.id === rawEmployeeTask.idEmployee) return record;
                     });
-                    
+
                     if (employee){ 
-                        console.log('hoolal');
                         task = {...task, employeeFirstName: employee.firstName, employeeLastName: employee.lastName};
                     }
-
-                    tasks.push(task);
-                    
                 }
+
+                tasks.push(task); 
                 
                 const key: string = rawTasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
-                projectStatistics[key as keyof ProjectStatistics] = Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
+                if (projectStatistics.hasOwnProperty(key)){
+                    projectStatistics[key as keyof ProjectStatistics] = Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
+                }
             }
             
             report.tasks = tasks;
