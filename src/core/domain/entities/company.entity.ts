@@ -18,24 +18,15 @@
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-export interface Company {
+export interface CompanyEntity {
   id: string;
-
   name: string;
-
   email: string | null;
-
-  phone_number: string | null;
-
-  landline_phone: string | null;
-
+  phoneNumber: string | null;
+  landlinePhone: string | null;
   archived: boolean;
-
-  id_company_direct_contact: string | null;
-
-  id_form: string | null;
-
-  created_at: Date;
-
-  updated_at: Date | null;
+  idCompanyDirectContact: string | null;
+  idForm: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 }

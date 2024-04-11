@@ -1,12 +1,12 @@
-import { Company } from '../../domain/entities/company.entity';
+import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 /**
  * Gets all data from all companies
- * @returns {Promise<Company[]>} a promise taht resolves to an array of company entities
+ * @returns {Promise<CompanyEntity[]>} a promise taht resolves to an array of company entities
  * @throws {Error} if an unexpected error occurs
  */
 
-async function getAll(): Promise<Company[]> {
+async function getAll(): Promise<CompanyEntity[]> {
   try {
     const companyRecords = await CompanyRepository.findAll();
     return companyRecords;

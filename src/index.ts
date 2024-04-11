@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { baseRouter } from './api/routes/index.routes';
 import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
+import 'dotenv/config'
 
 export const Prisma: PrismaClient = new PrismaClient(); // Instancia de Prisma Client, uso global
 const app: Express = express();
