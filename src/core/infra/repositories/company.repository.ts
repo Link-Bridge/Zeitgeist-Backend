@@ -2,8 +2,6 @@ import { Prisma } from '../../..';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-model.mapper';
 
-const RESOURCE_NAME = 'Company info';
-
 /**
  * Finds all company entities in the database
  * @version 1.0.0
