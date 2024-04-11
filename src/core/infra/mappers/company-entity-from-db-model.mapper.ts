@@ -12,6 +12,10 @@ export function mapCompanyEntityFromDbModel(model: company) : CompanyEntity {
         idCompanyDirectContact: model.id_company_direct_contact ? model.id_company_direct_contact : null,
         idForm: model.id_form ? model.id_form : null,
         createdAt: model.created_at,        
-        updatedAt: model.updated_at ? model.updated_at : null,        
+        updatedAt: model.updated_at ? model.updated_at : null, 
+        accountingHours: null, 
+        legalHours: null, 
+        chargeableHours: null, 
+        totalProjects: null,    
     }
 }

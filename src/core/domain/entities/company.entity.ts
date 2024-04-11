@@ -11,12 +11,18 @@
  * @param idForm: string
  * @param createdAt: Date
  * @param updatedAt: Date
+ * @param accountingHours: number
+ * @param legalHours: number
+ * @param chargeableHours: number 
+ * @param totalProjects: number
  *
  * @return void
  *
  * @description La estructura basicamente es lo que esta en el MER,
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
+
+import { Decimal } from "@prisma/client/runtime/library";
 
 export interface CompanyEntity {
   id: string;
@@ -29,5 +35,8 @@ export interface CompanyEntity {
   idForm: string | null;
   createdAt: Date;
   updatedAt: Date | null;
-  
+  accountingHours: Decimal | null;
+  legalHours: Decimal | null;
+  chargeableHours: Decimal | null;
+  totalProjects: number | null;
 }
