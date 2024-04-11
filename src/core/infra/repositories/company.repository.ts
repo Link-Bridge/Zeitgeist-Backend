@@ -12,7 +12,7 @@ import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-m
 
 async function findAll(): Promise<CompanyEntity[]> {
   const data = await Prisma.company.findMany();
-  return data.map(mapCompanyEntityFromDbModel);
+  return data
 }
 
 export const CompanyRepository = { findAll };

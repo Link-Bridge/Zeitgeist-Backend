@@ -27,16 +27,16 @@ import { Decimal } from "@prisma/client/runtime/library";
 export interface CompanyEntity {
   id: string;
   name: string;
-  email: string | null;
-  phoneNumber: string | null;
-  landlinePhone: string | null;
+  email?: string | null;
+  phoneNumber?: string | null;
+  landlinePhone?: string | null;
   archived: boolean;
-  idCompanyDirectContact: string | null;
-  idForm: string | null;
-  createdAt: Date;
-  updatedAt: Date | null;
-  accountingHours: Decimal;
-  legalHours: Decimal;
-  chargeableHours: Decimal;
-  totalProjects: number;
+  idCompanyDirectContact?: string | null;
+  idForm?: string | null;
+  created_at: Date;
+  updated_at: Date | null;
+  accountingHours?: Decimal;
+  legalHours?: Decimal;
+  chargeableHours?: Decimal;
+  totalProjects?: number;
 }
