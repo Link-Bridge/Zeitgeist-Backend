@@ -15,9 +15,10 @@ async function getAll(): Promise<CompanyEntity[]> {
     
     companyRecords.map((company) => {
       projectRecords.forEach((project) => {
-        company.totalProjects = company.totalProjects ? company.totalProjects + 1 : 1
-
-
+        
+        if (project.idCompany == company.id) 
+          company.totalProjects = company.totalProjects ? company.totalProjects + 1 : 1
+        
         if (project.idCompany == company.id && project.isChargeable) {
           if (project.area == "Legal" && project.totalHours) {
 
