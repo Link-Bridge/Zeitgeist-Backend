@@ -14,13 +14,13 @@ const app: Express = express();
 const HOST: string = process.env[EnvConfigKeys.HOST] || 'localhost';
 const PORT: number = process.env[EnvConfigKeys.PORT] ? parseInt(process.env[EnvConfigKeys.PORT]) : 4000;
 
-app.use(express.json());
-app.use(baseRouter);
-
 // CORS middleware
 app.use(cors({
   origin: 'http://localhost:3000'
 }));
+
+app.use(express.json());
+app.use(baseRouter);
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions as OAS3Options);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
