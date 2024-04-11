@@ -35,8 +35,8 @@ export interface CompanyEntity {
   idForm: string | null;
   createdAt: Date;
   updatedAt: Date | null;
-  accountingHours: Decimal | null;
-  legalHours: Decimal | null;
-  chargeableHours: Decimal | null;
-  totalProjects: number | null;
+  accountingHours: Decimal;
+  legalHours: Decimal;
+  chargeableHours: Decimal;
+  totalProjects: number;
 }

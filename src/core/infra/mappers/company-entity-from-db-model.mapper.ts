@@ -1,5 +1,6 @@
 import { company } from "@prisma/client";
 import { CompanyEntity } from "../../domain/entities/company.entity";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export function mapCompanyEntityFromDbModel(model: company) : CompanyEntity {
     return {
@@ -13,9 +14,9 @@ export function mapCompanyEntityFromDbModel(model: company) : CompanyEntity {
         idForm: model.id_form ? model.id_form : null,
         createdAt: model.created_at,        
         updatedAt: model.updated_at ? model.updated_at : null, 
-        accountingHours: null, 
-        legalHours: null, 
-        chargeableHours: null, 
-        totalProjects: null,    
+        accountingHours: new Decimal(0), 
+        legalHours: new Decimal(0), 
+        chargeableHours: new Decimal(0), 
+        totalProjects: 0,    
     }
 }

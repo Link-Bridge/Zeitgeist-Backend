@@ -11,50 +11,29 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 async function getAll(): Promise<CompanyEntity[]> {
   try {
     const companyRecords = await CompanyRepository.findAll();
-    const projectRecords = await ProjectRepository.findAll()
-    
-    companyRecords.map((company) => {
-      projectRecords.forEach((project) => {
-        
-        if (project.idCompany == company.id) 
-          company.totalProjects = company.totalProjects ? company.totalProjects + 1 : 1
-        
-        if (project.idCompany == company.id && project.isChargeable) {
-          if (project.area == "Legal" && project.totalHours) {
+    const projectRecords = await ProjectRepository.findAll();
 
-            const projectHours = parseFloat(project.totalHours?.toString() || "0");
-            const companyHours = new Decimal(company.legalHours?.toString() || "0");
-            const chargeableHours = new Decimal(company.chargeableHours?.toString() || "0");
+    companyRecords.map(company => {
+      projectRecords.forEach(project => {
+        if (project.idCompany == company.id)
+          // Add to total projects
+          company.totalProjects += 1;
 
-            // Perform addition if both values are valid numbers
-            if (!isNaN(projectHours) && !isNaN(companyHours.toNumber()) && !isNaN(chargeableHours.toNumber())) {
-              company.legalHours = companyHours.add(projectHours);
-              company.chargeableHours = chargeableHours.add(projectHours)
-            }
-          }
-
-          if (project.area == "Accounting" && project.totalHours) {
-
-            const projectHours = parseFloat(project.totalHours?.toString() || "0");
-            const companyHours = new Decimal(company.accountingHours?.toString() || "0");
-            const chargeableHours = new Decimal(company.chargeableHours?.toString() || "0");
-
-            // Perform addition if both values are valid numbers
-            if (!isNaN(projectHours) && !isNaN(companyHours.toNumber()) && !isNaN(chargeableHours.toNumber())) {
-              company.accountingHours = companyHours.add(projectHours);
-              company.chargeableHours = chargeableHours.add(projectHours)
-            }
-          }
-
+        if (project.idCompany == company.id && project.isChargeable && project.totalHours) {
+          // Add to legal hours
+          if (project.area == 'Legal') company.legalHours = company.legalHours.add(project.totalHours);
+          // Add to accounting hours
+          if (project.area == 'Accounting') company.accountingHours = company.accountingHours.add(project.totalHours);
         }
-      })
-    })
+      });
 
-    console.log(companyRecords)
+      // Add to chargeable hours
+      company.chargeableHours = company.chargeableHours.add(company.legalHours).add(company.accountingHours);
+    });
 
     return companyRecords;
   } catch (error: any) {
-    console.log(error)
+    console.log(error);
     throw new Error('an unexpected error occurred');
   }
 }
