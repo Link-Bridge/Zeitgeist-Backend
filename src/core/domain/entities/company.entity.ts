@@ -29,4 +29,5 @@ export interface CompanyEntity {
   idForm: string | null;
   createdAt: Date;
   updatedAt: Date | null;
+  
 }
