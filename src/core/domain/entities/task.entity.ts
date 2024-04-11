@@ -25,42 +25,42 @@ export interface Task {
   /**
    * @param id: string - Identificador único de la tarea
    */
-    id: string;
+  id: string;
 
   /**
    * @param title: string - Titulo de la tarea
    */
-    title: string;
+  title: string;
 
   /**
    * @param description: string - Descripcion de la tarea
    */
-    description: string;
+  description: string;
 
   /**
    * @param status: string - Estatus de la tarea
    */
-    status: string;
+  status: string;
 
   /**
    * @param waitingFor: string - Empleado necesario para poder continuar con la tarea
    */
-    waitingFor?: string;
+  waitingFor?: string;
 
   /**
    * @param startDate: Date - Fecha de inicio de la tarea
    */
-    startDate: Date;
+  startDate: Date;
 
   /**
    * @param endDate: Date - Fecha de fin de la tarea
    */
-    endDate?: Date;
+  endDate?: Date;
 
   /**
    * @param workedHours: Number - Horas trabajadas en la tarea
    */
-    workedHours?: Number;
+  workedHours?: Number;
 
   /**
    * @param createdAt: Date - Fecha de registro de la tarea
