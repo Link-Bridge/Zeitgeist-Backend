@@ -1,22 +1,32 @@
 import { expect } from 'chai';
-import { instance, mock, when } from 'ts-mockito';
-import { DummyRepository } from '../dummy.respository';
+import { validate as uuidValidate } from 'uuid';
+import { Dummy } from '../../../domain/entities/dummy.entity';
+import { DummyRepository } from '../dummy.repository';
 
-describe('Dummy Repository', () => {
-  let dummyRepository: DummyRepository;
+describe('DummyRepository', () => {
+  describe('findAll', () => {
+    it('should return a list of dummy entities when data is found', async () => {
+      const result = await DummyRepository.findAll();
 
-  beforeEach(() => {
-    dummyRepository = new DummyRepository();
-  });
+      expect(result).to.be.an('array').that.is.not.empty;
 
-  describe('Find All', () => {
-    it('should log and throw an error if an unexpected error occurs', async () => {
-      const dummyRepositoryMock = mock(DummyRepository);
-      when(dummyRepositoryMock.findAll()).thenThrow(new Error('Unexpected error'));
+      result.forEach((dummy: Dummy) => {
+        expect(uuidValidate(dummy.id)).to.be.true;
+        expect(dummy.name).to.be.a('string');
+      });
+    });
 
-      const dummyRepository = instance(dummyRepositoryMock);
+    it('should throw an error when an unexpected error occurs', async () => {
+      DummyRepository.findAll = async () => {
+        throw new Error('An unexpected error occurred');
+      };
 
-      expect(() => dummyRepository.findAll()).to.throw(Error, 'Unexpected error');
+      try {
+        await DummyRepository.findAll();
+      } catch (error: any) {
+        expect(error).to.be.an.instanceOf(Error);
+        expect(error.message).to.equal('An unexpected error occurred');
+      }
     });
   });
 });
