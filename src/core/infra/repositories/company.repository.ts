@@ -6,17 +6,23 @@ import { NotFoundError } from '../../errors/not-found.error';
 const RESOURCE_NAME = 'Company';
 
 async function findById(id: string): Promise<Company> {
-    let data = await Prisma.company.findUnique({
-        where: {
-            id: id,
-        },
-    });
+    try {
+        let data = await Prisma.company.findUnique({
+            where: {
+                id: id,
+            },
+        });
+    
+        if(!data) {
+            throw new NotFoundError(RESOURCE_NAME);
+        }
 
-    if(!data) {
-        throw new NotFoundError(RESOURCE_NAME);
+        return mapCompanyEntityFromDbModel(data);
+        
+    } catch (error: unknown) {
+        throw new Error(`${RESOURCE_NAME} repository error`);
     }
-
-    return mapCompanyEntityFromDbModel(data);
+    
 }
 
 export const CompanyRepository = { findById };

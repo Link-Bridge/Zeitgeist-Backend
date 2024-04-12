@@ -6,35 +6,47 @@ import { NotFoundError } from '../../errors/not-found.error';
 const RESOURCE_NAME = 'Project';
 
 async function findProjectStatusById(id: string) {
-    const data = await Prisma.project.findUnique({
-        where: {
-            id:id,
-        },
-        select: {
-            status: true,
-        },
-    });
+    try {
+        const data = await Prisma.project.findUnique({
+            where: {
+                id:id,
+            },
+            select: {
+                status: true,
+            },
+        });
+    
+        if (!data) {
+            throw new NotFoundError(`${RESOURCE_NAME} status`);
+        }
+    
+        return data; 
 
-    if (!data) {
-        throw new NotFoundError(`${RESOURCE_NAME} status`);
+    } catch (error: unknown) {
+        throw new Error(`${RESOURCE_NAME} repository error`);
     }
-
-    return data; 
+    
 }
 
 async function findById (id: string) : Promise<Project> {
-    let data = await Prisma.project.findUnique({
-        where: {
-            id:id,
-        },
+    try {
+        let data = await Prisma.project.findUnique({
+            where: {
+                id:id,
+            },
+            
+        });
         
-    });
-    
-    if (!data){
-        throw new NotFoundError(RESOURCE_NAME);
+        if (!data){
+            throw new NotFoundError(RESOURCE_NAME);
+        }
+        
+        return mapProjectEntityFromDbModel(data);
+        
+    } catch (error: unknown) {
+        throw new Error(`${RESOURCE_NAME} repository error`);
     }
-    
-    return mapProjectEntityFromDbModel(data);
+
 }
 
 export const ProjectRepository = { findProjectStatusById, findById };

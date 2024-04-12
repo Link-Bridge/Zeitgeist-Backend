@@ -6,13 +6,19 @@ import { NotFoundError } from '../../errors/not-found.error';
 const RESOURCE_NAME = 'EmployeeTask';
 
 async function findAll(): Promise<EmployeeTask[]> {
-    let data = await Prisma.employee_task.findMany({});
+    try {
+        let data = await Prisma.employee_task.findMany();
 
-    if(!data) {
-        throw new NotFoundError(RESOURCE_NAME);
+        if(!data) {
+            throw new NotFoundError(RESOURCE_NAME);
+        }
+        
+        return data.map(mapEmployeeTaskEntityFromDbModel);
+
+    } catch (error: unknown) {
+        throw new Error(`${RESOURCE_NAME} repository error`);
     }
 
-    return data.map(mapEmployeeTaskEntityFromDbModel);
 }
 
 export const EmployeeTaskRepository = { findAll };

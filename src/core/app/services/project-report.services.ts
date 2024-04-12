@@ -5,6 +5,10 @@ import { EmployeeRepository } from '../../infra/repositories/employee.repository
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 
+const IN_QUOTATION = 'In quotation';
+const WITHOUT_STATUS = '-';
+const CANCELLED = 'Cancelled';
+
 /**
  * @brief Esta función inicializa las estadísticas de un reporte
  * 
@@ -16,7 +20,7 @@ import { CompanyRepository } from '../../infra/repositories/company.repository';
  * 
  */
 function initilizeStatistics(total: Number): ProjectStatistics { 
-    const raw : ProjectStatistics = { 
+    return { 
         total: total,
         done: 0,
         inprogress: 0,
@@ -26,7 +30,6 @@ function initilizeStatistics(total: Number): ProjectStatistics {
         notstarted: 0,
         cancelled: 0,
     }
-    return raw;
 }
 
 
@@ -55,7 +58,7 @@ async function getReport(id: string): Promise<Report> {
         report = {project: project};
 
        
-        if (status.status !== 'In quotation' && status.status !== '-' && status.status !== 'Cancelled'){  // 'Accepted' 'Not started' 'In process' 'Under revision' 'Delayed' 'Postponed' 'Done'
+        if (status.status !== IN_QUOTATION && status.status !== WITHOUT_STATUS && status.status !== CANCELLED){  // 'Accepted' 'Not started' 'In process' 'Under revision' 'Delayed' 'Postponed' 'Done'
             const rawTasks = await TaskRepository.findTasksByProjectId(id);
             const employeeTask = await EmployeeTaskRepository.findAll();
             const employees = await EmployeeRepository.findAll();
