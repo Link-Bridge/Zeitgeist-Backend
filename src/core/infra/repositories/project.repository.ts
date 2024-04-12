@@ -1,5 +1,6 @@
 import { Prisma } from "../../..";
 import { ProjectEntity } from "../../domain/entities/project.entity";
+import { mapProjectEntityFromDbModel } from "../mappers/project-entity-from-db-model.mapper";
 
 const RESOURCE_NAME = 'Project info'
 
@@ -12,7 +13,8 @@ const RESOURCE_NAME = 'Project info'
 */
 
 async function findAll(): Promise<ProjectEntity[]> {
-    return await Prisma.project.findMany()
+    const data = await Prisma.project.findMany()
+    return data.map(mapProjectEntityFromDbModel)
 }
 
 export const ProjectRepository = {findAll}

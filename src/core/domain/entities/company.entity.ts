@@ -30,11 +30,11 @@ export interface CompanyEntity {
   email?: string | null;
   phoneNumber?: string | null;
   landlinePhone?: string | null;
-  // archived?: boolean;
+  archived?: boolean;
   idCompanyDirectContact?: string | null;
   idForm?: string | null;
-  created_at: Date;
-  updated_at: Date | null;
+  createdAt: Date;
+  updatedAt: Date | null;
   accountingHours?: Decimal;
   legalHours?: Decimal;
   chargeableHours?: Decimal;

@@ -1,5 +1,6 @@
 import { Prisma } from '../../..';
 import { CompanyEntity } from '../../domain/entities/company.entity';
+import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-model.mapper';
 
 /**
  * Finds all company entities in the database
@@ -10,7 +11,8 @@ import { CompanyEntity } from '../../domain/entities/company.entity';
  */
 
 async function findAll(): Promise<CompanyEntity[]> {
-  return await Prisma.company.findMany();
+  const data = await Prisma.company.findMany();
+  return data.map(mapCompanyEntityFromDbModel)
 }
 
 export const CompanyRepository = { findAll };
