@@ -1,7 +1,5 @@
 import { Prisma } from "../../..";
 import { ProjectEntity } from "../../domain/entities/project.entity";
-import { NotFoundError } from "../../errors/not-found.error";
-import { mapProjectEntityFromDbModel } from "../mappers/project-entity-from-db-model.mapper";
 
 const RESOURCE_NAME = 'Project info'
 
@@ -14,19 +12,7 @@ const RESOURCE_NAME = 'Project info'
 */
 
 async function findAll(): Promise<ProjectEntity[]> {
-    try{
-        const data = await Prisma.project.findMany()
-
-        if(!data){
-            throw new NotFoundError(RESOURCE_NAME)
-        }
-        
-        return data.map(mapProjectEntityFromDbModel)
-    }
-    catch(error: any) {  
-        console.log(error)
-        throw new Error('an unexpected error occurred');
-    }
+    return await Prisma.project.findMany()
 }
 
 export const ProjectRepository = {findAll}

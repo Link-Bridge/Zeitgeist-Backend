@@ -28,17 +28,17 @@ import { Decimal } from '@prisma/client/runtime/library';
 export interface ProjectEntity {
   id: string;
   name: string;
-  matter: string | null;
-  description: string | null;
+  matter?: string | null;
+  description?: string | null;
   status: string;
   category: string;
-  startDate: Date;
-  endDate: Date | null;
-  totalHours: Decimal | null;
-  perodicity: string | null;
-  isChargeable: boolean | null;
-  area: string | null;
-  createdAt: Date;
-  updatedAt: Date | null;
-  idCompany: string;
+  startDate?: Date;
+  endDate?: Date | null;
+  totalHours?: Decimal | null;
+  perodicity?: string | null;
+  isChargeable?: boolean | null;
+  area?: string | null;
+  created_at: Date;
+  updated_at?: Date | null;
+  idCompany?: string;
 }
