@@ -1,5 +1,5 @@
 import { Dummy } from '../../domain/entities/dummy.entity';
-import { DummyRepository } from '../../infra/repositories/dummy.respository';
+import { DummyRepository } from '../../infra/repositories/dummy.repository';
 
 /**
  * Gets dummy data from the repository
