@@ -1,4 +1,4 @@
-const data = await Prisma.project.findMany()generator client {
+generator client {
   provider = "prisma-client-js"
 }
 
