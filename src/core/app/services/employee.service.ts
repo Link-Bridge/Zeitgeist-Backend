@@ -5,6 +5,9 @@ import { EmployeeRepository } from '../../infra/repositories/employee.repository
 
 async function create(body: EmployeeRequestBody): Promise<EmployeeEntity> {
   try {
+    if (await EmployeeRepository.findByEmail(body.email)) {
+      return Promise.reject(new Error('Failed to create employee'));
+    }
     const idDepartment = '42ac048a-8bb0-4984-8145-be37312cbc35';
     const idRole = '1d3a37f2-14de-4d3e-bc98-3b8a028599a1';
     // Necesitamos Id Rol Y Id Departamento
