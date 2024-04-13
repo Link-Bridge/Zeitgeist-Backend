@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CompanyService } from '../../core/app/services/company.service';
+import { CompanyService } from '../../core/app/services/company.services';
 
 /**
  * @param {Request} req
@@ -12,7 +12,7 @@ import { CompanyService } from '../../core/app/services/company.service';
 
 async function getAll(req: Request, res: Response) {
   try {
-    const data = await CompanyService.getAll();
+    const data = await CompanyService.findAll();
     res.status(200).json({ data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
