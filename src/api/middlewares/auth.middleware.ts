@@ -4,7 +4,7 @@ import admin from '../../config/firebase-admin.config';
 declare global {
   namespace Express {
     interface Request {
-      user?: admin.auth.DecodedIdToken;
+      employee?: admin.auth.DecodedIdToken;
     }
   }
 }
@@ -20,7 +20,7 @@ export const checkAuthToken = (req: Request, res: Response, next: NextFunction) 
     .auth()
     .verifyIdToken(token)
     .then(decodedToken => {
-      req.user = decodedToken;
+      req.employee = decodedToken;
       next();
     })
     .catch(() => {

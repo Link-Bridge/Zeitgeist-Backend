@@ -5,24 +5,14 @@ export interface EmployeeEntity {
   id: string;
 
   /**
-   * @param firstName string: The first name of the employee.
+   * @param name string: The name of the employee.
    */
-  firstName: string;
-
-  /**
-   * @param lastName string: The last name of the employee.
-   */
-  lastName: string;
+  name: string;
 
   /**
    * @param email string: The email of the employee.
    */
   email: string;
-
-  /**
-   * @param phoneNumber string: The phone number of the employee.
-   */
-  phoneNumber?: string;
 
   /**
    * @param imageUrl string: The image url of the employee.

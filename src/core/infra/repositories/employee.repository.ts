@@ -60,10 +60,8 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
     const createData = await Prisma.employee.create({
       data: {
         id: entity.id,
-        first_name: entity.firstName,
-        last_name: entity.lastName,
+        name: entity.name,
         email: entity.email,
-        phone_number: entity.phoneNumber,
         image_url: entity.imageUrl,
         created_at: entity.createdAt,
         updated_at: entity.updatedAt,
@@ -76,7 +74,7 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
       throw new Error('Failed to create employee');
     }
 
-    return entity; // TODO: Check if we need to map this
+    return entity;
   } catch (error: unknown) {
     throw new Error('Failed to create employee');
   }
