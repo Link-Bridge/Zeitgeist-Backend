@@ -5,12 +5,19 @@ import swaggerUi from 'swagger-ui-express';
 import { baseRouter } from './api/routes/index.routes';
 import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
+import cors from 'cors';
+import 'dotenv/config';
 
 export const Prisma: PrismaClient = new PrismaClient(); // Instancia de Prisma Client, uso global
 const app: Express = express();
 
 const HOST: string = process.env[EnvConfigKeys.HOST] || 'localhost';
 const PORT: number = process.env[EnvConfigKeys.PORT] ? parseInt(process.env[EnvConfigKeys.PORT]) : 4000;
+
+// CORS middleware
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 app.use(express.json());
 app.use(baseRouter);

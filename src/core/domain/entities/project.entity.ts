@@ -22,83 +22,83 @@
  * @description La estructura contiene los datos del esquema de Project,
  * pero se identifican como atributos opcionales aquellos que no
  * son requeridos por un proyecto.
- * 
+ *
  */
 
 export interface Project {
   /**
    * @param id: string - Identificador único del proyecto
    */
-    id: string;
+  id: string;
 
   /**
    * @param name: string - Nombre del proyecto
    */
-    name: string;
-    
+  name: string;
+
   /**
    * @param matter: string - Nombre del proyecto
    */
-    matter?: string | null;
-    
+  matter?: string | null;
+
   /**
    * @param description: string - Descripción del proyecto
    */
-    description?: string | null;
+  description?: string | null;
 
   /**
    * @param status: string - Estatus del proyecto
    */
-    status: string;
+  status: string;
 
   /**
    * @param category: string - Categoría del proyecto
    */
-    category?: string | null;
+  category?: string | null;
 
   /**
    * @param startDate: Date - Fecha de inicio del proyecto
    */
-    startDate: Date;
+  startDate: Date;
 
   /**
    * @param endDate: Date - Fecha de fin del proyecto
    */
-    endDate?: Date | null;
+  endDate?: Date | null;
 
   /**
    * @param totalHours: Number - Total de horas trabajadas en el proyecto
    */
-    totalHours?: Number | null;
+  totalHours?: Number | null;
 
   /**
    * @param periodicity: string - Periodcidad del proyecto
    */
-    periodicity?: string | null;
+  periodicity?: string | null;
 
   /**
    * @param isChargeable: boolean - Indica si el proyecto es cobrable
    */
-    isChargeable?: boolean | null;
+  isChargeable?: boolean | null;
 
   /**
    * @param area: string - Area asociada al proyecto
    */
-    area?: string;
+  area?: string;
 
   /**
    * @param createdAt: Date - Fecha de registro de la tarea
    */
-    createdAt: Date;
+  createdAt: Date;
 
-    /**
-     * @param updatedAt: Date - Última fecha de modificación
-     */
-  
-    updatedAt?: Date;
-      
-    /**
-     * @param idCompany: string - Identificador único de la compañia asociada al proyecto
-     */
-    idCompany: string;
+  /**
+   * @param updatedAt: Date - Última fecha de modificación
+   */
+
+  updatedAt?: Date;
+
+  /**
+   * @param idCompany: string - Identificador único de la compañia asociada al proyecto
+   */
+  idCompany: string;
 }
