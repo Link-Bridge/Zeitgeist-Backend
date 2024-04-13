@@ -9,6 +9,6 @@ const V1_PATH = '/api/v1';
 
 baseRouter.use('/dummy', DummyRouter);
 baseRouter.use(`${V1_PATH}/project`, ProjectRouter);
-baseRouter.use('/company', CompanyRouter);
+baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
 
 export { baseRouter };
