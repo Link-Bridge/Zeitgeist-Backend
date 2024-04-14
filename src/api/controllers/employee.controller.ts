@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { EmployeeService } from '../../core/app/services/employee.service';
 
+/**
+ * Creates a new employee
+ * @param req 
+ * @param res 
+ * @returns Employee entity
+ */
 async function createUser(req: Request, res: Response) {
   try {
     if (!req.body || !req.body.email) {
