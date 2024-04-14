@@ -47,16 +47,3 @@ jobs:
           fi
         env:
           CI: true
-
-      - name: Comment PR with test results
-        if: github.event_name == 'pull_request'
-        uses: unsplash/comment-on-pr@v1.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          msg: |
-            📝 **Test Results:**
-            ```
-            ${{ steps.run_tests.outputs.result }}
-            ```
-          check_for_duplicate_messages: true
