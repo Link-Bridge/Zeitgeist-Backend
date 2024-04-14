@@ -26,11 +26,10 @@ export interface CreateEmployee {
 
 async function create(body: CreateEmployee): Promise<EmployeeEntity> {
   try {
-    // TODO: Check if user exists
-    /**@deprecated delete this in future PR */
-    const idDepartment = '42ac048a-8bb0-4984-8145-be37312cbc35';
-    /**@deprecated delete this in future PR */
-    const idRole = '1d3a37f2-14de-4d3e-bc98-3b8a028599a1';
+    const existingEmployee = await EmployeeRepository.findByEmail(body.email);
+    if (existingEmployee) {
+      return existingEmployee;
+    }
 
     const employee = await EmployeeRepository.create({
       id: randomUUID(),
@@ -38,8 +37,8 @@ async function create(body: CreateEmployee): Promise<EmployeeEntity> {
       lastName: body.lastName,
       email: body.email,
       imageUrl: body.imageUrl,
-      idRole: idRole,
-      idDepartment: idDepartment,
+      idRole: '1d3a37f2-14de-4d3e-bc98-3b8a028599a1', // Deprecated role ID
+      idDepartment: '42ac048a-8bb0-4984-8145-be37312cbc35', // Deprecated department ID
       createdAt: new Date(),
     });
 

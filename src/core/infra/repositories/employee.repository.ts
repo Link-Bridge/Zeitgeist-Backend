@@ -55,6 +55,19 @@ async function findByEmail(email: string): Promise<EmployeeEntity> {
   }
 }
 
+async function existsByEmail(email: string): Promise<boolean> {
+  try {
+    const data = await Prisma.employee.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    return !!data;
+  } catch (error: unknown) {
+    throw new Error('Employee repository error');
+  }
+}
+
 async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   try {
     const createData = await Prisma.employee.create({
@@ -81,4 +94,4 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById };
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existsByEmail };
