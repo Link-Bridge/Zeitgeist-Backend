@@ -18,21 +18,19 @@ jobs:
           node-version: '20.x'
           cache: 'pnpm'
 
-      - name: Install pnpm and check configuration
-        run: |
-          npm install -g pnpm
-          echo "pnpm version: $(pnpm -v)"
-          echo "pnpm path: $(which pnpm)"
-          echo "Current PATH: $PATH"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Check for leaked secrets
         uses: zricethezav/gitleaks-action@v1.6.0
 
-      - name: Compile
-        run: pnpm run build
+      - name: Compile and lint
+        run: pnpm run lint && pnpm run build
 
       - name: Run Tests
         id: run_tests
