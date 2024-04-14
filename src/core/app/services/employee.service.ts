@@ -1,28 +1,7 @@
 import { randomUUID } from 'crypto';
 import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
-
-export interface CreateEmployee {
-  /**
-   * Employee name from request body
-   */
-  firstName: string;
-
-  /**
-   *  Employee last name from request body
-   */
-  lastName: string;
-
-  /**
-   * Employee email from request body
-   */
-  email: string;
-
-  /**
-   * Employee picture from request body
-   */
-  imageUrl: string;
-}
+import { CreateEmployee } from '../interfaces/employee.interface';
 
 async function create(body: CreateEmployee): Promise<EmployeeEntity> {
   try {
