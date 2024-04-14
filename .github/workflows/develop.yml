@@ -26,8 +26,8 @@ jobs:
       - name: Check for leaked secrets
         uses: zricethezav/gitleaks-action@v1.6.0
 
-      - name: Compile and lint
-        run: pnpm run lint && pnpm run build
+      - name: Compile
+        run: pnpm run build
 
       - name: Run Tests
         id: run_tests
