@@ -4,9 +4,17 @@
 
 export enum AllowedGenders {}
 
-export enum SupportedRoles {}
+export enum SupportedRoles {
+    SIN_ROL = 'SIN_ROL',
+    ADMINISTRADOR = 'ADMIN',
+    LEGAL = 'LEGAL',
+    CONTABLE = 'CONTABLE',
+}
 
-export enum SupportedDepartments {}
+export enum SupportedDepartments {
+    LEGAL = 'LEGAL',
+    CONTABLE = 'CONTABLE',
+}
 
 export enum AllowedProjectStatus {}
 

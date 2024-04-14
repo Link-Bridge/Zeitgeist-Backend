@@ -1,13 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import admin from '../../config/firebase-admin.config';
 
-declare global {
-  namespace Express {
-    interface Request {
-      employee?: admin.auth.DecodedIdToken;
-    }
-  }
-}
 
 export const checkAuthToken = (req: Request, res: Response, next: NextFunction) => {
   const authToken = req.headers.authorization;
@@ -20,7 +13,7 @@ export const checkAuthToken = (req: Request, res: Response, next: NextFunction) 
     .auth()
     .verifyIdToken(token)
     .then(decodedToken => {
-      req.employee = decodedToken;
+      req.body.auth = decodedToken.email;
       next();
     })
     .catch(() => {

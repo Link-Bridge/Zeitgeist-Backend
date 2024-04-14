@@ -4,7 +4,8 @@ import { EmployeeEntity } from '../../domain/entities/employee.entity';
 export function mapEmployeeEntityFromDbModel(model: employee): EmployeeEntity {
   return {
     id: model.id,
-    name: model.name,
+    firstName: model.first_name,
+    lastName: model.last_name,
     email: model.email,
     imageUrl: model.image_url ? model.image_url : undefined,
     createdAt: model.created_at,

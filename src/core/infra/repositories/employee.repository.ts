@@ -60,7 +60,8 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
     const createData = await Prisma.employee.create({
       data: {
         id: entity.id,
-        name: entity.name,
+        first_name: entity.firstName,
+        last_name: entity.lastName,
         email: entity.email,
         image_url: entity.imageUrl,
         created_at: entity.createdAt,

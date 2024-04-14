@@ -8,6 +8,6 @@ const router = Router();
  * @openapi
  * /create/employee:
  */
-router.post('/create/employee', checkAuthToken, EmployeeController.createUser);
+router.post('/create', checkAuthToken, EmployeeController.createUser);
 
-export { router as AuthRouter };
+export { router as EmployeeRouter };

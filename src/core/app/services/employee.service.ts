@@ -1,25 +1,48 @@
 import { randomUUID } from 'crypto';
-import { EmployeeRequestBody } from '../../../api/controllers/body/auth.body';
 import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 
-async function create(body: EmployeeRequestBody): Promise<EmployeeEntity> {
+export interface CreateEmployee {
+  /**
+   * Employee name from request body
+   */
+  firstName: string;
+
+  /**
+   *  Employee last name from request body
+   */
+  lastName: string;
+
+  /**
+   * Employee email from request body
+   */
+  email: string;
+
+  /**
+   * Employee picture from request body
+   */
+  imageUrl: string;
+}
+
+async function create(body: CreateEmployee): Promise<EmployeeEntity> {
   try {
-    if (await EmployeeRepository.findByEmail(body.email)) {
-      return Promise.reject(new Error('Failed to create employee'));
-    }
+    // TODO: Check if user exists
+    /**@deprecated delete this in future PR */
     const idDepartment = '42ac048a-8bb0-4984-8145-be37312cbc35';
+    /**@deprecated delete this in future PR */
     const idRole = '1d3a37f2-14de-4d3e-bc98-3b8a028599a1';
-    // Necesitamos Id Rol Y Id Departamento
+
     const employee = await EmployeeRepository.create({
       id: randomUUID(),
-      name: body.name,
+      firstName: body.firstName,
+      lastName: body.lastName,
       email: body.email,
-      imageUrl: body.picture,
+      imageUrl: body.imageUrl,
       idRole: idRole,
       idDepartment: idDepartment,
       createdAt: new Date(),
     });
+
     return employee;
   } catch (error: unknown) {
     throw new Error('Employee service error');
