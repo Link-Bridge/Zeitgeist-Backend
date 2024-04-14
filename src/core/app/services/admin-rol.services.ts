@@ -1,9 +1,10 @@
+import { EmployeeEntity } from "../../domain/entities/employee.entity";
 import { EmployeeRepository } from "../../infra/repositories/employee.repository";
 
-async function updateUserRol(userId: string, roleId: string): Promise<void> {
+async function updateUserRol(userId: string, roleId: string): Promise<EmployeeEntity> {
     try {
         // Update User role
-        await EmployeeRepository.updateRoleById(userId, roleId);
+        return await EmployeeRepository.updateRoleById(userId, roleId);
 
     } catch (error: any) {
         console.error('Error: ', error);

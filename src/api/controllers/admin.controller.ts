@@ -24,8 +24,8 @@ async function updateUserRol(req: Request, res: Response) {
         };
 
         // Connect with service
-        await updateUserRolService(userId, roleId);
-        res.status(200).json({ data: null });
+        const employee = await updateUserRolService(userId, roleId);
+        res.status(200).json({ data: employee });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
