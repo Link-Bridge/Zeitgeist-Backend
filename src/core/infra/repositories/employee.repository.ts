@@ -37,4 +37,22 @@ async function findEmployeeById(id: string): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { findAll, findEmployeeById };
+async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
+  try {
+    const data = await Prisma.employee.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapEmployeeEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const EmployeeRepository = { findAll, findEmployeeById, deleteEmployeeById };
