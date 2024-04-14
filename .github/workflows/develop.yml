@@ -22,14 +22,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: | 
-          npm install -g pnpm
-          pnpm -v
-      
-      - name: Check pnpm path
+      - name: Install pnpm and check configuration
         run: |
-            which pnpm || echo "pnpm not found in path"
+          npm install -g pnpm
+          echo "pnpm version: $(pnpm -v)"
+          echo "pnpm path: $(which pnpm)"
+          echo "Current PATH: $PATH"
 
       - name: Install dependencies
         run: pnpm install
