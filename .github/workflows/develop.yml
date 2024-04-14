@@ -23,7 +23,13 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: | 
+          npm install -g pnpm
+          pnpm -v
+      
+      - name: Check pnpm path
+        run: |
+            which pnpm || echo "pnpm not found in path"
 
       - name: Install dependencies
         run: pnpm install
