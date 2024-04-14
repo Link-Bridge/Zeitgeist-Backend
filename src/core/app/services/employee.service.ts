@@ -5,10 +5,10 @@ import { CreateEmployee } from '../interfaces/employee.interface';
 
 async function create(body: CreateEmployee): Promise<EmployeeEntity> {
   try {
-    const existingEmployee = await EmployeeRepository.findByEmail(body.email);
-    if (existingEmployee) {
-      return existingEmployee;
-    }
+    // const existingEmployee = await EmployeeRepository.existByEmail(body.email);
+    // if (!existingEmployee) {
+    //   return Promise.reject(new Error('Employee already exists'));
+    // }
 
     const employee = await EmployeeRepository.create({
       id: randomUUID(),
