@@ -9,3 +9,5 @@ async function deleteEmployee(req: Request, res: Response) {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const EmployeeController = { deleteEmployee };
