@@ -3,15 +3,16 @@ import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.services';
 
 const taskSchema = z.object({
-  id: z.string().ulid(),
+  id: z.string().min(1),
   title: z.string().min(1).max(70),
   description: z.string().min(1).max(255),
-  status: z.string().min(1).max(50),
-  waitingFor: z.string().min(1).max(50).optional(),
-  startDate: z.date(),
+  status: z.string().min(1).max(70),
+  waitingFor: z.string().min(1).max(70),
+  startDate: z.coerce.date(),
   workedHours: z.number().int().positive().optional(),
-  createdAt: z.date(),
-  idProject: z.string().ulid(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
+  idProject: z.string().min(1),
 });
 
 /**
@@ -21,28 +22,16 @@ const taskSchema = z.object({
  * @param res: Response - The response object.
  * @returns res.status(201).json(createdTask) - The created task.
  * @returns res.status(409).json({ message }) - If the task already exists.
+ * @returns res.status(500).json({ message }) - If an error occurs.
  *
  * @throws 500 - If an error occurs.
  */
 async function createTask(req: Request, res: Response) {
   try {
-    const { id, title, description, status, waitingFor, startDate, workedHours, createdAt, idProject } =
-      taskSchema.parse(req.body);
+    const bodyTask = taskSchema.parse(req.body);
+    const createdTask = await TaskService.createTask(bodyTask);
 
-    const newTask = {
-      id,
-      title,
-      description,
-      status,
-      waitingFor,
-      startDate,
-      workedHours,
-      createdAt,
-      idProject,
-    };
-
-    const createdTask = await TaskService.createTask(newTask);
-    if (!createdTask) {
+    if (!createTask) {
       return res.status(409).json({ message: 'Task already exists' });
     }
 
