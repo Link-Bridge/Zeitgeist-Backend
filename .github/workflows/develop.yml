@@ -16,7 +16,7 @@ jobs:
       - name: Install PNPM
         run: npm install -g pnpm
 
-      - name: SetU up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'

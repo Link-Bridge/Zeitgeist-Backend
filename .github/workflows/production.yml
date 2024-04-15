@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install pnpm
+      - name: Install PNPM
         run: npm install -g pnpm
 
       - name: Copy files to EC2
