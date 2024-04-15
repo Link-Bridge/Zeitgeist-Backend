@@ -35,4 +35,23 @@ async function createUser(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { createUser };
+const userExistsSchema = z.object({
+  email: z.string().email({ message: 'Invalid email format' }),
+});
+
+const userExists = async (req: Request, res: Response) => {
+  try {
+    const parsedParams = userExistsSchema.safeParse(req.params);
+    if (!parsedParams.success) {
+      return res.status(400).json({ message: 'Validation error', errors: parsedParams.error.issues });
+    }
+
+    const exists = await EmployeeService.employeeExists({email: parsedParams.data.email});
+
+    res.status(200).json({ data: exists });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error ' + error.message });
+  }
+};
+
+export const EmployeeController = { createUser, userExists };

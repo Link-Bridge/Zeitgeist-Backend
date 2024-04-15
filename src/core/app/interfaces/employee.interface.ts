@@ -19,3 +19,10 @@ export interface CreateEmployee {
    */
   imageUrl: string;
 }
+
+export interface EmployeeExistsByEmail {
+  /**
+   * Employee email from request params
+   */
+  email: string;
+}
