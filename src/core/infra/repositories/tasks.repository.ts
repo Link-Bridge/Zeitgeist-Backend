@@ -10,6 +10,8 @@ const RESOURCE_NAME = 'Task';
  *
  * @param id: string - The unique identifier of the task.
  * @return {Promise<Task>} - The task found.
+ * 
+ * @throws {NotFoundError} - If the task is not found.
  */
 async function findTaskById(id: string): Promise<Task> {
   try {
@@ -23,7 +25,7 @@ async function findTaskById(id: string): Promise<Task> {
     return mapTaskEntityFromDbModel(data);
   } catch (error: unknown) {
     console.error('Error finding task by id: ', error);
-    throw new Error(`${RESOURCE_NAME} repository error`);
+    throw new NotFoundError(`${RESOURCE_NAME} repository error`);
   }
 }
 
@@ -32,6 +34,8 @@ async function findTaskById(id: string): Promise<Task> {
  *
  * @param new_task: Task - New task to be created.
  * @returns {Promise<Task>} - Created task.
+ *
+ * @throws {Error} - If an error occurs when creating the task.
  */
 async function createTask(newTask: Task): Promise<Task> {
   try {

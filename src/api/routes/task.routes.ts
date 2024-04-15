@@ -137,6 +137,6 @@ const router = Router();
  *                   description: The error message
  */
 
-router.post('/create', TaskController.validateTask, TaskController.createTask);
+router.post('/create', TaskController.createTask);
 
 export { router as TaskRouter };

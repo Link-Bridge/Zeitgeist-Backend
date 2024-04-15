@@ -18,7 +18,7 @@
  * @description La estructura contiene los datos del esquema de Task,
  * pero se identifican como atributos opcionales aquellos que no
  * son requeridos por una tarea.
- * 
+ *
  */
 
 export interface Task {
@@ -72,7 +72,7 @@ export interface Task {
    */
 
   updatedAt?: Date;
-    
+
   /**
    * @param idProject: string - Identificador único del proyecto asociado
    */
