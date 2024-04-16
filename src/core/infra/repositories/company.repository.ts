@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { CreateProjectData } from '../../../api/controllers/project.controller';
 import { Company } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-model.mapper';
@@ -36,4 +37,9 @@ async function findById(id: string): Promise<Company> {
   }
 }
 
-export const CompanyRepository = { findAll };
+async function createProject(data: CreateProjectData) {
+  console.log(data);
+  return 'Project Created';
+}
+
+export const CompanyRepository = { findAll, findById, createProject };
