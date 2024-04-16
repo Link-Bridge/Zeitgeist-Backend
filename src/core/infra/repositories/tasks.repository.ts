@@ -14,7 +14,7 @@ const RESOURCE_NAME = 'Task';
  * @throws {Error} - If an error occurs when creating the task.
  */
 async function createTask(newTask: Task): Promise<Task | null> {
-  return await Prisma.$transaction(async prisma => {
+  return await Prisma.$transaction(async (prisma: any) => {
     try {
       const existingTask = await prisma.task.findUnique({
         where: { id: newTask.id },
