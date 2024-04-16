@@ -38,7 +38,7 @@ export interface ProjectEntity {
   perodicity?: string | null;
   isChargeable?: boolean | null;
   area?: string | null;
-  created_at: Date;
-  updated_at?: Date | null;
+  createdAt: Date;
+  updatedAt?: Date | null;
   idCompany?: string;
 }
