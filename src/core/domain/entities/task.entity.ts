@@ -40,7 +40,7 @@ export interface Task {
   /**
    * @param status: string - Estatus de la tarea
    */
-  status: string;
+  status: TaskStatus;
 
   /**
    * @param waitingFor: string - Empleado necesario para poder continuar con la tarea
@@ -78,3 +78,4 @@ export interface Task {
    */
   idProject: string;
 }
+

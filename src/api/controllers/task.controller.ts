@@ -1,18 +1,29 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.services';
+import { TaskStatus } from '../../utils/enums';
+
+const taskStatusSchema = z.enum([
+  'NOT STARTED',
+  'IN PROGRESS',
+  'UNDER REVISSION',
+  'DELAYED',
+  'POSTPONED',
+  'DONE',
+  'CANCELLED',
+]);
 
 const taskSchema = z.object({
-  id: z.string().min(1),
+  id: z.string().uuid(),
   title: z.string().min(1).max(70),
   description: z.string().min(1).max(255),
-  status: z.string().min(1).max(70),
+  status: taskStatusSchema,
   waitingFor: z.string().min(1).max(70),
   startDate: z.coerce.date(),
   workedHours: z.number().int().positive().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
-  idProject: z.string().min(1),
+  idProject: z.string().uuid(),
 });
 
 /**
@@ -29,7 +40,12 @@ const taskSchema = z.object({
 async function createTask(req: Request, res: Response) {
   try {
     const bodyTask = taskSchema.parse(req.body);
-    const createdTask = await TaskService.createTask(bodyTask);
+    const status: TaskStatus = TaskStatus[bodyTask.status as keyof typeof TaskStatus];
+
+    const createdTask = await TaskService.createTask({
+      ...bodyTask,
+      status,
+    });
 
     if (!createTask) {
       return res.status(409).json({ message: 'Task already exists' });

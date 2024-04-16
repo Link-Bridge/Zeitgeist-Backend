@@ -4,19 +4,17 @@ import { Task } from '../interfaces/project-report.interface';
 /**
  * Creates a new task using the repository.
  *
- * @param new_task: Task - New task to be created.
+ * @param newTask: Task - New task to be created.
  * @returns {Promise<Task | null>} - Created task or null if it already exists.
  *
  * @throws {Error} - If an error occurs when creating the task.
  */
-async function createTask(new_task: Task): Promise<Task | null> {
+async function createTask(newTask: Task): Promise<Task | null> {
   try {
-    const existingTask = await TaskRepository.findTaskById(new_task.id);
+    const existingTask = await TaskRepository.findTaskById(newTask.id);
 
     if (existingTask) return null;
-
-    const newTask = await TaskRepository.createTask(new_task);
-    return newTask;
+    return await TaskRepository.createTask(newTask);
   } catch (error: unknown) {
     console.error(`The role could not be created at service level: ${error}`);
     throw new Error('Error creating task');

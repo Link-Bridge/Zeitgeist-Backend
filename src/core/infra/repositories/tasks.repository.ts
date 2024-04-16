@@ -62,11 +62,11 @@ async function createTask(newTask: Task): Promise<Task> {
   }
 }
 
-async function findTasksByProjectId(id_project: string): Promise<Task[]> {
+async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   try {
     let data = await Prisma.task.findMany({
       where: {
-        id_project: id_project,
+        id_project: idProject,
       },
     });
 

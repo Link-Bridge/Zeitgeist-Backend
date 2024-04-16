@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import { instance, mock, resetCalls, when } from 'ts-mockito';
+import { TaskStatus } from '../../../../utils/enums/index';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { Task } from '../../interfaces/project-report.interface';
 import { TaskService } from '../task.services';
@@ -29,7 +30,7 @@ describe('TaskService', () => {
         id: randomUUID(),
         title: 'SAT Verification for ABC Company',
         description: 'Verify the SAT information for the ABC Company',
-        status: 'In Progress',
+        status: TaskStatus.IN_PROGRESS,
         waitingFor: 'John Doe',
         startDate: new Date(),
         workedHours: 20,
@@ -48,7 +49,7 @@ describe('TaskService', () => {
         id: randomUUID(),
         title: 'SAT Verification for ABC Company',
         description: 'Verify the SAT information for the ABC Company',
-        status: 'In Progress',
+        status: TaskStatus.IN_PROGRESS,
         waitingFor: 'John Doe',
         startDate: new Date(),
         workedHours: 20,
@@ -67,7 +68,7 @@ describe('TaskService', () => {
         id: randomUUID(),
         title: 'SAT Verification for ABC Company',
         description: 'Verify the SAT information for the ABC Company',
-        status: 'In Progress',
+        status: TaskStatus.IN_PROGRESS,
         waitingFor: 'John Doe',
         startDate: new Date(),
         workedHours: 20,
