@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' mocha",
+    "test": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' mocha --detectOpenHandles --exit",
     "format": "prettier --write .",
     "prepare": "husky install",
     "prisma:studio": "prisma studio",
