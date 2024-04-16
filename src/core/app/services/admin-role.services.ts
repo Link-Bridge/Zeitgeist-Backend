@@ -11,4 +11,4 @@ async function updateUserRole(userId: string, roleId: string): Promise<EmployeeE
   }
 }
 
-export { updateUserRole as updateUserRole };
+export { updateUserRole };
