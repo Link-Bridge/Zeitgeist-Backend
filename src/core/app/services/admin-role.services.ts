@@ -6,7 +6,6 @@ async function updateUserRole(userId: string, roleId: string): Promise<EmployeeE
     // Update User role
     return await EmployeeRepository.updateRoleById(userId, roleId);
   } catch (error: any) {
-    console.error('Error: ', error);
     throw new Error('An unexpected error occurred');
   }
 }
