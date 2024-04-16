@@ -2,6 +2,8 @@ import { randomUUID } from 'crypto';
 import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { CreateEmployee, EmployeeExistsByEmail } from '../interfaces/employee.interface';
+import { RoleRepository } from '../../infra/repositories/role.repository';
+import { SupportedRoles } from '../../../utils/enums';
 
 async function employeeExists(body: EmployeeExistsByEmail): Promise<boolean> {
   try {
@@ -14,6 +16,8 @@ async function employeeExists(body: EmployeeExistsByEmail): Promise<boolean> {
 
 async function create(body: CreateEmployee): Promise<EmployeeEntity> {
   try {
+    const role = await RoleRepository.findByTitle(SupportedRoles.SIN_ROL);
+
     const exists = await EmployeeRepository.findByEmail(body.email);
     if (exists) {
       return exists;
@@ -25,8 +29,7 @@ async function create(body: CreateEmployee): Promise<EmployeeEntity> {
       lastName: body.lastName,
       email: body.email,
       imageUrl: body.imageUrl,
-      idRole: '1d3a37f2-14de-4d3e-bc98-3b8a028599a1', // Deprecated role ID
-      idDepartment: '42ac048a-8bb0-4984-8145-be37312cbc35', // Deprecated department ID
+      idRole: role.id,
       createdAt: new Date(),
     });
 
