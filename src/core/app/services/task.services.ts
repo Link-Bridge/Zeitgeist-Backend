@@ -11,13 +11,6 @@ import { Task } from '../interfaces/project-report.interface';
  */
 async function createTask(newTask: Task): Promise<Task | null> {
   try {
-    // const existingTask = await TaskRepository.findTaskById(newTask.id);
-
-    // if (existingTask) {
-    //   console.log(`Task with id ${newTask.id} already exists`);
-    //   return null;
-    // }
-
     return await TaskRepository.createTask(newTask);
   } catch (error: unknown) {
     console.error(`Error creating task: ${error}`);
