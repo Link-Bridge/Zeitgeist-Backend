@@ -11,12 +11,16 @@ import { Task } from '../interfaces/project-report.interface';
  */
 async function createTask(newTask: Task): Promise<Task | null> {
   try {
-    const existingTask = await TaskRepository.findTaskById(newTask.id);
+    // const existingTask = await TaskRepository.findTaskById(newTask.id);
 
-    if (existingTask) return null;
+    // if (existingTask) {
+    //   console.log(`Task with id ${newTask.id} already exists`);
+    //   return null;
+    // }
+
     return await TaskRepository.createTask(newTask);
   } catch (error: unknown) {
-    console.error(`The role could not be created at service level: ${error}`);
+    console.error(`Error creating task: ${error}`);
     throw new Error('Error creating task');
   }
 }

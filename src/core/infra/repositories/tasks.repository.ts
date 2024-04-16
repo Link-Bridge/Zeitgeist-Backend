@@ -10,23 +10,20 @@ const RESOURCE_NAME = 'Task';
  *
  * @param id: string - The unique identifier of the task.
  * @return {Promise<Task>} - The task found.
- * 
+ *
  * @throws {NotFoundError} - If the task is not found.
  */
 async function findTaskById(id: string): Promise<Task> {
-  try {
-    let data = await Prisma.task.findUnique({
-      where: {
-        id: id,
-      },
-    });
+  const task = await Prisma.task.findUnique({
+    where: { id },
+  });
 
-    if (!data) throw new NotFoundError(RESOURCE_NAME);
-    return mapTaskEntityFromDbModel(data);
-  } catch (error: unknown) {
-    console.error('Error finding task by id: ', error);
-    throw new NotFoundError(`${RESOURCE_NAME} repository error`);
+  if (!task) {
+    console.error(`Task with id ${id}`);
+    throw new NotFoundError(`Task with id ${id}`);
   }
+
+  return mapTaskEntityFromDbModel(task);
 }
 
 /**
@@ -39,7 +36,7 @@ async function findTaskById(id: string): Promise<Task> {
  */
 async function createTask(newTask: Task): Promise<Task> {
   try {
-    let data = await Prisma.task.create({
+    let createdTask = await Prisma.task.create({
       data: {
         id: newTask.id,
         title: newTask.title,
@@ -54,11 +51,13 @@ async function createTask(newTask: Task): Promise<Task> {
       },
     });
 
-    if (!data) throw new Error('Error creating task');
-    return mapTaskEntityFromDbModel(data);
+    if (!createdTask) {
+      throw new Error(`Failed to create task with the following payload: ${createdTask}`);
+    }
+    return mapTaskEntityFromDbModel(createdTask);
   } catch (error: unknown) {
     console.error('Error creating task: ', error);
-    throw new Error(`${RESOURCE_NAME} repository error`);
+    throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
   }
 }
 

@@ -40,7 +40,11 @@ const taskSchema = z.object({
 async function createTask(req: Request, res: Response) {
   try {
     const bodyTask = taskSchema.parse(req.body);
-    const status: TaskStatus = TaskStatus[bodyTask.status as keyof typeof TaskStatus];
+    console.log(bodyTask.status);
+
+    const status: TaskStatus = bodyTask.status as TaskStatus;
+
+    console.log('Updated status', status);
 
     const createdTask = await TaskService.createTask({
       ...bodyTask,
