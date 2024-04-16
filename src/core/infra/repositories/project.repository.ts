@@ -51,9 +51,9 @@ async function findById(id: string): Promise<Project> {
  * @throws {Error} if an unexpected error occurs
  */
 
-async function findAll(): Promise<ProjectEntity[]> {
+async function findAll(): Promise<Project[]> {
   const data = await Prisma.project.findMany();
   return data.map(mapProjectEntityFromDbModel);
 }
 
-export const ProjectRepository = { findProjectStatusById, findById };
+export const ProjectRepository = { findProjectStatusById, findById, findAll };

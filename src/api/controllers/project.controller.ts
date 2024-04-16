@@ -3,6 +3,7 @@ import { ProjectReportService } from '../../core/app/services/project-report.ser
 
 async function createProject(req: Request, res: Response) {
   console.log(req.body);
+  res.status(200).send();
 }
 
 async function getReportData(req: Request, res: Response) {

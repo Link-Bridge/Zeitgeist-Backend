@@ -24,7 +24,7 @@
 
 import { Decimal } from '@prisma/client/runtime/library';
 
-export interface CompanyEntity {
+export interface Company {
   id: string;
   name: string;
   email?: string | null;
