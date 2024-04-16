@@ -1,6 +1,6 @@
-import { SupportedRoles } from "../../../utils/enums";
+import { SupportedRoles } from '../../../utils/enums';
 
-export interface RoleEnitity {
+export interface RoleEntity {
   /**
    * @param id: string - The id of the role
    */
@@ -13,5 +13,5 @@ export interface RoleEnitity {
 
   createdAt: Date;
 
-  updatedAt: Date;
+  updatedAt?: Date | null;
 }
