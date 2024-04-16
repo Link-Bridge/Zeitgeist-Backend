@@ -1,3 +1,5 @@
+import { TaskStatus } from '../../../utils/enums/index';
+
 /**
  * @brief Esta clase establece la estructura de la entidad Task
  *
