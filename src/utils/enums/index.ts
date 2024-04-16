@@ -5,23 +5,23 @@
 export enum AllowedGenders {}
 
 export enum SupportedRoles {
-    SIN_ROL = 'SIN_ROL',
-    ADMINISTRADOR = 'ADMIN',
-    LEGAL = 'LEGAL',
-    CONTABLE = 'CONTABLE',
+  SIN_ROL = 'SIN_ROL',
+  ADMIN = 'ADMINISTRADOR',
+  LEGAL = 'LEGAL',
+  CONTABLE = 'CONTABLE',
 }
 
 export enum SupportedDepartments {
-    LEGAL = 'LEGAL',
-    CONTABLE = 'CONTABLE',
+  LEGAL = 'LEGAL',
+  CONTABLE = 'CONTABLE',
 }
 
 export enum AllowedProjectStatus {}
 
 export enum ReportStatus {
-    IN_QUOTATION = 'In quotation',
-    WITHOUT_STATUS = '-',
-    CANCELLED = 'Cancelled',
+  IN_QUOTATION = 'In quotation',
+  WITHOUT_STATUS = '-',
+  CANCELLED = 'Cancelled',
 }
 
 export enum AllowedProjectCategory {}
