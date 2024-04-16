@@ -13,7 +13,7 @@
  * @param updatedAt: Date
  * @param accountingHours: number
  * @param legalHours: number
- * @param chargeableHours: number 
+ * @param chargeableHours: number
  * @param totalProjects: number
  *
  * @return void
@@ -22,7 +22,7 @@
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-import { Decimal } from "@prisma/client/runtime/library";
+import { Decimal } from '@prisma/client/runtime/library';
 
 export interface CompanyEntity {
   id: string;

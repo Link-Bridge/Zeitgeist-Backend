@@ -4,7 +4,6 @@ const expect = chai.expect;
 
 describe('DummyService', () => {
   describe('getData', () => {
-
     it('should not do anything complex', async () => {
       // Arrange
       let simpleTruth = true;
@@ -15,6 +14,5 @@ describe('DummyService', () => {
       // Assert
       expect(result).to.equal(simpleTruth);
     });
-
   });
 });

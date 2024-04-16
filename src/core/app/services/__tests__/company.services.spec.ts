@@ -20,10 +20,10 @@ describe('CompanyService', () => {
     projectRepositoryMock = mock<typeof ProjectRepository>();
     projectRepositoryInstance = instance(projectRepositoryMock);
 
-    companyService = { 
-        ...CompanyService,
-        findAll: () => compa
-     };
+    companyService = {
+      ...CompanyService,
+      findAll: () => companyRepositoryInstance.findAll(),
+    };
   });
 
   afterEach(() => {

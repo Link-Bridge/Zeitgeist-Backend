@@ -14,10 +14,10 @@ async function findAll(): Promise<CompanyEntity[]> {
     const projectRecords = await ProjectRepository.findAll();
 
     companyRecords.map(company => {
-      company.totalProjects ??= 0
-      company.accountingHours ??= new Decimal(0)
-      company.legalHours ??= new Decimal(0)
-      company.chargeableHours ??= new Decimal(0)
+      company.totalProjects ??= 0;
+      company.accountingHours ??= new Decimal(0);
+      company.legalHours ??= new Decimal(0);
+      company.chargeableHours ??= new Decimal(0);
 
       projectRecords.forEach(project => {
         if (project.idCompany == company.id)
@@ -26,9 +26,11 @@ async function findAll(): Promise<CompanyEntity[]> {
 
         if (project.idCompany == company.id && project.isChargeable && project.totalHours) {
           // Add to legal hours
-          if (project.area == 'Legal') company.legalHours = company.legalHours!.add(project.totalHours);
+          if (project.area == 'Legal')
+            company.legalHours = company.legalHours!.add(new Decimal(project.totalHours.toString()));
           // Add to accounting hours
-          if (project.area == 'Accounting') company.accountingHours = company.accountingHours!.add(project.totalHours);
+          if (project.area == 'Accounting')
+            company.accountingHours = company.accountingHours!.add(new Decimal(project.totalHours.toString()));
         }
       });
 

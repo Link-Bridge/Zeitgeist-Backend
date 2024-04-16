@@ -23,7 +23,7 @@
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-import { Decimal } from '@prisma/client/runtime/library';
+import { Decimal } from "@prisma/client/runtime/library";
 
 export interface ProjectEntity {
   id: string;
@@ -32,13 +32,14 @@ export interface ProjectEntity {
   description?: string | null;
   status: string;
   category: string;
-  startDate?: Date;
+  startDate: Date;
   endDate?: Date | null;
   totalHours?: Decimal | null;
+  periodicity?: string | null;
   perodicity?: string | null;
   isChargeable?: boolean | null;
-  area?: string | null;
+  area?: string;
   createdAt: Date;
   updatedAt?: Date | null;
-  idCompany?: string;
+  idCompany: string;
 }
