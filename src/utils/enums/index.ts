@@ -4,16 +4,23 @@
 
 export enum AllowedGenders {}
 
-export enum SupportedRoles {}
+export enum SupportedRoles {
+  ADMIN = 'ADMINISTRADOR',
+  LEGAL = 'LEGAL',
+  CONTABLE = 'CONTABLE',
+}
 
-export enum SupportedDepartments {}
+export enum SupportedDepartments {
+  LEGAL = 'LEGAL',
+  CONTABLE = 'CONTABLE',
+}
 
 export enum AllowedProjectStatus {}
 
 export enum ReportStatus {
-    IN_QUOTATION = 'In quotation',
-    WITHOUT_STATUS = '-',
-    CANCELLED = 'Cancelled',
+  IN_QUOTATION = 'In quotation',
+  WITHOUT_STATUS = '-',
+  CANCELLED = 'Cancelled',
 }
 
 export enum AllowedProjectCategory {}
