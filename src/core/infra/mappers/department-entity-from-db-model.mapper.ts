@@ -14,7 +14,7 @@ function supportedDepartmentsFromString(maybeSupportedDepartment: string): Suppo
   throw new Error(`Unsupported department: ${maybeSupportedDepartment}`);
 }
 
-export function mapDepartmentEntityFromDbModelToDomainModel(department: department): DepartmentEntity {
+export function mapDepartmentEntityFromDbModelToDbModel(department: department): DepartmentEntity {
   return {
     id: department.id,
     title: supportedDepartmentsFromString(department.title),

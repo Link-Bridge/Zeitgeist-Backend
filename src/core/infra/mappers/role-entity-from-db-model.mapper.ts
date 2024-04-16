@@ -16,7 +16,7 @@ function supportedRoleFromString(maybeRole: string): SupportedRoles {
   throw new Error(`Unsupported role: ${maybeRole}`);
 }
 
-export function mapRoleEntityFromDbModelToDomainModel(role: role): RoleEntity {
+export function mapRoleEntityFromDbModelToDbModel(role: role): RoleEntity {
   return {
     id: role.id,
     title: supportedRoleFromString(role.title),

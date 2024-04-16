@@ -1,6 +1,6 @@
 import { Prisma } from '../../..';
 import { RoleEntity } from '../../domain/entities/role.entity';
-import { mapRoleEntityFromDbModelToDomainModel } from '../mappers/role-entity-from-db-model.mapper';
+import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-db-model.mapper';
 
 async function findById(id: string): Promise<RoleEntity> {
   try {
@@ -10,7 +10,7 @@ async function findById(id: string): Promise<RoleEntity> {
 
     if (!role) throw new Error('Role not found');
 
-    return mapRoleEntityFromDbModelToDomainModel(role);
+    return mapRoleEntityFromDbModelToDbModel(role);
   } catch (error: any) {
     throw new Error(`Role repository error: ${error.message}`);
   }
@@ -24,7 +24,7 @@ async function findByTitle(title: string): Promise<RoleEntity> {
 
     if (!role) throw new Error('Role not found');
 
-    return mapRoleEntityFromDbModelToDomainModel(role);
+    return mapRoleEntityFromDbModelToDbModel(role);
   } catch (error: any) {
     throw new Error(`Role repository error: ${error.message}`);
   }
@@ -34,7 +34,7 @@ async function findAll(): Promise<RoleEntity[]> {
   try {
     const roles = await Prisma.role.findMany();
 
-    return roles.map(role => mapRoleEntityFromDbModelToDomainModel(role));
+    return roles.map(mapRoleEntityFromDbModelToDbModel);
   } catch (error: any) {
     throw new Error(`Role repository error: ${error.message}`);
   }
