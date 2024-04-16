@@ -28,6 +28,9 @@ jobs:
       - name: Check for leaked secrets
         uses: zricethezav/gitleaks-action@v1.6.0
 
+      - name: Prisma Generate
+        run: pnpm run prisma:generate
+
       - name: Compile
         run: pnpm run build
 
