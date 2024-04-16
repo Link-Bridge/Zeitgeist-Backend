@@ -1,3 +1,24 @@
+/**
+ * @brief Esta clase establece la estructura de la entidad Employee
+ *
+ * @param id: string
+ * @param firstName: string
+ * @param lastName: string
+ * @param email: string
+ * @param phoneNumber: string
+ * @param imageUrl: string
+ * @param createdAt: Date
+ * @param updatedAt: Date
+ * @param idDepartment: string
+ * @param idRole: string
+ *
+ * @return void
+ *
+ * @description La estructura contiene los datos del esquema de Employee.
+ * 
+ */
+
+
 export interface EmployeeEntity {
     /**
      * @param id string: The id of the employee.

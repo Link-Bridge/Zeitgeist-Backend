@@ -10,4 +10,10 @@ export enum SupportedDepartments {}
 
 export enum AllowedProjectStatus {}
 
+export enum ReportStatus {
+    IN_QUOTATION = 'In quotation',
+    WITHOUT_STATUS = '-',
+    CANCELLED = 'Cancelled',
+}
+
 export enum AllowedProjectCategory {}
