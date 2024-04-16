@@ -13,8 +13,6 @@ async function findAll(): Promise<CompanyEntity[]> {
     const companyRecords = await CompanyRepository.findAll();
     const projectRecords = await ProjectRepository.findAll();
 
-    console.log("AAAAAAAAAAAAAAAA")
-
     companyRecords.map(company => {
       company.totalProjects ??= 0
       company.accountingHours ??= new Decimal(0)
