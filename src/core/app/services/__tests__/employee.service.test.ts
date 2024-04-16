@@ -2,7 +2,9 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
+import { SupportedRoles } from '../../../../utils/enums';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { EmployeeService } from '../employee.service';
 chai.use(chaiAsPromised);
 
@@ -10,19 +12,22 @@ describe('EmployeeService', () => {
   let findByEmailStub: sinon.SinonStub;
   let createStub: sinon.SinonStub;
   let existByEmailStub: sinon.SinonStub;
+  let findByTitleStub: sinon.SinonStub;
 
   beforeEach(() => {
     findByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     createStub = sinon.stub(EmployeeRepository, 'create');
     existByEmailStub = sinon.stub(EmployeeRepository, 'existByEmail');
+    findByTitleStub = sinon.stub(RoleRepository, 'findByTitle');
   });
 
   afterEach(() => {
     sinon.restore();
   });
 
-  describe('Create employee function', () => {
+  describe('create function', () => {
     it('should return an existing employee if email is already registered', async () => {
+      const roleId = randomUUID();
       const existingEmployee = {
         id: randomUUID(),
         firstName: 'John',
@@ -30,10 +35,13 @@ describe('EmployeeService', () => {
         email: 'john.doe@example.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
-        idRole: '1d3a37f2-14de-4d3e-bc98-3b8a028599a1',
-        idDepartment: '42ac048a-8bb0-4984-8145-be37312cbc35',
+        idRole: roleId,
       };
 
+      findByTitleStub.resolves({
+        id: roleId,
+        title: SupportedRoles.SIN_ROL
+      });
       findByEmailStub.resolves(existingEmployee);
 
       const result = await EmployeeService.create({
@@ -46,10 +54,11 @@ describe('EmployeeService', () => {
       expect(result).to.eql(existingEmployee);
       expect(findByEmailStub.calledOnce).to.be.true;
       expect(createStub.called).to.be.false;
+      expect(findByTitleStub.calledOnceWith(SupportedRoles.SIN_ROL)).to.be.true;
     });
 
-    it('should create a new employee if no existing employee is found', async () => {
-      findByEmailStub.resolves(null);
+    it('should create a new employee if no existing employee is found and role exists', async () => {
+      const roleId = randomUUID();
       const newEmployee = {
         id: randomUUID(),
         firstName: 'Jane',
@@ -57,10 +66,11 @@ describe('EmployeeService', () => {
         email: 'jane.doe@example.com',
         imageUrl: 'http://example.com/jane.jpg',
         createdAt: new Date(),
-        idRole: '1d3a37f2-14de-4d3e-bc98-3b8a028599a1',
-        idDepartment: '42ac048a-8bb0-4984-8145-be37312cbc35',
+        idRole: roleId,
       };
 
+      findByEmailStub.resolves(null);
+      findByTitleStub.withArgs(SupportedRoles.SIN_ROL).resolves({ id: roleId, title: SupportedRoles.SIN_ROL });
       createStub.resolves(newEmployee);
 
       const result = await EmployeeService.create({
@@ -72,21 +82,24 @@ describe('EmployeeService', () => {
 
       expect(result).to.eql(newEmployee);
       expect(findByEmailStub.calledOnceWith('jane.doe@example.com')).to.be.true;
+      expect(findByTitleStub.calledOnceWith(SupportedRoles.SIN_ROL)).to.be.true;
       expect(createStub.calledOnce).to.be.true;
     });
 
-    it('should throw an error if the repository throws an error', async () => {
-      findByEmailStub.rejects(new Error('Database error'));
+    it('should throw an error if the role does not exist', async () => {
+      findByEmailStub.resolves(null);
+      findByTitleStub.withArgs(SupportedRoles.SIN_ROL).rejects(new Error('Role not found'));
 
       await expect(
         EmployeeService.create({
-          firstName: 'Error',
+          firstName: 'Test',
           lastName: 'User',
-          email: 'error.user@example.com',
-          imageUrl: 'http://example.com/error.jpg',
+          email: 'test.user@example.com',
+          imageUrl: 'http://example.com/test.jpg',
         })
-      ).to.be.rejectedWith(Error, 'Employee service error');
+      ).to.be.rejectedWith(Error, 'Role not found');
 
+      expect(findByTitleStub.calledOnceWith(SupportedRoles.SIN_ROL)).to.be.true;
       expect(createStub.called).to.be.false;
     });
   });
