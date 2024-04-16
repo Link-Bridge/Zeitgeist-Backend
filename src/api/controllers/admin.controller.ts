@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
-import { updateUserRol as updateUserRolService } from "../../core/app/services/admin-rol.services";
+import { updateUserRole as updateUserRoleService } from "../../core/app/services/admin-role.services";
 
-interface IUpdateUserRolBody {
+interface UpdateUserRoleBody {
     userId?: string
     roleId?: string
 }
 
-async function updateUserRol(req: Request, res: Response) {
+async function updateUserRole(req: Request, res: Response) {
     try {
-        const { userId, roleId }: IUpdateUserRolBody = req.body;
+        const { userId, roleId }: UpdateUserRoleBody = req.body;
 
         if (userId === undefined) {
             throw new Error("User id is undefined");
@@ -24,11 +24,11 @@ async function updateUserRol(req: Request, res: Response) {
         };
 
         // Connect with service
-        const employee = await updateUserRolService(userId, roleId);
+        const employee = await updateUserRoleService(userId, roleId);
         res.status(200).json({ data: employee });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 }
 
-export { updateUserRol };
+export { updateUserRole as updateUserRole };
