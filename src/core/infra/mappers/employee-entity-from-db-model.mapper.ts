@@ -6,6 +6,7 @@ export function mapEmployeeEntityFromDbModel(model: employee): EmployeeEntity {
     id: model.id,
     firstName: model.first_name,
     lastName: model.last_name,
+    fullName: `${model.first_name} ${model.last_name}`,
     email: model.email,
     phoneNumber: model.phone_number ? model.phone_number : undefined,
     imageUrl: model.image_url ? model.image_url : undefined,

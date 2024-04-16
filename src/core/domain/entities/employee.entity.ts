@@ -34,6 +34,11 @@ export interface EmployeeEntity {
      * @param lastName string: The last name of the employee.
      */
     lastName: string;
+
+    /**
+     * @param fullName string: The full name of the employee.
+     */
+    fullName: string;
   
     /**
      * @param email string: The email of the employee.
