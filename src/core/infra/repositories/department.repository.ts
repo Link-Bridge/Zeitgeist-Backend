@@ -1,5 +1,6 @@
 import { Prisma } from '../../..';
 import { DepartmentEntity } from '../../domain/entities/department.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { mapDepartmentEntityFromDbModelToDbModel } from '../mappers/department-entity-from-db-model.mapper';
 
 async function findById(id: string): Promise<DepartmentEntity> {
@@ -8,7 +9,7 @@ async function findById(id: string): Promise<DepartmentEntity> {
       where: { id: id },
     });
 
-    if (!department) throw new Error('Department not found');
+    if (!department) throw new NotFoundError('Department not found');
 
     return mapDepartmentEntityFromDbModelToDbModel(department);
   } catch (error: any) {
@@ -22,7 +23,7 @@ async function findByTitle(title: string): Promise<DepartmentEntity> {
       where: { title: title },
     });
 
-    if (!department) throw new Error('Department not found');
+    if (!department) throw new NotFoundError('Department not found');
 
     return mapDepartmentEntityFromDbModelToDbModel(department);
   } catch (error: any) {
@@ -33,6 +34,8 @@ async function findByTitle(title: string): Promise<DepartmentEntity> {
 async function findAll(): Promise<DepartmentEntity[]> {
   try {
     const departments = await Prisma.department.findMany();
+
+    if (!departments) throw new NotFoundError('Departments not found');
 
     return departments.map(mapDepartmentEntityFromDbModelToDbModel);
   } catch (error: any) {

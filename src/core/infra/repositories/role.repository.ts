@@ -1,5 +1,6 @@
 import { Prisma } from '../../..';
 import { RoleEntity } from '../../domain/entities/role.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-db-model.mapper';
 
 async function findById(id: string): Promise<RoleEntity> {
@@ -8,7 +9,7 @@ async function findById(id: string): Promise<RoleEntity> {
       where: { id: id },
     });
 
-    if (!role) throw new Error('Role not found');
+    if (!role) throw new NotFoundError('Role not found');
 
     return mapRoleEntityFromDbModelToDbModel(role);
   } catch (error: any) {
@@ -22,7 +23,7 @@ async function findByTitle(title: string): Promise<RoleEntity> {
       where: { title: title },
     });
 
-    if (!role) throw new Error('Role not found');
+    if (!role) throw new NotFoundError('Role not found');
 
     return mapRoleEntityFromDbModelToDbModel(role);
   } catch (error: any) {
@@ -33,6 +34,8 @@ async function findByTitle(title: string): Promise<RoleEntity> {
 async function findAll(): Promise<RoleEntity[]> {
   try {
     const roles = await Prisma.role.findMany();
+
+    if (!roles) throw new NotFoundError('Roles not found');
 
     return roles.map(mapRoleEntityFromDbModelToDbModel);
   } catch (error: any) {
