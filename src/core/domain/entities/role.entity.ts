@@ -1,35 +1,17 @@
-/**
- * @brief The class establishes the structure from the entity Role
- *
- * @param id: string
- * @param title: string
- * @param createdAt: Date
- * @param updatedAt: Date
- *
- * @return void
- *
- * @description The structure contains the data from the scheme Role
- * 
- */
+import { SupportedRoles } from '../../../utils/enums';
 
 export interface RoleEntity {
-    /**
-     * @param id: string: The id of the role.
-     */
-    id: string;
+  /**
+   * @param id: string - The id of the role
+   */
+  id: string;
 
-    /**
-     * @param title string: The title of the role.
-     */
-    title: string;
+  /**
+   * @param title: SupportedRoles - The title of the role
+   */
+  title: SupportedRoles;
 
-    /**
-     * @param createdAt: Date: The date when the role was created.
-     */
-    createdAt: Date;
+  createdAt: Date;
 
-    /**
-     * @param updatedAt Date: The date when the role was updated.
-     */
-    updateAt?: Date;
+  updatedAt?: Date | null;
 }
