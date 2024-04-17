@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CompanyService } from '../../core/app/services/company.services';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
+import { companySchema } from '../validation/companyValidation'
 
 /**
  * Finds all companies
@@ -35,9 +36,12 @@ async function create(req: Request, res: Response) {
 
     if(!company) throw new Error("Missing company data in body")
 
+    companySchema.parse(company)
+
     const data = await CompanyService.create(company);
     res.status(200).json({ data });
   } catch (error: any) {
+    console.log(error.message)
     res.status(500).json({ message: error.message });
   }
 }
