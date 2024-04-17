@@ -25,9 +25,11 @@ async function findAll(): Promise<CompanyEntity[]> {
  * Creates a new company in the database
  * @version 1.0.0
  * @param {CompanyEntity} company data
+ * @returns {String} id from created company
+ * @returns {null} if an error occured
  */
 
-async function create(company: CompanyEntity) {
+async function create(company: CompanyEntity): Promise<string | null> {
   const res = await Prisma.company.create({
     data: {
       id: randomUUID(),
@@ -42,7 +44,7 @@ async function create(company: CompanyEntity) {
       updated_at: null,
     },
   });
-  console.log(res);
+  return res.id
 }
 
 async function findById(id: string): Promise<CompanyEntity> {

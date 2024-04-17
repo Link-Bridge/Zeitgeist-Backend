@@ -6,13 +6,15 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 /**
  * Creates a new company
  * @param {CompanyEntity} company data
+ * @returns {String} id from created company
+ * @returns {null} if an error occured
  * @throws {Error} if an unexpected error occurs
  */
 
-async function create(company: CompanyEntity) {
+async function create(company: CompanyEntity): Promise<string | null> {
   try {
     const res = await CompanyRepository.create(company)
-    console.log(res)
+    return res
   } catch (error: any) {
     console.log(error);
     throw new Error('an unexpected error occurred');
