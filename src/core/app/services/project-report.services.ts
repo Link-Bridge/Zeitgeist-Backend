@@ -1,5 +1,4 @@
 import { Report, Project, Task, ProjectStatistics } from '../interfaces/project-report.interface';
-import { ReportStatus } from '../../../utils/enums/index';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -46,51 +45,46 @@ function initilizeStatistics(total: Number): ProjectStatistics {
 async function getReport(id: string): Promise<Report> {
     try {
         let report : Report;
-
-        const status = await ProjectRepository.findProjectStatusById(id);
         const rawProject = await ProjectRepository.findById(id);
         const company = await CompanyRepository.findById(rawProject.idCompany);
 
         const project: Project = {...rawProject, companyName: company.name};
         report = {project: project};
 
-       
-        if (status.status !== ReportStatus.IN_QUOTATION && status.status !== ReportStatus.WITHOUT_STATUS && status.status !== ReportStatus.CANCELLED){  // 'Accepted' 'Not started' 'In process' 'Under revision' 'Delayed' 'Postponed' 'Done'
-            const rawTasks = await TaskRepository.findTasksByProjectId(id);
-            const employeeTask = await EmployeeTaskRepository.findAll();
-            const employees = await EmployeeRepository.findAll();
+        const rawTasks = await TaskRepository.findTasksByProjectId(id);
+        const employeeTask = await EmployeeTaskRepository.findAll();
+        const employees = await EmployeeRepository.findAll();
 
-            const tasks: Task[] = [];
-            const projectStatistics: ProjectStatistics = initilizeStatistics(rawTasks.length);
+        const tasks: Task[] = [];
+        const projectStatistics: ProjectStatistics = initilizeStatistics(rawTasks.length);
+        
+        for(let i = 0; i < rawTasks.length; i++){
+            let task : Task = rawTasks[i];
+
+            const rawEmployeeTask = employeeTask.find((record) => { 
+                if (record.idTask === rawTasks[i].id) return record;
+            });
             
-            for(let i = 0; i < rawTasks.length; i++){
-                let task : Task = rawTasks[i];
-
-                const rawEmployeeTask = employeeTask.find((record) => { 
-                    if (record.idTask === rawTasks[i].id) return record;
+            if(rawEmployeeTask) {
+                const employee = employees.find((record) => {
+                    if(record.id === rawEmployeeTask.idEmployee) return record;
                 });
-                
-                if(rawEmployeeTask) {
-                    const employee = employees.find((record) => {
-                        if(record.id === rawEmployeeTask.idEmployee) return record;
-                    });
 
-                    if (employee){ 
-                        task = {...task, employeeFirstName: employee.firstName, employeeLastName: employee.lastName};
-                    }
-                }
-
-                tasks.push(task); 
-                
-                const key: string = rawTasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
-                if (projectStatistics.hasOwnProperty(key)){
-                    projectStatistics[key as keyof ProjectStatistics] = Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
+                if (employee){ 
+                    task = {...task, employeeFirstName: employee.firstName, employeeLastName: employee.lastName};
                 }
             }
+
+            tasks.push(task); 
             
-            report.tasks = tasks;
-            report.statistics = projectStatistics;
-        } 
+            const key: string = rawTasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
+            if (projectStatistics.hasOwnProperty(key)){
+                projectStatistics[key as keyof ProjectStatistics] = Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
+            }
+        }
+        
+        report.tasks = tasks;
+        report.statistics = projectStatistics;
 
         return report;
         
