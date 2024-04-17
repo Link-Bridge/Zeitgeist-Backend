@@ -14,7 +14,7 @@ async function findAll(): Promise<EmployeeEntity[]> {
     }
 
     return data.map(mapEmployeeEntityFromDbModel);
-  } catch (error: unknown) {
+  } catch {
     throw new Error('Employee repository error');
   }
 }
@@ -32,7 +32,7 @@ async function findById(id: string): Promise<EmployeeEntity> {
     }
 
     return mapEmployeeEntityFromDbModel(data);
-  } catch (error: unknown) {
+  } catch {
     throw new Error('Employee repository error');
   }
 }
@@ -53,7 +53,7 @@ async function updateRoleById(id: string, roleId: string): Promise<EmployeeEntit
     }
 
     return mapEmployeeEntityFromDbModel(data);
-  } catch (error: unknown) {
+  } catch {
     throw new Error('Employee repository error');
   }
 }
@@ -71,7 +71,7 @@ async function findByEmail(email: string): Promise<EmployeeEntity> {
     }
 
     return mapEmployeeEntityFromDbModel(data);
-  } catch (error: unknown) {
+  } catch {
     throw new Error('Employee repository error');
   }
 }
@@ -98,7 +98,7 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
     }
 
     return entity; // TODO: Check if we need to map this
-  } catch (error: unknown) {
+  } catch {
     throw new Error('Failed to create employee');
   }
 }
