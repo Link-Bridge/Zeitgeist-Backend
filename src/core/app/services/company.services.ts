@@ -2,6 +2,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { SupportedDepartments } from '../../../utils/enums';
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -26,10 +27,10 @@ async function findAll(): Promise<CompanyEntity[]> {
 
         if (project.idCompany == company.id && project.isChargeable && project.totalHours) {
           // Add to legal hours
-          if (project.area == 'Legal')
+          if (project.area == SupportedDepartments.LEGAL)
             company.legalHours = company.legalHours!.add(new Decimal(project.totalHours.toString()));
           // Add to accounting hours
-          if (project.area == 'Accounting')
+          if (project.area == SupportedDepartments.CONTABLE)
             company.accountingHours = company.accountingHours!.add(new Decimal(project.totalHours.toString()));
         }
       });
