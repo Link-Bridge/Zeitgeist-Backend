@@ -2,6 +2,24 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+
+/**
+ * Creates a new company
+ * @param {CompanyEntity} company data
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function create(company: CompanyEntity) {
+  try {
+    const res = await CompanyRepository.create(company)
+    console.log(res)
+  } catch (error: any) {
+    console.log(error);
+    throw new Error('an unexpected error occurred');
+  }
+}
+
+
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -45,4 +63,4 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findAll };
+export const CompanyService = { findAll, create };

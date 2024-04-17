@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Prisma } from '../../..';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
@@ -9,8 +10,6 @@ const RESOURCE_NAME = 'Company';
  * Finds all company entities in the database
  * @version 1.0.0
  * @returns {Promise<CompanyEntity[]>} a promise taht resolves to an array of company entities
- * @throws {NotFoundError} if no entities are found
- * @throws {Error} if an unexpected error occurs
  */
 
 async function findAll(): Promise<CompanyEntity[]> {
@@ -20,6 +19,30 @@ async function findAll(): Promise<CompanyEntity[]> {
     },
   });
   return data.map(mapCompanyEntityFromDbModel);
+}
+
+/**
+ * Creates a new company in the database
+ * @version 1.0.0
+ * @param {CompanyEntity} company data
+ */
+
+async function create(company: CompanyEntity) {
+  const res = await Prisma.company.create({
+    data: {
+      id: randomUUID(),
+      name: company.name,
+      email: company.email,
+      phone_number: company.phoneNumber,
+      landline_phone: company.landlinePhone,
+      archived: false,
+      id_company_direct_contact: company.idCompanyDirectContact,
+      id_form: company.idForm,
+      created_at: new Date(),
+      updated_at: null,
+    },
+  });
+  console.log(res);
 }
 
 async function findById(id: string): Promise<CompanyEntity> {
@@ -40,4 +63,4 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById };
+export const CompanyRepository = { create, findAll, findById };
