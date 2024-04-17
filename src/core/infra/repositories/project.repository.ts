@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { CreateProjectData } from '../../app/services/project.services';
 import { Project } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -50,10 +51,13 @@ async function findById(id: string): Promise<Project> {
  * @throws {NotFoundError} if no entities are found
  * @throws {Error} if an unexpected error occurs
  */
-
 async function findAll(): Promise<Project[]> {
   const data = await Prisma.project.findMany();
   return data.map(mapProjectEntityFromDbModel);
 }
 
-export const ProjectRepository = { findProjectStatusById, findById, findAll };
+async function createProject(data: CreateProjectData) {
+  return await Prisma.project.create({ data: data });
+}
+
+export const ProjectRepository = { findProjectStatusById, findById, findAll, createProject };
