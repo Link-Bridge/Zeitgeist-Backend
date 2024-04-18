@@ -15,14 +15,6 @@ export enum SupportedDepartments {
   CONTABLE = 'CONTABLE',
 }
 
-export enum AllowedProjectStatus {}
-
-export enum ReportStatus {
-  IN_QUOTATION = 'In quotation',
-  WITHOUT_STATUS = '-',
-  CANCELLED = 'Cancelled',
-}
-
 export enum TaskStatus {
   NOT_STARTED = 'NOT STARTED',
   IN_PROGRESS = 'IN PROGRESS',
@@ -31,6 +23,10 @@ export enum TaskStatus {
   POSTPONED = 'POSTPONED',
   DONE = 'DONE',
   CANCELLED = 'CANCELLED',
+  DEFAULT = '-',
 }
+
+export enum AllowedProjectStatus {}
+
 
 export enum AllowedProjectCategory {}

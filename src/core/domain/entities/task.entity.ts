@@ -6,7 +6,7 @@ import { TaskStatus } from '../../../utils/enums/index';
  * @param id: string
  * @param title: string
  * @param description: string
- * @param status: string
+ * @param status: TaskStatus
  * @param waitingFor: string
  * @param startDate: Date
  * @param endDate: Date
@@ -40,7 +40,7 @@ export interface Task {
   description: string;
 
   /**
-   * @param status: string - Estatus de la tarea
+   * @param status: TaskStatus - Estatus de la tarea
    */
   status: TaskStatus;
 
