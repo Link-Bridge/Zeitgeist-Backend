@@ -3,6 +3,7 @@ import { SupportedRoles } from '../../../utils/enums';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
+import { EmployeeEntity } from '../../domain/entities/employee.entity';
 
 function parseName(displayName: string) {
   const nameParts = displayName.trim().split(/\s+/);
@@ -23,12 +24,13 @@ function parseName(displayName: string) {
 
   return [firstName, lastName];
 }
-
 export interface SignIn {
   email: string;
   fullName: string;
   imageUrl: string;
 }
+
+// TODO: Add a promise to this
 
 async function signIn(body: SignIn) {
   const role = await RoleRepository.findByTitle(SupportedRoles.WITHOUT_ROLE);
@@ -55,4 +57,13 @@ async function signIn(body: SignIn) {
   return employee;
 }
 
-export const EmployeeService = { signIn };
+/**
+ * Function to get all employees
+ * 
+ * @returns Promise<EmployeeEntity[]>
+ */
+async function getAllEmployees(): Promise<EmployeeEntity[]> {
+  return await EmployeeRepository.findAll();
+}
+
+export const EmployeeService = { signIn, getAllEmployees };

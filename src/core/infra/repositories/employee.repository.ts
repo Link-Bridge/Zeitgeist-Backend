@@ -15,7 +15,7 @@ async function findAll(): Promise<EmployeeEntity[]> {
 
     return data.map(mapEmployeeEntityFromDbModel);
   } catch (error: unknown) {
-    throw new Error('Employee repository error');
+    throw new Error(`Failed to fetch all employees: ${error}`);
   }
 }
 
