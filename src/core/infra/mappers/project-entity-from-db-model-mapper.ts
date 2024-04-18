@@ -21,4 +21,3 @@ export function mapProjectEntityFromDbModel(model: project): Project {
         idCompany: model.id_company
     };
 }
-
