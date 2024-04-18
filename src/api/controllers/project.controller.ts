@@ -11,7 +11,7 @@ async function getReportData(req: Request, res: Response) {
         const { id } = reportSchema.parse({id: req.params.id});
         
         const data = await ProjectReportService.getReport(id);
-        res.status(200).json({ data: data });
+        res.status(200).json(data);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

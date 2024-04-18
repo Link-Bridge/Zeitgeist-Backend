@@ -89,7 +89,6 @@ async function getReport(id: string): Promise<Report> {
         return report;
         
     } catch (error: unknown) {
-        console.error('Error: ', error);
         throw new Error('An unexpected error occurred');
     }
 }
