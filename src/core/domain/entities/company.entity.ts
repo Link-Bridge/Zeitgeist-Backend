@@ -1,78 +1,42 @@
 /**
- * @brief Esta clase establece la estructura de la entidad Project
+ * @brief Esta clase es para establecer la estructura de la entidad company
  *
  * @param id: string
  * @param name: string
  * @param email: string
  * @param phoneNumber: string
  * @param landlinePhone: string
- * @param archived: Boolean
- * @param createdAt: Date
- * @param updatedAt: Date
+ * @param archived: boolean
  * @param idCompanyDirectContact: string
  * @param idForm: string
+ * @param createdAt: Date
+ * @param updatedAt: Date
+ * @param accountingHours: number
+ * @param legalHours: number
+ * @param chargeableHours: number
+ * @param totalProjects: number
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de Company,
- * pero se identifican como atributos opcionales aquellos que no
- * son requeridos por una compañia.
- * 
+ * @description La estructura basicamente es lo que esta en el MER,
+ * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-export interface Company {
-    /**
-     * @param id: string - Identificador único de la compañia
-     */
-    id: string;
-  
-    /**
-     * @param name: string - Nombre de la compañia
-     */
-    name: string;
-      
-    /**
-     * @param email: string - Correo electronico de la compañia
-     */
-    email?: string | null;
-      
-    /**
-     * @param phone_number: string - Celular de contacto de la compañia
-     */
-    phoneNumber?: string | null;
-  
-    /**
-     * @param landline_phone: string - Telefono fijo de la compañia
-     */
-    landlinePhone?: string | null;
-  
-    /**
-     * @param archived: Boolean - Indica si la compañia esta archivada o no
-     */
-    archived: Boolean;
-  
-    /**
-     * @param created_at: Date - Fecha de registro de la tarea
-     */
-    createdAt: Date;
+import { Decimal } from '@prisma/client/runtime/library';
 
-    /**
-     * @param updated_at: Date - Última fecha de modificación
-     */
-
-    updatedAt?: Date;
-  
-    /**
-     * @param id_company_direct_contact: string - Persona de contacto con Zeitgeist designada por la compañia
-     */
-    idCompanyDirectContact?: string | null;
-  
-    /**
-     * @param id_form: string - Identificador único del formulario de la compañia
-     */
-    idForm?: string | null;
-  
-  }
-
-
-
+export interface CompanyEntity {
+  id: string;
+  name: string;
+  email?: string | null;
+  phoneNumber?: string | null;
+  landlinePhone?: string | null;
+  archived?: boolean;
+  idCompanyDirectContact?: string | null;
+  idForm?: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
+  accountingHours?: Decimal;
+  legalHours?: Decimal;
+  chargeableHours?: Decimal;
+  totalProjects?: number;
+}
