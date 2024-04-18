@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../../../utils/enums/index';
+
 /**
  * @brief Esta clase establece la estructura de la entidad Project
  *
@@ -5,7 +7,7 @@
  * @param name: string
  * @param matter: string
  * @param description: string
- * @param status: string
+ * @param status: ProjectStatus
  * @param category: string
  * @param startDate: Date
  * @param endDate: Date
@@ -47,9 +49,9 @@ export interface Project {
     description?: string | null;
 
   /**
-   * @param status: string - Estatus del proyecto
+   * @param status: ProjectStatus - Estatus del proyecto
    */
-    status: string;
+    status: ProjectStatus;
 
   /**
    * @param category: string - Categoría del proyecto

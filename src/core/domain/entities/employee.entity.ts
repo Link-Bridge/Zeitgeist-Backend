@@ -5,7 +5,6 @@
  * @param firstName: string
  * @param lastName: string
  * @param email: string
- * @param phoneNumber: string
  * @param imageUrl: string
  * @param createdAt: Date
  * @param updatedAt: Date
