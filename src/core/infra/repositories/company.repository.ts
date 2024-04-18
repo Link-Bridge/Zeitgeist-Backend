@@ -14,12 +14,20 @@ const RESOURCE_NAME = 'Company';
  */
 
 async function findAll(): Promise<CompanyEntity[]> {
-  const data = await Prisma.company.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  });
-  return data.map(mapCompanyEntityFromDbModel);
+  try {
+    const data = await Prisma.company.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapCompanyEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
 }
 
 async function findById(id: string): Promise<CompanyEntity> {
