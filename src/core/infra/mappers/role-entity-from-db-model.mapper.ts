@@ -3,8 +3,8 @@ import { SupportedRoles } from '../../../utils/enums';
 import { RoleEntity } from '../../domain/entities/role.entity';
 
 function supportedRoleFromString(maybeRole: string): SupportedRoles {
-  if (maybeRole.toUpperCase() === SupportedRoles.SIN_ROL) {
-    return SupportedRoles.SIN_ROL;
+  if (maybeRole.toUpperCase() === SupportedRoles.WITHOUT_ROLE) {
+    return SupportedRoles.WITHOUT_ROLE;
   }
 
   if (maybeRole.toUpperCase() === SupportedRoles.ADMIN) {

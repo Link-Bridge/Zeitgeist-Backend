@@ -24,16 +24,16 @@ function parseName(displayName: string) {
   return [firstName, lastName];
 }
 
-interface SignIn {
+export interface SignIn {
   email: string;
   fullName: string;
   imageUrl: string;
 }
 
 async function signIn(body: SignIn) {
-  const role = await RoleRepository.findByTitle(SupportedRoles.SIN_ROL);
+  const role = await RoleRepository.findByTitle(SupportedRoles.WITHOUT_ROLE);
   if (!role) {
-    throw new NotFoundError(`Role '${SupportedRoles.SIN_ROL}' not found`);
+    throw new NotFoundError(`Role '${SupportedRoles.WITHOUT_ROLE}' not found`);
   }
 
   const employee = await EmployeeRepository.findByEmail(body.email);

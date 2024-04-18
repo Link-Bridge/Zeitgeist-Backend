@@ -5,7 +5,7 @@
 export enum AllowedGenders {}
 
 export enum SupportedRoles {
-  SIN_ROL = 'SIN_ROL',
+  WITHOUT_ROLE = 'SIN_ROL',
   ADMIN = 'ADMINISTRADOR',
   LEGAL = 'LEGAL',
   CONTABLE = 'CONTABLE',
