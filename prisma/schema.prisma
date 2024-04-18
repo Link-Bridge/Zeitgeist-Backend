@@ -25,6 +25,9 @@ model company {
   archived                  Boolean                 @default(false)   
   created_at                DateTime                @default(now()) @db.Timestamp(6)
   updated_at                DateTime?               @db.Timestamp(6)
+  rfc                       String?                 @db.VarChar(13)
+  tax_residence             String?                 @db.VarChar(255)
+  constitution_date         DateTime?               @db.Timestamp(6)
   id_company_direct_contact String?                 @db.Uuid
   id_form                   String?                 @db.Uuid
   company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
