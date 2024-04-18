@@ -30,4 +30,19 @@ async function userExists(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { userExists };
+/**
+ * Controller to get all employees
+ * 
+ * @param req 
+ * @param res 
+ */
+async function getAllEmployees(req: Request, res: Response) {
+  try {
+    const employees = await EmployeeService.getAllEmployees();
+    res.status(200).json({ data: employees });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export const EmployeeController = { userExists, getAllEmployees };

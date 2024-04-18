@@ -12,11 +12,13 @@ describe('EmployeeService', () => {
   let findByEmailStub: sinon.SinonStub;
   let createStub: sinon.SinonStub;
   let findByTitleStub: sinon.SinonStub;
+  let findAllStub: sinon.SinonStub;
 
   beforeEach(() => {
     findByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     createStub = sinon.stub(EmployeeRepository, 'create');
     findByTitleStub = sinon.stub(RoleRepository, 'findByTitle');
+    findAllStub = sinon.stub(EmployeeRepository, 'findAll');
   });
 
   afterEach(() => {
@@ -99,11 +101,39 @@ describe('EmployeeService', () => {
       imageUrl: 'http://example.com/john.jpg',
     };
 
-    await expect(
-      EmployeeService.signIn(body)
-    ).to.be.rejectedWith(Error, 'Role not found');
+    await expect(EmployeeService.signIn(body)).to.be.rejectedWith(Error, 'Role not found');
 
     expect(findByTitleStub.calledOnceWith(SupportedRoles.WITHOUT_ROLE)).to.be.true;
     expect(createStub.called).to.be.false;
+  });
+
+  it('should fetch all employees in an array of data', async () => {
+    const employees = [
+      {
+        id: randomUUID(),
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'joe.doe@email.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      },
+      {
+        id: randomUUID(),
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@email.com',
+        imageUrl: 'http://example.com/jane.jpg',
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      },
+    ];
+
+    findAllStub.resolves(employees);
+
+    const result = await EmployeeService.getAllEmployees();
+
+    expect(result).to.eql(employees);
+    expect(findAllStub.calledOnce).to.be.true;
   });
 });
