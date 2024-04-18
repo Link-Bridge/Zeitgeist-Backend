@@ -26,7 +26,19 @@ export enum TaskStatus {
   DEFAULT = '-',
 }
 
-export enum AllowedProjectStatus {}
+export enum ProjectStatus {
+  IN_QUOTATION = 'IN QUOTATION',
+  ACCEPTED = 'ACCEPTED',
+  NOT_STARTED = 'NOT STARTED',
+  IN_PROCESS = 'IN PROCESS',
+  UNDER_REVISION = 'UNDER REVISION',
+  UNDER_REVISSION = 'UNDER REVISSION',
+  DELAYED = 'DELAYED',
+  POSTPONED = 'POSTPONED',
+  DONE = 'DONE',
+  CANCELLED = 'CANCELLED',
+}
 
+export enum AllowedProjectStatus {}
 
 export enum AllowedProjectCategory {}

@@ -5,28 +5,6 @@ import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-m
 
 const RESOURCE_NAME = 'Project';
 
-<<<<<<< HEAD
-async function findProjectStatusById(id: string) {
-  try {
-    const data = await Prisma.project.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        status: true,
-      },
-    });
-
-    if (!data) {
-      throw new NotFoundError(`${RESOURCE_NAME} status`);
-    }
-
-    return data;
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
-  }
-}
-
 async function findById(id: string): Promise<Project> {
   try {
     let data = await Prisma.project.findUnique({
@@ -37,25 +15,6 @@ async function findById(id: string): Promise<Project> {
 
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
-=======
-async function findById (id: string) : Promise<Project> {
-    try {
-        let data = await Prisma.project.findUnique({
-            where: {
-                id:id,
-            },
-            
-        });
-        
-        if (!data){
-            throw new NotFoundError(RESOURCE_NAME);
-        }
-        
-        return mapProjectEntityFromDbModel(data);
-        
-    } catch (error: unknown) {
-        throw new Error(`${RESOURCE_NAME} repository error`);
->>>>>>> 873123e6598fedc1bf74d5bcd75875327a31935d
     }
 
     return mapProjectEntityFromDbModel(data);
