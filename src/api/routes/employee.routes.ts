@@ -4,7 +4,6 @@ import { checkAuthToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.post('/create', checkAuthToken, EmployeeController.createUser);
-router.get('/exists/:email', checkAuthToken, EmployeeController.userExists);
+router.post('/signup', checkAuthToken, EmployeeController.userExists);
 
 export { router as EmployeeRouter };

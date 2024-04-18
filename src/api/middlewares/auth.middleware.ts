@@ -20,7 +20,7 @@ export const checkAuthToken = (req: Request, res: Response, next: NextFunction) 
     .auth()
     .verifyIdToken(token)
     .then(decodedToken => {
-      req.body.auth = decodedToken.email;
+      req.body.auth = decodedToken;
       next();
     })
     .catch(() => {

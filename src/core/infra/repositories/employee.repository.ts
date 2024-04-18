@@ -37,21 +37,21 @@ async function findById(id: string): Promise<EmployeeEntity> {
   }
 }
 
-async function findByEmail(email: string): Promise<EmployeeEntity> {
+async function findByEmail(email: string): Promise<EmployeeEntity | null> {
   try {
-    const data = await Prisma.employee.findUnique({
+    const data = await Prisma.employee.findFirst({
       where: {
-        email: email,
+        email,
       },
     });
 
     if (!data) {
-      throw new NotFoundError(RESOURCE_NAME);
+      return null;
     }
 
     return mapEmployeeEntityFromDbModel(data);
   } catch (error: unknown) {
-    throw new Error('Employee repository error');
+    throw new Error(`Failed to fetch employee by email: ${error}`);
   }
 }
 
@@ -65,13 +65,13 @@ async function existByEmail(email: string): Promise<boolean> {
 
     return !!data;
   } catch (error: unknown) {
-    throw new Error('Employee repository error');
+    throw new Error(`Failed to find employee by email: ${error}`);
   }
 }
 
 async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   try {
-    const createData = await Prisma.employee.create({
+    await Prisma.employee.create({
       data: {
         id: entity.id,
         first_name: entity.firstName,
@@ -85,13 +85,9 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
       },
     });
 
-    if (!createData) {
-      throw new Error('Failed to create employee');
-    }
-
     return entity;
-  } catch (error: unknown) {
-    throw new Error('Failed to create employee');
+  } catch (error: any) {
+    throw new Error(`Failed to create employee: ${error.message}`);
   }
 }
 
