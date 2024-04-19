@@ -5,7 +5,6 @@
  * @param firstName: string
  * @param lastName: string
  * @param email: string
- * @param phoneNumber: string
  * @param imageUrl: string
  * @param createdAt: Date
  * @param updatedAt: Date
@@ -38,11 +37,6 @@ export interface EmployeeEntity {
    * @param email string: The email of the employee.
    */
   email: string;
-
-  /**
-   * @param phoneNumber string: The phone number of the employee.
-   */
-  phoneNumber?: string;
 
   /**
    * @param imageUrl string: The image url of the employee.

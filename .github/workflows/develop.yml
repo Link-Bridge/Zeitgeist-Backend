@@ -46,3 +46,4 @@ jobs:
           fi
         env:
           CI: true
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}

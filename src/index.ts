@@ -14,10 +14,12 @@ const app: Express = express();
 const HOST: string = process.env[EnvConfigKeys.HOST] || 'localhost';
 const PORT: number = process.env[EnvConfigKeys.PORT] ? parseInt(process.env[EnvConfigKeys.PORT]) : 4000;
 
+const CLIENT_URL = process.env[EnvConfigKeys.CLIENT_URL];
+
 // CORS middleware
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: CLIENT_URL,
   })
 );
 

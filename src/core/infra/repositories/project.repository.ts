@@ -12,8 +12,14 @@ const RESOURCE_NAME = 'Project info';
  */
 
 async function findAll(): Promise<ProjectEntity[]> {
-  const data = await Prisma.project.findMany();
-  return data.map(mapProjectEntityFromDbModel);
+  try {
+    const data = await Prisma.project.findMany();
+    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return data.map(mapProjectEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
 }
 
 async function findProjectStatusById(id: string) {
