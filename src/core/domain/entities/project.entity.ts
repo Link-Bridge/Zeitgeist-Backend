@@ -25,7 +25,7 @@
  *
  */
 
-export interface Project {
+export interface ProjectEntity {
   /**
    * @param id: string - Identificador único del proyecto
    */
@@ -39,12 +39,12 @@ export interface Project {
   /**
    * @param matter: string - Nombre del proyecto
    */
-  matter?: string | null;
+  matter?: string;
 
   /**
    * @param description: string - Descripción del proyecto
    */
-  description?: string | null;
+  description?: string;
 
   /**
    * @param status: string - Estatus del proyecto
@@ -54,7 +54,7 @@ export interface Project {
   /**
    * @param category: string - Categoría del proyecto
    */
-  category?: string | null;
+  category?: string;
 
   /**
    * @param startDate: Date - Fecha de inicio del proyecto
@@ -69,7 +69,7 @@ export interface Project {
   /**
    * @param totalHours: Number - Total de horas trabajadas en el proyecto
    */
-  totalHours?: Number | null;
+  totalHours?: Number;
 
   /**
    * @param periodicity: string - Periodcidad del proyecto

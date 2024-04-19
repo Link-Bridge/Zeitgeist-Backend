@@ -1,38 +1,43 @@
 import { randomUUID } from 'crypto';
-import { CreateProjectRequest } from '../../../api/controllers/project.controller';
-import { mapProjectEntityFromDbModel } from '../../infra/mappers/project-entity-from-db-model-mapper';
+import { ProjectEntity } from '../../domain/entities/project.entity';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 export interface CreateProjectData {
-  area: string;
-  category: string;
-  description: string | null;
-  end_date: Date | null;
-  id: string;
-  id_company: string;
-  is_chargeable: boolean;
-  matter: string | null;
   name: string;
+  matter: string | null;
+  description: string | null;
+  area: string;
+  status: string;
+  category: string;
+  endDate: Date | null;
+  idCompany: string;
+  isChargeable: boolean;
   periodicity: string | null;
-  start_date: Date;
+  startDate: Date;
 }
 
-async function createProject(data: CreateProjectRequest) {
+async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
   const newProject = await ProjectRepository.createProject({
-    area: data.area,
-    category: data.category,
-    description: data.description ?? null,
-    end_date: data.endDate ?? null,
     id: randomUUID(),
-    id_company: data.client,
-    is_chargeable: data.chargable,
-    matter: data.matter ?? null,
-    name: data.projectName,
-    periodicity: data.periodic ?? null,
-    start_date: data.startDate,
+    name: data.name,
+    matter: data.matter ? data.matter : undefined,
+    description: data.description ? data.description : undefined,
+    area: data.area,
+    status: data.status,
+    category: data.category,
+    endDate: data.endDate,
+    idCompany: data.idCompany,
+    isChargeable: data.isChargeable ? data.isChargeable : undefined,
+    periodicity: data.periodicity,
+    startDate: data.startDate,
+    createdAt: new Date(),
   });
 
-  return mapProjectEntityFromDbModel(newProject);
+  return newProject;
 }
 
-export const ProjectService = { createProject };
+async function getAllProjects(): Promise<ProjectEntity[]> {
+  return await ProjectRepository.findAll();
+}
+
+export const ProjectService = { createProject, getAllProjects };

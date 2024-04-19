@@ -1,7 +1,7 @@
 import { project } from '@prisma/client';
-import { Project } from '../../domain/entities/project.entity';
+import { ProjectEntity } from '../../domain/entities/project.entity';
 
-export function mapProjectEntityFromDbModel(model: project): Project {
+export function mapProjectEntityFromDbModel(model: project): ProjectEntity {
   return {
     id: model.id,
     name: model.name,
