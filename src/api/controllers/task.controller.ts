@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.services';
+import { BareboneTask } from '../../core/domain/entities/task.entity';
 import { TaskStatus } from '../../utils/enums';
 
 const taskStatusSchema = z.enum([
@@ -25,6 +26,24 @@ const taskSchema = z.object({
 });
 
 /**
+ * Validates the data received through the POST method
+ *
+ * @param data:
+ * @returns
+ */
+function validateTaskDate(data: BareboneTask) {
+  const bodyTask = taskSchema.parse(data);
+  const status = data.status as TaskStatus;
+
+  return {
+    ...bodyTask,
+    status: status,
+    workedHours: bodyTask.workedHours || 0.0,
+    dueDate: bodyTask.dueDate,
+  };
+}
+
+/**
  * Sends a request to the service to create a new task with the given data.
  *
  * @param req: Request - The request object.
@@ -37,14 +56,8 @@ const taskSchema = z.object({
  */
 async function createTask(req: Request, res: Response) {
   try {
-    const bodyTask = taskSchema.parse(req.body);
-    const status: TaskStatus = bodyTask.status as TaskStatus;
-    const payloadTask = await TaskService.createTask({
-      ...bodyTask,
-      status,
-      workedHours: bodyTask.workedHours || 0.0,
-      dueDate: bodyTask.dueDate,
-    });
+    const validateTaskData = validateTaskDate(req.body);
+    const payloadTask = await TaskService.createTask(validateTaskData);
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
