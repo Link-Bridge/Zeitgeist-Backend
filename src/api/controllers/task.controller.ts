@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.services';
@@ -20,10 +19,8 @@ const taskSchema = z.object({
   status: taskStatusSchema,
   waitingFor: z.string().min(1).max(70),
   startDate: z.coerce.date(),
-  dueDate: z.coerce.date().optional(),
+  dueDate: z.coerce.date(),
   workedHours: z.number().int().positive().optional(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date().optional(),
   idProject: z.string().uuid(),
 });
 
@@ -42,20 +39,18 @@ async function createTask(req: Request, res: Response) {
   try {
     const bodyTask = taskSchema.parse(req.body);
     const status: TaskStatus = bodyTask.status as TaskStatus;
-    const createdTask = await TaskService.createTask({
+    const payloadTask = await TaskService.createTask({
       ...bodyTask,
-      id: randomUUID(),
       status,
-      endDate: bodyTask.dueDate,
+      workedHours: bodyTask.workedHours || 0.0,
+      dueDate: bodyTask.dueDate,
     });
 
-    console.log(createdTask);
-
-    if (!createTask) {
+    if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
     }
 
-    res.status(201).json(createdTask);
+    res.status(201).json(payloadTask);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

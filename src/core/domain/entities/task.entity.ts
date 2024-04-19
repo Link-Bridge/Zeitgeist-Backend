@@ -81,3 +81,13 @@ export interface Task {
   idProject: string;
 }
 
+export interface BareboneTask {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  waitingFor: string;
+  startDate: Date;
+  dueDate: Date | null;
+  workedHours: number | null;
+  idProject: string;
+}
