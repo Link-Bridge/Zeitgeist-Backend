@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../../../utils/enums/index';
+
 /**
  * @brief Esta clase es para establecer la estructura de la entidad proyecto
  *
@@ -5,7 +7,7 @@
  * @param name: string
  * @param matter: string
  * @param description: string
- * @param status: string
+ * @param status: ProjectStatus
  * @param category: string
  * @param startDate: Date
  * @param endDate: Date
@@ -36,7 +38,6 @@ export interface ProjectEntity {
   endDate?: Date | null;
   totalHours?: Decimal | null;
   periodicity?: string | null;
-  perodicity?: string | null;
   isChargeable?: boolean | null;
   area?: string;
   createdAt: Date;

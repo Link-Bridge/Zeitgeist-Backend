@@ -56,7 +56,6 @@ model employee {
   first_name            String                  @db.VarChar(70)
   last_name             String                  @db.VarChar(70)
   email                 String                  @unique @db.VarChar(180)
-  phone_number          String?                 @unique @db.VarChar(15)
   image_url             String?                 @db.VarChar(255)
   created_at            DateTime                @default(now()) @db.Timestamp(6)
   updated_at            DateTime?               @db.Timestamp(6)
@@ -217,7 +216,7 @@ model project {
 
 model role {
   id         String     @id @db.Uuid
-  title      String     @default("Sin rol") @db.VarChar(256)
+  title      String     @default("SIN_ROL") @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime?  @db.Timestamp(6)
   employee   employee[]
