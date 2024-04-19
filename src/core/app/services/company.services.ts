@@ -1,8 +1,8 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
-import { SupportedDepartments } from '../../../utils/enums';
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -11,8 +11,10 @@ import { SupportedDepartments } from '../../../utils/enums';
 
 async function findAll(): Promise<CompanyEntity[]> {
   try {
-    const companyRecords = await CompanyRepository.findAll();
     const projectRecords = await ProjectRepository.findAll();
+    const companyRecords = await CompanyRepository.findAll();
+
+    if (!companyRecords || !projectRecords) throw new Error('No companies or projects found');
 
     companyRecords.map(company => {
       company.totalProjects ??= 0;
@@ -21,6 +23,7 @@ async function findAll(): Promise<CompanyEntity[]> {
       company.chargeableHours ??= new Decimal(0);
 
       projectRecords.forEach(project => {
+
         if (project.idCompany == company.id)
           // Add to total projects
           company.totalProjects! += 1;
@@ -42,7 +45,7 @@ async function findAll(): Promise<CompanyEntity[]> {
     return companyRecords;
   } catch (error: any) {
     console.log(error);
-    throw new Error('an unexpected error occurred');
+    throw new Error(error.message);
   }
 }
 

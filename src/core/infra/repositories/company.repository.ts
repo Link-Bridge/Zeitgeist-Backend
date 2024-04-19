@@ -25,8 +25,8 @@ async function findAll(): Promise<CompanyEntity[]> {
     }
 
     return data.map(mapCompanyEntityFromDbModel);
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
   }
 }
 
