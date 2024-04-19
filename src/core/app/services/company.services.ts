@@ -3,7 +3,6 @@ import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
-import { SupportedDepartments } from '../../../utils/enums';
 
 /**
  * Creates a new company
