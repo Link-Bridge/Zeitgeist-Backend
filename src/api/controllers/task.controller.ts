@@ -21,7 +21,7 @@ const taskSchema = z.object({
   waitingFor: z.string().min(1).max(70),
   startDate: z.coerce.date(),
   dueDate: z.coerce.date(),
-  workedHours: z.number().int().positive().optional(),
+  workedHours: z.string().optional(),
   idProject: z.string().uuid(),
 });
 
@@ -38,7 +38,7 @@ function validateTaskDate(data: BareboneTask) {
   return {
     ...bodyTask,
     status: status,
-    workedHours: bodyTask.workedHours || 0.0,
+    workedHours: Number(bodyTask.workedHours) || 0.0,
     dueDate: bodyTask.dueDate,
   };
 }
