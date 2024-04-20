@@ -59,6 +59,8 @@ async function createTask(req: Request, res: Response) {
     const validateTaskData = validateTaskDate(req.body);
     const payloadTask = await TaskService.createTask(validateTaskData);
 
+    console.log(payloadTask);
+
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
     }
