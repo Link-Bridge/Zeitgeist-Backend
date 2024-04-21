@@ -1,21 +1,45 @@
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
-import sinon, { SinonStubbedInstance } from 'sinon';
+import sinon from 'sinon';
 import { TaskStatus } from '../../../../utils/enums';
-import { Task } from '../../../domain/entities/task.entity';
+import { BareboneTask, Task } from '../../../domain/entities/task.entity';
+import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.services';
 
 describe('TaskService', () => {
-  let taskService: typeof TaskService;
-  let taskRepository: SinonStubbedInstance<typeof TaskRepository>;
+  let taskRepositoryStub: sinon.SinonStub;
+  let projectRepositoryStub: sinon.SinonStub;
+
+  const projectID = randomUUID();
+
+  const task: BareboneTask = {
+    title: 'ABC Company Anual SAT Report',
+    description: 'This is the anual SAT report for the ABC Company',
+    status: TaskStatus.IN_PROGRESS,
+    startDate: new Date('2022-01-01'),
+    dueDate: new Date('2022-12-31'),
+    waitingFor: 'Client',
+    workedHours: 20,
+    idProject: projectID,
+  };
+
+  const createdTask: Task = {
+    id: randomUUID(),
+    title: 'ABC Company Anual SAT Report',
+    description: 'This is the anual SAT report for the ABC Company',
+    status: TaskStatus.IN_PROGRESS,
+    startDate: new Date('2022-01-01'),
+    endDate: new Date('2022-12-31'),
+    waitingFor: 'Client',
+    workedHours: 20,
+    createdAt: new Date(),
+    idProject: projectID,
+  };
 
   beforeEach(() => {
-    taskRepository = sinon.stub(TaskRepository);
-    taskService = {
-      ...TaskService,
-      createTask: taskRepository.createTask,
-    }
+    taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
+    projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
   });
 
   afterEach(() => {
@@ -23,69 +47,48 @@ describe('TaskService', () => {
   });
 
   describe('createTask', () => {
-    it('Should create a new task with the given data', async () => {
-      const newTask: Task = {
-        id: randomUUID(),
-        title: 'SAT Verification for ABC Cmpany',
-        description: 'Verify the SAT of the ABC Company',
-        status: TaskStatus.IN_PROGRESS,
-        waitingFor: 'John Doe',
-        startDate: new Date(),
-        workedHours: 20,
-        createdAt: new Date(),
-        idProject: randomUUID(),
-      };
+    it('Should create missing attributes and send them to the repository', async () => {
+      taskRepositoryStub.returns(createdTask);
+      projectRepositoryStub.resolves({ id: projectID });
 
-      taskRepository.createTask.returns(Promise.resolve(newTask));
-      const task = await taskService.createTask(newTask);
+      const result = await TaskService.createTask(task);
 
-      expect(task).to.be.deep.equal(newTask);
-      expect(taskRepository.createTask.calledOnce).to.be.true;
-      expect(taskRepository.createTask.calledWith(newTask)).to.be.true;
+      expect(result).to.deep.equal(createdTask);
+      expect(taskRepositoryStub.calledOnce).to.be.true;
     });
 
-    it("Should throw an error if the task couldn't be created", async () => {
-      const newTask: Task = {
-        id: randomUUID(),
-        title: 'SAT Verification for ABC Cmpany',
-        description: 'Verify the SAT of the ABC Company',
-        status: TaskStatus.IN_PROGRESS,
-        waitingFor: 'John Doe',
-        startDate: new Date(),
-        workedHours: 20,
-        createdAt: new Date(),
-        idProject: randomUUID(),
-      };
-
-      taskRepository.createTask.throws(new Error('Error creating task'));
+    it('Should not create a new task if the project does not exist', async () => {
+      projectRepositoryStub.resolves({});
 
       try {
-        await taskService.createTask(newTask);
+        await TaskService.createTask(task);
       } catch (error: any) {
-        expect(error).to.be.instanceOf(Error);
-        expect(error.message).to.be.equal('Error creating task');
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Project does not exist');
       }
+
     });
 
-    it("Should return null if the task already exists", async () => {
-      const newTask: Task = {
-        id: randomUUID(),
-        title: 'SAT Verification for ABC Cmpany',
-        description: 'Verify the SAT of the ABC Company',
-        status: TaskStatus.IN_PROGRESS,
-        waitingFor: 'John Doe',
-        startDate: new Date(),
-        workedHours: 20,
-        createdAt: new Date(),
-        idProject: randomUUID(),
-      };
+    it('Should return null if the task already exists', async () => {
+      taskRepositoryStub.returns(null);
+      projectRepositoryStub.resolves({ id: projectID });
 
-      taskRepository.createTask.returns(Promise.resolve(null));
-      const task = await taskService.createTask(newTask);
+      const result = await TaskService.createTask(task);
 
-      expect(task).to.be.null;
-      expect(taskRepository.createTask.calledOnce).to.be.true;
-      expect(taskRepository.createTask.calledWith(newTask)).to.be.true;
-    })
+      expect(result).to.be.null;
+      expect(taskRepositoryStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw an error if the task could not be created', async () => {
+      taskRepositoryStub.withArgs(task).throws(new Error('Could not create task'));
+      projectRepositoryStub.resolves({ id: projectID });
+
+      try {
+        await TaskService.createTask(task);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Could not create task');
+      }
+    });
   });
 });
