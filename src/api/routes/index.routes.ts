@@ -13,6 +13,8 @@ baseRouter.use('/dummy', DummyRouter);
 baseRouter.use(`${V1_PATH}/employee`, EmployeeRouter);
 //Project
 baseRouter.use(`${V1_PATH}/project`, ProjectRouter);
+//Company
+baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
 // Health check
 baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
 
