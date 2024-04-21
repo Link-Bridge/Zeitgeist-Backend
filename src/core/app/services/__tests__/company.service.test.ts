@@ -12,10 +12,12 @@ chai.use(chaiAsPromised);
 describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
   let findAllProjectsStub: sinon.SinonStub;
+  let createCompanySub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
+    createCompanySub = sinon.stub(CompanyRepository, 'create');
   });
 
   afterEach(() => {
@@ -35,8 +37,8 @@ describe('CompanyService', () => {
         id: idCompany1,
         name: 'Zeitgeist',
         email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -47,8 +49,8 @@ describe('CompanyService', () => {
         id: idCompany2,
         name: 'Microsoft',
         email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -150,8 +152,8 @@ describe('CompanyService', () => {
         id: idCompany1,
         name: 'Zeitgeist',
         email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -162,8 +164,8 @@ describe('CompanyService', () => {
         id: idCompany2,
         name: 'Microsoft',
         email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -265,8 +267,8 @@ describe('CompanyService', () => {
         id: idCompany1,
         name: 'Zeitgeist',
         email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -277,8 +279,8 @@ describe('CompanyService', () => {
         id: idCompany2,
         name: 'Microsoft',
         email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
         archived: false,
         createdAt: new Date(),
         updatedAt: null,
@@ -369,5 +371,32 @@ describe('CompanyService', () => {
     expect(res[0].totalProjects).to.eql(4);
   });
 
-  it("should create a company")
+  it("should create a new company", async () => {
+    const newCompany = {
+      id: '',
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumber: '1234567890',
+      landlinePhone: '0987654321',
+      archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    }
+
+    findAllProjectsStub.resolves(null)
+    findAllCompaniesStub.resolves(null)
+    createCompanySub.resolves(newCompany)
+
+    const res = await CompanyService.create(newCompany)
+
+    expect(res).not.to.be.null
+    expect(res?.id).not.to.be.null
+    expect(res?.name).to.eql('Zeitgeist')
+    expect(res?.email).to.eql('info@zeitgeist.mx')
+    expect(res?.phoneNumber).to.eql('1234567890')
+    expect(res?.landlinePhone).to.eql('0987654321')
+    expect(res?.archived).to.eql(false)
+  })
 });
