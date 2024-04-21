@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CompanyService } from '../../core/app/services/company.services';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema } from '../validation/companyValidation';
+import { z } from 'zod'
 
 /**
  * Finds all companies
@@ -33,25 +34,19 @@ async function getAll(req: Request, res: Response) {
 async function create(req: Request, res: Response) {
   try {
     const company: CompanyEntity = req.body.company;
-    console.log(company);
     if (!company) throw new Error('Missing company data in body');
 
     companySchema.parse(company);
 
     const data = await CompanyService.create(company);
-    res.status(200).json({
-      status: 200,
-      message: 'Created',
-      data: {
-        id: data,
-      },
-    });
+    res.status(200).json(data);
   } catch (error: any) {
-    console.log(error.message);
-    res.status(500).json({
-      status: 500,
-      message: error.message,
-    });
+    
+    if(error instanceof z.ZodError) {
+      return res.status(500).json({error: error.issues});
+    }
+
+    res.status(500).json({error: error.message});
   }
 }
 

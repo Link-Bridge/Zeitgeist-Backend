@@ -12,13 +12,12 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
  * @throws {Error} if an unexpected error occurs
  */
 
-async function create(company: CompanyEntity): Promise<string | null> {
+async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
   try {
     const res = await CompanyRepository.create(company)
     return res
   } catch (error: any) {
-    console.log(error);
-    throw new Error('an unexpected error occurred');
+    throw new Error(error.message);
   }
 }
 

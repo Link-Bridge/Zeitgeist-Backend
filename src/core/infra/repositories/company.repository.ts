@@ -37,22 +37,30 @@ async function findAll(): Promise<CompanyEntity[]> {
  * @returns {null} if an error occured
  */
 
-async function create(company: CompanyEntity): Promise<string | null> {
-  const res = await Prisma.company.create({
-    data: {
-      id: randomUUID(),
-      name: company.name,
-      email: company.email,
-      phone_number: company.phoneNumber,
-      landline_phone: company.landlinePhone,
-      archived: false,
-      id_company_direct_contact: company.idCompanyDirectContact,
-      id_form: company.idForm,
-      created_at: new Date(),
-      updated_at: null,
-    },
-  });
-  return res.id
+async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
+  try {
+    const res = await Prisma.company.create({
+      data: {
+        id: randomUUID(),
+        name: company.name,
+        email: company.email,
+        phone_number: company.phoneNumber,
+        landline_phone: company.landlinePhone,
+        archived: false,
+        id_company_direct_contact: company.idCompanyDirectContact,
+        id_form: company.idForm,
+        created_at: new Date(),
+        updated_at: null,
+      },
+    });
+    return mapCompanyEntityFromDbModel(res);
+  } catch (error: any) {
+    // P2002 = Prisma Error code for unique constraints
+    if(error.code == "P2002" && error.meta.target[0] == 'email')
+      throw new Error("Email already registered")
+
+    throw new Error(error)
+  }
 }
 
 async function findById(id: string): Promise<CompanyEntity> {
