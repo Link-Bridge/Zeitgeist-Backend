@@ -3,6 +3,10 @@ import { SupportedDepartments } from '../../../utils/enums';
 import { DepartmentEntity } from '../../domain/entities/department.entity';
 
 function supportedDepartmentsFromString(maybeSupportedDepartment: string): SupportedDepartments {
+  if (maybeSupportedDepartment.toUpperCase() === SupportedDepartments.WITHOUT_DEPARTMENT) {
+    return SupportedDepartments.WITHOUT_DEPARTMENT;
+  }
+
   if (maybeSupportedDepartment.toUpperCase() === SupportedDepartments.CONTABLE) {
     return SupportedDepartments.CONTABLE;
   }
@@ -22,3 +26,4 @@ export function mapDepartmentEntityFromDbModelToDbModel(department: department):
     updatedAt: department.updated_at,
   };
 }
+

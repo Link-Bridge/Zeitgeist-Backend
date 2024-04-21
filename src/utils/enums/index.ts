@@ -12,6 +12,7 @@ export enum SupportedRoles {
 }
 
 export enum SupportedDepartments {
+  WITHOUT_DEPARTMENT = 'SIN_DEPARTAMENTO',
   LEGAL = 'LEGAL',
   CONTABLE = 'CONTABLE',
 }
