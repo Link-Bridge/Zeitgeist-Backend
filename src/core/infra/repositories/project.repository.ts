@@ -5,7 +5,7 @@ import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-m
 
 const RESOURCE_NAME = 'Project';
 
-async function findClientById(clientId: string): Promise<Project[]> {
+async function findProjetsByClientId(clientId: string): Promise<Project[]> {
   try {
     let data = await Prisma.project.findMany({
       where: {
@@ -40,4 +40,4 @@ async function findById(id: string): Promise<Project> {
   }
 }
 
-export const ProjectRepository = { findById, findClientById };
+export const ProjectRepository = { findById, findProjetsByClientId };

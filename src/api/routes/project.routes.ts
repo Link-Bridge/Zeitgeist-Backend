@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/report/:id', ProjectController.getReportData);
 
-router.get('/:id', ProjectController.getProjectsClient);
+router.get('/:clientId', ProjectController.getProjectsClient);
 
 export { router as ProjectRouter };
