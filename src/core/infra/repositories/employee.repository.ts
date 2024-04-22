@@ -91,4 +91,21 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail };
+async function setToken(email: string, token: string): Promise<boolean> {
+  try {
+    const data = await Prisma.employee.update({
+      where: {
+        email: email,
+      },
+      data: {
+        device_token: token,
+      }
+    });
+
+    return !!data;
+  } catch (error: unknown) {
+    throw new Error(`Failed to assign user's DeviceToken: ${error}`);
+  }
+}
+
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail,  setToken};

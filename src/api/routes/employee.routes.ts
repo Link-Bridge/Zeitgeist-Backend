@@ -5,6 +5,7 @@ import { checkAuthToken } from '../middlewares/auth.middleware';
 const router = Router();
 
 router.post('/signup', checkAuthToken, EmployeeController.userExists);
+router.post('/deviceToken', EmployeeController.sendToken);
 router.get('/', checkAuthToken, EmployeeController.getAllEmployees);
 
 export { router as EmployeeRouter };

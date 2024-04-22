@@ -45,4 +45,25 @@ async function getAllEmployees(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { userExists, getAllEmployees };
+const userDevToken = z.object({
+  email: z.string().email(),
+  deviceToken: z.string(),
+});
+
+
+async function sendToken(req:Request, res:Response) {
+  try {
+    const data = {
+      email: req.body.email, 
+      deviceToken: req.headers.deviceToken
+    }
+    const parsed = userDevToken.parse(data)
+    const deviceToken = await EmployeeService.sendToken(parsed);
+    
+    res.status(200).json({ message: 'Device Token registered successfully.' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export const EmployeeController = { userExists, getAllEmployees, sendToken };
