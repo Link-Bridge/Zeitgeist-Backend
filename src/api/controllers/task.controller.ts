@@ -5,13 +5,14 @@ import { BareboneTask } from '../../core/domain/entities/task.entity';
 import { TaskStatus } from '../../utils/enums';
 
 const taskStatusSchema = z.enum([
-  'NOT STARTED',
-  'IN PROGRESS',
-  'UNDER REVISSION',
-  'DELAYED',
-  'POSTPONED',
-  'DONE',
-  'CANCELLED',
+  TaskStatus.NOT_STARTED,
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.UNDER_REVISSION,
+  TaskStatus.DELAYED,
+  TaskStatus.POSTPONED,
+  TaskStatus.DONE,
+  TaskStatus.CANCELLED,
+  TaskStatus.DEFAULT,
 ]);
 
 const taskSchema = z.object({
@@ -58,8 +59,6 @@ async function createTask(req: Request, res: Response) {
   try {
     const validateTaskData = validateTaskDate(req.body);
     const payloadTask = await TaskService.createTask(validateTaskData);
-
-    console.log(payloadTask);
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });

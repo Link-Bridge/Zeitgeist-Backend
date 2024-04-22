@@ -3,10 +3,6 @@ import { BareboneTask, Task } from '../../domain/entities/task.entity';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 
-async function isProjectIDValid(projectID: string): Promise<boolean> {
-  return (await ProjectRepository.findById(projectID)) !== null;
-}
-
 /**
  * Creates a new task using the repository.
  *
@@ -17,8 +13,8 @@ async function isProjectIDValid(projectID: string): Promise<boolean> {
  */
 async function createTask(newTask: BareboneTask): Promise<Task | null> {
   try {
-    if (!(await isProjectIDValid(newTask.idProject))) {
-      throw new Error('Project does not exist');
+    if ((await ProjectRepository.findById(newTask.idProject)) === null) {
+      throw new Error('Project ID is not valid');
     }
 
     const task: Task = {
@@ -36,7 +32,6 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
 
     return await TaskRepository.createTask(task);
   } catch (error: unknown) {
-    console.error(`Error creating task at service level: ${error}`);
     throw new Error('Error creating task');
   }
 }

@@ -38,6 +38,7 @@ export enum ProjectStatus {
   POSTPONED = 'POSTPONED',
   DONE = 'DONE',
   CANCELLED = 'CANCELLED',
+  DEFAULT = '-',
 }
 
 export enum AllowedProjectStatus {}
