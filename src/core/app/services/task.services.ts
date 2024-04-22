@@ -21,7 +21,6 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Project does not exist');
     }
 
-
     const task: Task = {
       id: randomUUID(),
       title: newTask.title,
