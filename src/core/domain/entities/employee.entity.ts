@@ -39,11 +39,6 @@ export interface EmployeeEntity {
   email: string;
 
   /**
-   * @param phoneNumber string: The phone number of the employee.
-   */
-  phoneNumber?: string;
-
-  /**
    * @param imageUrl string: The image url of the employee.
    */
   imageUrl?: string;
