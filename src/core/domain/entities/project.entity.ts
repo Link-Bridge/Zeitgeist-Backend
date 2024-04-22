@@ -1,4 +1,4 @@
-import { ProjectStatus } from '../../../utils/enums/index';
+import { Decimal } from "@prisma/client/runtime/library";
 
 /**
  * @brief Esta clase es para establecer la estructura de la entidad proyecto
@@ -25,7 +25,6 @@ import { ProjectStatus } from '../../../utils/enums/index';
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-import { Decimal } from "@prisma/client/runtime/library";
 
 export interface ProjectEntity {
   id: string;
