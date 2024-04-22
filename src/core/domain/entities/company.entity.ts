@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 /**
- * @brief Esta clase es para establecer la estructura de la entidad company
+ * @brief This class is used to define the company entity
  *
  * @param id: string
  * @param name: string
@@ -19,8 +19,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  *
  * @return void
  *
- * @description La estructura basicamente es lo que esta en el MER,
- * se tiene la idea usar tipos de datos personalizados, como UUID.
+ * @description The structure is based in the MER
  */
 
 export interface CompanyEntity {
