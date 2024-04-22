@@ -1,4 +1,5 @@
 import { project } from "@prisma/client";
+import { ProjectStatus } from '../../../utils/enums';
 import { Project } from "../../domain/entities/project.entity";
 
 export function mapProjectEntityFromDbModel(model: project): Project {
@@ -7,7 +8,7 @@ export function mapProjectEntityFromDbModel(model: project): Project {
         name: model.name,
         matter: model.matter ? model.matter : undefined,
         description: model.description ? model.description : undefined,
-        status: model.status,
+        status: model.status as ProjectStatus,
         category: model.category,
         startDate: model.start_date,
         endDate: model.end_date ? model.end_date : undefined,
@@ -20,4 +21,3 @@ export function mapProjectEntityFromDbModel(model: project): Project {
         idCompany: model.id_company
     };
 }
-
