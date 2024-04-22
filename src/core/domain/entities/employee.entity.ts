@@ -14,7 +14,7 @@
  * @return void
  *
  * @description La estructura contiene los datos del esquema de Employee.
- * 
+ *
  */
 
 export interface EmployeeEntity {
