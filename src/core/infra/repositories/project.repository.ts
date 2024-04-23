@@ -64,31 +64,21 @@ async function findById(id: string): Promise<ProjectEntity> {
 /**
  * Finds all projects in the database form a unique company
  * @version 1.1.0
- * @returns {Promise<ProjectEntity[]>} a promise that resolves an array of project entities ordering the projects with status done at the end
+ * @returns {Promise<ProjectEntity[]>} a promise that resolves an array of project entities ordering the projects with status done at the end.
  */
 
 async function findProjetsByClientId(clientId: string): Promise<ProjectEntity[]> {
   try {
-    const data = await Prisma.project.findMany({
+    let data = await Prisma.project.findMany({
       where: {
         id_company: clientId,
-      },
-      orderBy: {
-        status: 'asc',
       },
     });
 
     if (!data) {
       throw new Error(`${RESOURCE_NAME} repository error`);
     }
-
-    const sortedData = data.sort((a, b) => {
-      if (a.status === 'Done' && b.status !== 'Done') return 1;
-      if (a.status !== 'Done' && b.status === 'Done') return -1;
-      return 0;
-    });
-
-    return sortedData.map(mapProjectEntityFromDbModel);
+    return data.map(mapProjectEntityFromDbModel);
   } catch (error: any) {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
