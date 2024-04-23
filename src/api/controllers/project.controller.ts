@@ -18,6 +18,15 @@ async function getReportData(req: Request, res: Response) {
   }
 }
 
+/**
+ * @param {Request} req - The request object containing the clientID.
+ * @param {Response} res
+ *
+ * @returns {Promise<void>}
+ *
+ * @throws {Error}
+ */
+
 async function getProjectsClient(req: Request, res: Response) {
   try {
     const data = await ProjectService.findProjectsClient(req.params.clientId);
