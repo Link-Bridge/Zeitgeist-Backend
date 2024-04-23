@@ -1,14 +1,14 @@
-import { Request, Response, json } from 'express';
+import { Request, Response } from 'express';
+import * as z from 'zod';
 import { EmployeeService } from '../../core/app/services/employee.service';
 import { NotFoundError } from '../../core/errors/not-found.error';
-import * as z from 'zod'
 
 const authSchema = z.object({
   auth: z.object({
     name: z.string(),
     email: z.string().email(),
     picture: z.string().url(),
-  })
+  }),
 });
 
 async function userExists(req: Request, res: Response) {
@@ -32,17 +32,36 @@ async function userExists(req: Request, res: Response) {
 
 /**
  * Controller to get all employees
- * 
- * @param req 
- * @param res 
+ *
+ * @param req
+ * @param res
  */
 async function getAllEmployees(req: Request, res: Response) {
   try {
     const employees = await EmployeeService.getAllEmployees();
     res.status(200).json({ data: employees });
   } catch (error: any) {
+    console.error('Error: ', error);
     res.status(500).json({ message: 'Internal server error occurred.' });
   }
 }
 
-export const EmployeeController = { userExists, getAllEmployees };
+/**
+ * Controller to delete an employee
+ * @description
+ * @param req
+ * @param res
+ */
+
+async function deleteEmployee(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const employee = await EmployeeService.deleteEmployeeById(id);
+    res.status(200).json({ data: employee });
+  } catch (error: any) {
+    console.error('Error: ', error);
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export const EmployeeController = { userExists, getAllEmployees, deleteEmployee };

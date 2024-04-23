@@ -66,4 +66,25 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
   return await EmployeeRepository.findAll();
 }
 
-export const EmployeeService = { signIn, getAllEmployees };
+/**
+ * Function to delete an employee by id
+ */
+
+async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
+  try {
+      const employee = await EmployeeRepository.findById(id);
+      if (!employee) {
+          throw new Error('Employee not found');
+      }
+
+      return await EmployeeRepository.deleteEmployeeById(id);
+  } catch (error: unknown) {
+      console.error('Error: ', error);
+      throw new Error('An unexpected error occurred');
+  }
+}
+
+
+export const EmployeeService = { signIn, getAllEmployees, deleteEmployeeById };
+
+

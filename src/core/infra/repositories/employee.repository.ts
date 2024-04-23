@@ -37,6 +37,24 @@ async function findById(id: string): Promise<EmployeeEntity> {
   }
 }
 
+async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
+  try {
+    const data = await Prisma.employee.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapEmployeeEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
 async function findByEmail(email: string): Promise<EmployeeEntity | null> {
   try {
     const data = await Prisma.employee.findFirst({
@@ -91,4 +109,4 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail };
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, deleteEmployeeById };
