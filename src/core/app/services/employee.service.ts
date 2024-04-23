@@ -5,8 +5,19 @@ import { NotFoundError } from '../../errors/not-found.error';
 import { DepartmentRepository } from '../../infra/repositories/department.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
-import { SignInUserResponse } from '../interfaces/employee.interface';
+import { SignIn, SignInUserResponse } from '../interfaces/employee.interface';
 
+/**
+ * Function to parse the full name into first name and last name
+ * use the first two words as first name and the rest as last name
+ * if the full name has less than 2 words, the first word is the first name and the last name is empty
+ * if the full name has 2 words, the first word is the first name and the second word is the last name
+ * if the full name has 3 words, the first two words are the first name and the last word is the last name
+ * if the full name has more than 3 words, the first two words are the first name and the rest are the last name
+ *
+ * @param displayName
+ * @returns [firstName, lastName]
+ */
 function parseName(displayName: string) {
   const nameParts = displayName.trim().split(/\s+/);
   let firstName, lastName;
@@ -26,18 +37,13 @@ function parseName(displayName: string) {
 
   return [firstName, lastName];
 }
-export interface SignIn {
-  email: string;
-  fullName: string;
-  imageUrl: string;
-}
 
 /**
  * Function to create new Employee with Without Role and Without Department
- * 
- * @param email 
- * @param fullName 
- * @param imageUrl 
+ *
+ * @param email
+ * @param fullName
+ * @param imageUrl
  * @returns {EmployeeEntity}
  */
 async function createNewEmployee(email: string, fullName: string, imageUrl: string): Promise<EmployeeEntity> {
@@ -66,8 +72,8 @@ async function createNewEmployee(email: string, fullName: string, imageUrl: stri
 /**
  * Function to handle sing in. If the user is not found, it will create a new one with the provided data.
  * If the user is found, it will return the user data.
- * 
- * @param body 
+ *
+ * @param body
  * @returns {SignInUserResponse}
  */
 async function signIn(body: SignIn): Promise<SignInUserResponse> {
@@ -104,4 +110,24 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
   return await EmployeeRepository.findAll();
 }
 
-export const EmployeeService = { signIn, getAllEmployees };
+/**
+ * Function for finding the role of the employee by email, used in the middleware
+ *
+ * @param email
+ * @returns {SupportedRoles} - Role of the employee
+ */
+async function findRoleByEmail(email: string): Promise<SupportedRoles> {
+  const employee = await EmployeeRepository.findByEmail(email);
+  if (!employee) {
+    throw new NotFoundError(`Employee not found with email '${email}'`);
+  }
+
+  const role = await RoleRepository.findById(employee.idRole);
+  if (!role) {
+    throw new NotFoundError(`Role not found for employee '${employee.id}'`);
+  }
+
+  return role.title as SupportedRoles;
+}
+
+export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail };

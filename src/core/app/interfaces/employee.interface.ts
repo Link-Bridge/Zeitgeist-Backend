@@ -5,3 +5,9 @@ export interface SignInUserResponse {
   role: string;
   department: string;
 }
+
+export interface SignIn {
+  email: string;
+  fullName: string;
+  imageUrl: string;
+}
