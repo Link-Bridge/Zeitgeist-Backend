@@ -91,7 +91,16 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-async function setToken(email: string, token: string): Promise<boolean> {
+/**
+ * @brief Function that sets the token of an employee
+ *
+ * @param email: string
+ * @param token: string
+ * 
+ * @return Promise<boolean>. True if the token was saved successfully, false otherwise.
+ */
+
+async function saveToken(email: string, token: string): Promise<boolean> {
   try {
     const data = await Prisma.employee.update({
       where: {
@@ -108,4 +117,4 @@ async function setToken(email: string, token: string): Promise<boolean> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail,  setToken};
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail,  saveToken};

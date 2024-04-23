@@ -71,8 +71,18 @@ export interface userToken {
   deviceToken: string
 }
 
-async function sendToken(body: userToken) {
-  return await EmployeeRepository.setToken(body.email, body.deviceToken)
+/**
+ * @brief Function that saves the token of the employee
+ *
+ * @param body: userToken
+ */
+
+async function saveToken(body: userToken) {
+  try {
+    return await EmployeeRepository.saveToken(body.email, body.deviceToken)
+  } catch (error) {
+    console.error('Error saving token: ', error)
+  }
 }
 
-export const EmployeeService = { signIn, getAllEmployees, sendToken };
+export const EmployeeService = { signIn, getAllEmployees, saveToken };
