@@ -7,7 +7,7 @@ const RESOURCE_NAME = 'EmployeeTask';
 
 async function findAll(): Promise<EmployeeTask[]> {
   try {
-    let data = await Prisma.employee_task.findMany();
+    const data = await Prisma.employee_task.findMany();
 
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
