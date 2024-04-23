@@ -206,7 +206,7 @@ model project {
   total_hours   Decimal?  @db.Decimal(8, 2)
   periodicity   String?   @db.VarChar(256)
   is_chargeable Boolean?
-  area         String?   @db.VarChar(256)
+  area          String?   @db.VarChar(256)
   created_at    DateTime  @default(now()) @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
   id_company    String    @db.Uuid

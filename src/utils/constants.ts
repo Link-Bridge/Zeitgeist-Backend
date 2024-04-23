@@ -13,6 +13,7 @@ export enum ExecutionEnv {
 export enum EnvConfigKeys {
   HOST = 'HOST',
   PORT = 'PORT',
+  CLIENT_URL = 'CLIENT_URL',
   DATABASE_URL = 'DATABASE_URL',
   // Firebase
   FIREBASE_API_KEY = 'FIREBASE_API_KEY',

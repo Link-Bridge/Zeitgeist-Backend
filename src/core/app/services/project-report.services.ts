@@ -7,40 +7,39 @@ import { CompanyRepository } from '../../infra/repositories/company.repository';
 
 /**
  * @brief Esta función inicializa las estadísticas de un reporte
- * 
- * @param total: Number 
- * 
+ *
+ * @param total: Number
+ *
  * @return ProjectStatistics
- * 
+ *
  * @description Las tareas se agrupan segun su estatus y se inicializan en 0.
- * 
+ *
  */
-function initilizeStatistics(total: Number): ProjectStatistics { 
-    return { 
-        total: total,
-        done: 0,
-        inprogress: 0,
-        underrevision: 0,
-        delayed: 0,
-        postponed: 0,
-        notstarted: 0,
-        cancelled: 0,
-    }
+function initilizeStatistics(total: Number): ProjectStatistics {
+  return {
+    total: total,
+    done: 0,
+    inprogress: 0,
+    underrevision: 0,
+    delayed: 0,
+    postponed: 0,
+    notstarted: 0,
+    cancelled: 0,
+  };
 }
-
 
 /**
  * @brief Esta función genera el reporte de un proyecto
- * 
- * @param id: string 
- * 
+ *
+ * @param id: string
+ *
  * @return Report
- * 
- * @description Se hace la distinción entre un proyecto en cotización o 
+ *
+ * @description Se hace la distinción entre un proyecto en cotización o
  * cancelado y un proyecto en cualquier otro estatus. El reporte de un proyecto en cotización
  * o cancelado retorna datos generales del proyecto y los demás incluyen tareas asociadas
  * al proyecto y sus estadísticas.
- * 
+ *
  */
 async function getReport(id: string): Promise<Report> {
     try {
@@ -48,8 +47,8 @@ async function getReport(id: string): Promise<Report> {
         const rawProject = await ProjectRepository.findById(id);
         const company = await CompanyRepository.findById(rawProject.idCompany);
 
-        const project: Project = {...rawProject, companyName: company.name};
-        report = {project: project};
+    const project: Project = { ...rawProject, companyName: company.name };
+    report = { project: project };
 
         const rawTasks = await TaskRepository.findTasksByProjectId(id);
         const employeeTask = await EmployeeTaskRepository.findAll();
