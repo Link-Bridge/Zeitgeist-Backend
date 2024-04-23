@@ -1,14 +1,14 @@
-import { Request, Response, json } from 'express';
+import { Request, Response } from 'express';
+import * as z from 'zod';
 import { EmployeeService } from '../../core/app/services/employee.services';
 import { NotFoundError } from '../../core/errors/not-found.error';
-import * as z from 'zod'
 
 const authSchema = z.object({
   auth: z.object({
     name: z.string(),
     email: z.string().email(),
     picture: z.string().url(),
-  })
+  }),
 });
 
 async function userExists(req: Request, res: Response) {
@@ -32,9 +32,9 @@ async function userExists(req: Request, res: Response) {
 
 /**
  * Controller to get all employees
- * 
- * @param req 
- * @param res 
+ *
+ * @param req
+ * @param res
  */
 async function getAllEmployees(req: Request, res: Response) {
   try {
@@ -55,19 +55,19 @@ const userDevToken = z.object({
  *
  * @param req: Request
  * @param res: Response
- * 
+ *
  * @return status 200 if the token was saved successfully, 500 if an error occurred
  */
 
-async function saveToken(req:Request, res:Response) {
+async function saveToken(req: Request, res: Response) {
   try {
     const data = {
-      email: req.body.email, 
-      deviceToken: req.body.deviceToken
-    }
-    const parsed = userDevToken.parse(data)
+      email: req.body.email,
+      deviceToken: req.body.deviceToken,
+    };
+    const parsed = userDevToken.parse(data);
     const deviceToken = await EmployeeService.saveToken(parsed);
-    
+
     res.status(200).json({ message: 'Device Token registered successfully.', deviceToken });
   } catch (error: any) {
     res.status(500).json({ message: 'Internal server error occurred.', error });

@@ -66,7 +66,6 @@ describe('TaskService', () => {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Project does not exist');
       }
-
     });
 
     it('Should return null if the task already exists', async () => {

@@ -1,12 +1,12 @@
 import { employee_notification } from '@prisma/client';
 import { EmployeeNotification } from '../../domain/entities/employee-notification.entity';
 
-/** 
+/**
  * Maps a notification entity from a database model.
- * 
+ *
  * @param model The database model.
  * @returns The notification entity.
- * 
+ *
  */
 
 export function mapNotificationEntityFromDbModel(model: employee_notification): EmployeeNotification {

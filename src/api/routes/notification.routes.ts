@@ -5,4 +5,3 @@ const router = Router();
 
 router.get('/notification', NotificationController.getAllNotifications);
 router.post('/notification/create', NotificationController.createNotification);
-
