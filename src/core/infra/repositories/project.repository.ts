@@ -4,7 +4,24 @@ import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
 
-const RESOURCE_NAME = 'Project';
+const RESOURCE_NAME = 'Project info';
+
+/**
+ * Finds all company entities in the database
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities
+ */
+
+async function findAll(): Promise<ProjectEntity[]> {
+  try {
+    const data = await Prisma.project.findMany();
+    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return data.map(mapProjectEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
 
 async function findProjectStatusById(id: string) {
   try {
@@ -44,16 +61,28 @@ async function findById(id: string): Promise<ProjectEntity> {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
+
 /**
- * Finds all company entities in the database
- * @version 1.0.0
- * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities
- * @throws {NotFoundError} if no entities are found
- * @throws {Error} if an unexpected error occurs
+ * Finds all projects in the database form a unique company
+ * @version 1.1.0
+ * @returns {Promise<ProjectEntity[]>} a promise that resolves an array of project entities ordering the projects with status done at the end.
  */
-async function findAll(): Promise<ProjectEntity[]> {
-  const data = await Prisma.project.findMany();
-  return data.map(mapProjectEntityFromDbModel);
+
+async function findProjetsByClientId(clientId: string): Promise<ProjectEntity[]> {
+  try {
+    let data = await Prisma.project.findMany({
+      where: {
+        id_company: clientId,
+      },
+    });
+
+    if (!data) {
+      throw new Error(`${RESOURCE_NAME} repository error`);
+    }
+    return data.map(mapProjectEntityFromDbModel);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
 }
 
 async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
@@ -79,4 +108,4 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
   return mapProjectEntityFromDbModel(createData);
 }
 
-export const ProjectRepository = { findProjectStatusById, findById, findAll, createProject };
+export const ProjectRepository = { findAll, findProjectStatusById, findById, findProjetsByClientId, createProject };

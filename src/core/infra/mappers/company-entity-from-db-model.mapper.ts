@@ -1,8 +1,8 @@
 import { company } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
-import { Company } from '../../domain/entities/company.entity';
+import { CompanyEntity } from '../../domain/entities/company.entity';
 
-export function mapCompanyEntityFromDbModel(model: company): Company {
+export function mapCompanyEntityFromDbModel(model: company): CompanyEntity {
   return {
     id: model.id,
     name: model.name,

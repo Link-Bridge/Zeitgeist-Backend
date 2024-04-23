@@ -4,6 +4,10 @@ import { ProjectReportService } from '../../core/app/services/project-report.ser
 import { ProjectService } from '../../core/app/services/project.services';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus } from '../../utils/enums';
 
+const reportSchema = z.object({
+  id: z.string().min(1, { message: 'projectId cannot be empty' }),
+});
+
 const createProjectRequestSchema = z.object({
   projectName: z.string(),
   client: z.string().uuid(),
@@ -47,8 +51,28 @@ async function createProject(req: Request, res: Response) {
 
 async function getReportData(req: Request, res: Response) {
   try {
-    const data = await ProjectReportService.getReport(req.params.id);
-    res.status(200).json({ data: data });
+    const { id } = reportSchema.parse({ id: req.params.id });
+
+    const data = await ProjectReportService.getReport(id);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
+ * @param {Request} req - The request object containing the clientID.
+ * @param {Response} res
+ *
+ * @returns {Promise<void>}
+ *
+ * @throws {Error}
+ */
+
+async function getProjectsClient(req: Request, res: Response) {
+  try {
+    const data = await ProjectService.findProjectsClient(req.params.clientId);
+    res.status(200).json({ data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

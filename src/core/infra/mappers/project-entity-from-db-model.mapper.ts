@@ -11,12 +11,12 @@ export function mapProjectEntityFromDbModel(model: project): ProjectEntity {
     category: model.category,
     startDate: model.start_date,
     endDate: model.end_date ? model.end_date : null,
-    totalHours: model.total_hours ? Number(model.total_hours) : null,
+    totalHours: model.total_hours ? model.total_hours : null,
     periodicity: model.periodicity ? model.periodicity : null,
     isChargeable: model.is_chargeable ? model.is_chargeable : null,
-    area: model.area ? model.area : undefined,
+    area: model.area ?? '',
     createdAt: model.created_at,
-    updatedAt: model.updated_at ? model.updated_at : undefined,
+    updatedAt: model.updated_at ? model.updated_at : null,
     idCompany: model.id_company,
   };
 }
