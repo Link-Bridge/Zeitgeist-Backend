@@ -1,4 +1,4 @@
-import { TaskStatus } from '../../../utils/enums';
+import { Decimal } from "@prisma/client/runtime/library";
 
 export interface Project {
   id: string;
@@ -9,12 +9,12 @@ export interface Project {
   category?: string | null;
   startDate: Date;
   endDate?: Date | null;
-  totalHours?: Number | null;
+  totalHours?: Decimal | null;
   periodicity?: string | null;
   isChargeable?: boolean | null;
   area?: string;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt?: Date | null;
   idCompany: string;
   companyName: string;
 }
@@ -23,7 +23,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  status: TaskStatus;
+  status: string;
   waitingFor?: string;
   startDate: Date;
   endDate?: Date;

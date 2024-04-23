@@ -1,5 +1,5 @@
 import { Request, Response, json } from 'express';
-import { EmployeeService } from '../../core/app/services/employee.service';
+import { EmployeeService } from '../../core/app/services/employee.services';
 import { NotFoundError } from '../../core/errors/not-found.error';
 import * as z from 'zod'
 

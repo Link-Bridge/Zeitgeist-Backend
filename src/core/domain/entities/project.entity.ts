@@ -1,7 +1,7 @@
-import { ProjectStatus } from '../../../utils/enums/index';
+import { Decimal } from "@prisma/client/runtime/library";
 
 /**
- * @brief Esta clase establece la estructura de la entidad Project
+ * @brief Esta clase es para establecer la estructura de la entidad proyecto
  *
  * @param id: string
  * @param name: string
@@ -11,9 +11,9 @@ import { ProjectStatus } from '../../../utils/enums/index';
  * @param category: string
  * @param startDate: Date
  * @param endDate: Date
- * @param totalHours: Number
- * @param periodicity: string
- * @param isChargeable: Boolean
+ * @param totalHours: Deciaml
+ * @param perodicity: string
+ * @param isChargeable: boolean
  * @param area: string
  * @param createdAt: Date
  * @param updatedAt: Date
@@ -21,86 +21,70 @@ import { ProjectStatus } from '../../../utils/enums/index';
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de Project,
- * pero se identifican como atributos opcionales aquellos que no
- * son requeridos por un proyecto.
- * 
+ * @description La estructura basicamente es lo que esta en el MER,
+ * se tiene la idea usar tipos de datos personalizados, como UUID.
  */
 
-export interface Project {
-  /**
-   * @param id: string - Identificador único del proyecto
-   */
-    id: string;
 
+export interface ProjectEntity {
   /**
-   * @param name: string - Nombre del proyecto
+   * @param id: string - Project id
    */
-    name: string;
-    
+  id: string;
   /**
-   * @param matter: string - Nombre del proyecto
+   * @param name: string - Project name
    */
-    matter?: string | null;
-    
+  name: string;
   /**
-   * @param description: string - Descripción del proyecto
+   * @param matter: string - Project matter
    */
-    description?: string | null;
-
+  matter?: string | null;
   /**
-   * @param status: ProjectStatus - Estatus del proyecto
+   * @param description: string - Project description
    */
-    status: ProjectStatus;
-
+  description?: string | null;
   /**
-   * @param category: string - Categoría del proyecto
+   * @param status: string - Project status
    */
-    category?: string | null;
-
+  status: string;
   /**
-   * @param startDate: Date - Fecha de inicio del proyecto
+   * @param category: string - Project category
    */
-    startDate: Date;
-
+  category: string;
   /**
-   * @param endDate: Date - Fecha de fin del proyecto
+   * @param startDate: Date - Project start date
    */
-    endDate?: Date | null;
-
+  startDate: Date;
   /**
-   * @param totalHours: Number - Total de horas trabajadas en el proyecto
+   * @param endDate: Date - Project end date
    */
-    totalHours?: Number | null;
-
+  endDate?: Date | null;
   /**
-   * @param periodicity: string - Periodcidad del proyecto
+   * @param totalHours: Decimal - Project total hours
    */
-    periodicity?: string | null;
-
+  totalHours?: Decimal | null;
   /**
-   * @param isChargeable: boolean - Indica si el proyecto es cobrable
+   * @param periodicity: string - Project periodicity
    */
-    isChargeable?: boolean | null;
-
+  periodicity?: string | null;
   /**
-   * @param area: string - Area asociada al proyecto
+   * @param isChargeable: boolean - Determines whether the project is chargeable or not
    */
-    area?: string;
-
+  isChargeable?: boolean | null;
   /**
-   * @param createdAt: Date - Fecha de registro de la tarea
+   * @param area: string - Project area
    */
-    createdAt: Date;
-
-    /**
-     * @param updatedAt: Date - Última fecha de modificación
-     */
-  
-    updatedAt?: Date;
-      
-    /**
-     * @param idCompany: string - Identificador único de la compañia asociada al proyecto
-     */
-    idCompany: string;
+  area?: string;
+  /**
+   * @param createdAt: Date - Project creation date
+   */
+  createdAt: Date;
+  /**
+   * @param updatedAt: Date - Project update date
+   */
+  updatedAt?: Date | null;
+  /**
+   * @param idCompany: string - Id for project company
+   */
+  idCompany: string;
 }

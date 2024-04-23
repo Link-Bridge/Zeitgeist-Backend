@@ -19,7 +19,7 @@ export const checkAuthToken = (req: Request, res: Response, next: NextFunction) 
   admin
     .auth()
     .verifyIdToken(token)
-    .then(decodedToken => {
+    .then((decodedToken: any) => {
       req.body.auth = decodedToken;
       next();
     })

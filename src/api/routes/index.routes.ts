@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { DummyRouter } from './dummy.routes';
 import { AdminRouter } from './admin.routes';
+import { CompanyRouter } from './company.routes';
+import { DummyRouter } from './dummy.routes';
 import { EmployeeRouter } from './employee.routes';
 import { ProjectRouter } from './project.routes';
 import { TaskRouter } from './task.routes';
@@ -23,6 +24,8 @@ baseRouter.use(`${V1_PATH}/project`, ProjectRouter);
 // Tasks
 baseRouter.use(`${V1_PATH}/tasks`, TaskRouter);
 
+//Company
+baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
 // Health check
 baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
 
