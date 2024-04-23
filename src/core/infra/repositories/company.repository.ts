@@ -1,7 +1,7 @@
 import { Prisma } from '../../..';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
-import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-model-mapper';
+import { mapCompanyEntityFromDbModel } from '../mappers/company-entity-from-db-model.mapper';
 
 const RESOURCE_NAME = 'Company';
 
@@ -14,12 +14,20 @@ const RESOURCE_NAME = 'Company';
  */
 
 async function findAll(): Promise<CompanyEntity[]> {
-  const data = await Prisma.company.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  });
-  return data.map(mapCompanyEntityFromDbModel);
+  try {
+    const data = await Prisma.company.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapCompanyEntityFromDbModel);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
 }
 
 async function findById(id: string): Promise<CompanyEntity> {

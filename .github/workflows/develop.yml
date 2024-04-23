@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      
       - uses: actions/checkout@v2
 
       - name: Install PNPM
@@ -47,3 +46,4 @@ jobs:
           fi
         env:
           CI: true
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
