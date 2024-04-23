@@ -5,7 +5,7 @@ import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-d
 
 async function findById(id: string): Promise<RoleEntity> {
   try {
-    const role = await Prisma.role.findUniqueOrThrow({
+    const role = await Prisma.role.findUnique({
       where: { id: id },
     });
 
