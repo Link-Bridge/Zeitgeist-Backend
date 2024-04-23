@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { EmployeeService } from '../../core/app/services/employee.service';
 import { SupportedRoles } from '../../utils/enums';
+import { EmployeeService } from '../../core/app/services/employee.services';
 
 async function checkRole(req: Request, res: Response, next: NextFunction, allowedRoles: SupportedRoles[]) {
   const role = await EmployeeService.findRoleByEmail(req.body.auth.email);
