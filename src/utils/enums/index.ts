@@ -6,8 +6,8 @@ export enum SupportedRoles {
 }
 
 export enum SupportedDepartments {
-  LEGAL = 'LEGAL',
-  CONTABLE = 'CONTABLE',
+  LEGAL = 'Legal',
+  ACCOUNTING = 'Accounting',
 }
 
 export enum TaskStatus {
