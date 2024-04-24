@@ -26,4 +26,3 @@ export function mapDepartmentEntityFromDbModelToDbModel(department: department):
     updatedAt: department.updated_at,
   };
 }
-

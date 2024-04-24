@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { SupportedRoles } from '../../../utils/enums';
 import { RoleEntity } from '../../domain/entities/role.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-db-model.mapper';
@@ -17,9 +18,9 @@ async function findById(id: string): Promise<RoleEntity> {
   }
 }
 
-async function findByTitle(title: string): Promise<RoleEntity> {
+async function findByTitle(title: SupportedRoles): Promise<RoleEntity> {
   try {
-    const role = await Prisma.role.findFirstOrThrow({
+    const role = await Prisma.role.findFirst({
       where: { title: title },
     });
 

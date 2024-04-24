@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { EmployeeService } from '../../core/app/services/employee.services';
+import { EmployeeService } from '../../core/app/services/employee.service';
 import { SupportedRoles } from '../../utils/enums';
 
 /**
