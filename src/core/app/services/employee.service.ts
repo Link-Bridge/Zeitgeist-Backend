@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto';
 import { SupportedRoles } from '../../../utils/enums';
+import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
-import { EmployeeEntity } from '../../domain/entities/employee.entity';
 
 function parseName(displayName: string) {
   const nameParts = displayName.trim().split(/\s+/);
@@ -59,7 +59,7 @@ async function signIn(body: SignIn) {
 
 /**
  * Function to get all employees
- * 
+ *
  * @returns Promise<EmployeeEntity[]>
  */
 async function getAllEmployees(): Promise<EmployeeEntity[]> {

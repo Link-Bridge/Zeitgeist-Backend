@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { ProjectReportService } from '../../core/app/services/project-report.services';
-import { ProjectService } from '../../core/app/services/project.services';
+import { ProjectReportService } from '../../core/app/services/project-report.service';
+import { ProjectService } from '../../core/app/services/project.service';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../utils/enums';
 
 const reportSchema = z.object({
@@ -29,7 +29,6 @@ const createProjectRequestSchema = z.object({
 async function createProject(req: Request, res: Response) {
   try {
     const data = createProjectRequestSchema.parse(req.body);
-    console.log(data);
     const newProject = await ProjectService.createProject({
       name: data.projectName,
       matter: data.matter || null,
