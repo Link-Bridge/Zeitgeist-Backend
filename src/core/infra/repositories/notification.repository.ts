@@ -7,7 +7,7 @@ const RESOURCE_NAME = 'Notification';
 
 async function createNotification(notification: Notification): Promise<Notification> {
   try {
-    let data = await Prisma.notification.create({
+    const data = await Prisma.notification.create({
       data: {
         id: notification.id,
         title: notification.title,
@@ -25,7 +25,7 @@ async function createNotification(notification: Notification): Promise<Notificat
 
 async function findAllNotifications(): Promise<Notification[]> {
   try {
-    let data = await Prisma.notification.findMany();
+    const data = await Prisma.notification.findMany();
 
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);

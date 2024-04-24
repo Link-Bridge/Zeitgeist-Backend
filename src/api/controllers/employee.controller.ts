@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as z from 'zod';
-import { EmployeeService } from '../../core/app/services/employee.services';
+import { EmployeeService } from '../../core/app/services/employee.service';
 import { NotFoundError } from '../../core/errors/not-found.error';
 
 const authSchema = z.object({

@@ -7,7 +7,7 @@ import { EmployeeTaskRepository } from '../../../infra/repositories/employee-tas
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
-import { ProjectReportService } from '../project-report.services';
+import { ProjectReportService } from '../project-report.service';
 
 chai.use(chaiAsPromised);
 

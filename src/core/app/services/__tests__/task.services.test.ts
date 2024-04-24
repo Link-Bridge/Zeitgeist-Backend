@@ -5,7 +5,7 @@ import { TaskStatus } from '../../../../utils/enums';
 import { BareboneTask, Task } from '../../../domain/entities/task.entity';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
-import { TaskService } from '../task.services';
+import { TaskService } from '../task.service';
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
