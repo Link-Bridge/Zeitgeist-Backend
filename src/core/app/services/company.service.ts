@@ -23,7 +23,6 @@ async function findAll(): Promise<CompanyEntity[]> {
       company.chargeableHours ??= new Decimal(0);
 
       projectRecords.forEach(project => {
-
         if (project.idCompany == company.id)
           // Add to total projects
           company.totalProjects! += 1;
