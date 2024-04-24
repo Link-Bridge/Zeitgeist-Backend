@@ -28,16 +28,16 @@ export enum TaskStatus {
 }
 
 export enum ProjectStatus {
-  IN_QUOTATION = 'IN QUOTATION',
-  ACCEPTED = 'ACCEPTED',
-  NOT_STARTED = 'NOT STARTED',
-  IN_PROCESS = 'IN PROCESS',
-  UNDER_REVISION = 'UNDER REVISION',
-  UNDER_REVISSION = 'UNDER REVISSION',
-  DELAYED = 'DELAYED',
-  POSTPONED = 'POSTPONED',
-  DONE = 'DONE',
-  CANCELLED = 'CANCELLED',
+  IN_QUOTATION = 'In Quotation',
+  ACCEPTED = 'Accepted',
+  NOT_STARTED = 'Not Started',
+  IN_PROCESS = 'In Process',
+  UNDER_REVISION = 'Under Revision',
+  UNDER_REVISSION = 'Under Reviision',
+  DELAYED = 'Delayed',
+  POSTPONED = 'Postponed',
+  DONE = 'Done',
+  CANCELLED = 'Cancelled',
   DEFAULT = '-',
 }
 

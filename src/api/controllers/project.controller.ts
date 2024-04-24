@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.services';
 import { ProjectService } from '../../core/app/services/project.services';
-import { ProjectCategory, ProjectPeriodicity, ProjectStatus } from '../../utils/enums';
+import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../utils/enums';
 
 const reportSchema = z.object({
   id: z.string().min(1, { message: 'projectId cannot be empty' }),
@@ -16,12 +16,11 @@ const createProjectRequestSchema = z.object({
   description: z.string().optional(),
   status: z.nativeEnum(ProjectStatus),
   startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().nullable(),
   periodic: z.nativeEnum(ProjectPeriodicity),
   chargable: z.boolean(),
-  area: z.nativeEnum(ProjectCategory),
+  area: z.nativeEnum(SupportedDepartments),
 });
-
 /**
  * @description Create a new project
  * @param req
@@ -30,6 +29,7 @@ const createProjectRequestSchema = z.object({
 async function createProject(req: Request, res: Response) {
   try {
     const data = createProjectRequestSchema.parse(req.body);
+    console.log(data);
     const newProject = await ProjectService.createProject({
       name: data.projectName,
       matter: data.matter || null,
@@ -45,6 +45,7 @@ async function createProject(req: Request, res: Response) {
     });
     res.status(201).json(newProject);
   } catch (error: unknown) {
+    console.error(error);
     res.status(400).json({ message: error });
   }
 }
@@ -87,4 +88,4 @@ async function getAllProjects(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects };
+export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient };

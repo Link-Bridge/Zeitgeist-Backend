@@ -96,7 +96,7 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
       category: entity.category,
       start_date: entity.startDate,
       end_date: entity.endDate,
-      total_hours: entity.totalHours !== undefined ? new Decimal(entity.totalHours.toString()) : null,
+      total_hours: entity.totalHours ? new Decimal(entity.totalHours.toString()) : null,
       periodicity: entity.periodicity,
       is_chargeable: entity.isChargeable,
       area: entity.area,
