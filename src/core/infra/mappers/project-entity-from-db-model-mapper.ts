@@ -1,3 +1,4 @@
+import { project } from '@prisma/client';
 import { ProjectStatus } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 
