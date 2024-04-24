@@ -60,9 +60,9 @@ export interface Task {
   endDate?: Date;
 
   /**
-   * @param workedHours: Number - Horas trabajadas en la tarea
+   * @param workedHours: number - Horas trabajadas en la tarea
    */
-  workedHours?: Number;
+  workedHours?: number;
 
   /**
    * @param createdAt: Date - Fecha de registro de la tarea
@@ -78,5 +78,16 @@ export interface Task {
   /**
    * @param idProject: string - Identificador único del proyecto asociado
    */
+  idProject: string;
+}
+
+export interface BareboneTask {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  waitingFor: string;
+  startDate: Date;
+  dueDate: Date | null;
+  workedHours: number | null;
   idProject: string;
 }

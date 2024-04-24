@@ -18,5 +18,6 @@ router.get(
   checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectsClient
 );
+router.get('/report/:id', ProjectController.getReportData);
 
 export { router as ProjectRouter };

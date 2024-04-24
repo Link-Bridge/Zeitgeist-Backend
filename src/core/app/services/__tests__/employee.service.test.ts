@@ -2,12 +2,11 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { SupportedDepartments, SupportedRoles } from '../../../../utils/enums';
-import { DepartmentRepository } from '../../../infra/repositories/department.repository';
+import { SupportedRoles } from '../../../../utils/enums';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { SignIn } from '../../interfaces/employee.interface';
-import { EmployeeService } from '../employee.services';
+import { EmployeeService } from '../employee.service';
 chai.use(chaiAsPromised);
 
 describe('EmployeeService', () => {
@@ -15,14 +14,12 @@ describe('EmployeeService', () => {
   let createStub: sinon.SinonStub;
   let findByTitleStub: sinon.SinonStub;
   let findAllStub: sinon.SinonStub;
-  let findDepartmentByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     createStub = sinon.stub(EmployeeRepository, 'create');
     findByTitleStub = sinon.stub(RoleRepository, 'findByTitle');
     findAllStub = sinon.stub(EmployeeRepository, 'findAll');
-    findDepartmentByIdStub = sinon.stub(DepartmentRepository, 'findById');
   });
 
   afterEach(() => {
