@@ -3,5 +3,8 @@ import { NotificationController } from '../controllers/notification.controller';
 
 const router = Router();
 
-router.get('/notification', NotificationController.getAllNotifications);
-router.post('/notification/create', NotificationController.createNotification);
+router.post('/token', NotificationController.saveToken);
+router.get('/', NotificationController.getAllNotifications);
+router.post('/create', NotificationController.createNotification);
+
+export { router as NotificationRouter };

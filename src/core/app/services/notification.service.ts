@@ -1,5 +1,20 @@
 import { Notification } from '../../domain/entities/notification.entity';
 import { NotificationRepository } from '../../infra/repositories/notification.repository';
+import { userToken } from './employee.service';
+
+/**
+ * @brief Function that saves the token of the employee
+ *
+ * @param body: userToken
+ */
+
+async function saveToken(body: userToken) {
+  try {
+    return await NotificationRepository.saveToken(body.email, body.deviceToken);
+  } catch (error) {
+    console.error('Error saving token: ', error);
+  }
+}
 
 /**
  * Creates notification data in the repository
@@ -40,4 +55,4 @@ async function getAllNotifications(): Promise<Notification[]> {
   }
 }
 
-export const NotificationService = { getAllNotifications, createNotification };
+export const NotificationService = { saveToken, getAllNotifications, createNotification };

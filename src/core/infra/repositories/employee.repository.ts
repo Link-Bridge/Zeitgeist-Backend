@@ -112,30 +112,4 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-/**
- * @brief Function that sets the token of an employee
- *
- * @param email: string
- * @param token: string
- *
- * @return Promise<boolean>. True if the token was saved successfully, false otherwise.
- */
-
-async function saveToken(email: string, token: string): Promise<boolean> {
-  try {
-    const data = await Prisma.employee.update({
-      where: {
-        email: email,
-      },
-      data: {
-        device_token: token,
-      },
-    });
-
-    return !!data;
-  } catch (error: unknown) {
-    throw new Error(`Failed to assign user's DeviceToken: ${error}`);
-  }
-}
-
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, updateRoleById, saveToken };
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, updateRoleById };

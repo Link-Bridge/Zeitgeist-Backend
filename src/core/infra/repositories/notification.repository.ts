@@ -10,6 +10,32 @@ import { mapNotificationEntityFromDbModel } from '../mappers/notification-entity
 const RESOURCE_NAME = 'Notification';
 
 /**
+ * @brief Function that sets the token of an employee
+ *
+ * @param email: string
+ * @param token: string
+ *
+ * @return Promise<boolean>. True if the token was saved successfully, false otherwise.
+ */
+
+async function saveToken(email: string, token: string): Promise<boolean> {
+  try {
+    const data = await Prisma.employee.update({
+      where: {
+        email: email,
+      },
+      data: {
+        device_token: token,
+      },
+    });
+
+    return !!data;
+  } catch (error: unknown) {
+    throw new Error(`Failed to assign user Device Token: ${error}`);
+  }
+}
+
+/**
  * @brief Creates a new notification in the database.
  *
  * @param notification: Notification - New notification to be created.
@@ -54,4 +80,4 @@ async function findAllNotifications(): Promise<Notification[]> {
   }
 }
 
-export const NotificationRepository = { findAllNotifications, createNotification };
+export const NotificationRepository = { saveToken, findAllNotifications, createNotification };

@@ -45,33 +45,4 @@ async function getAllEmployees(req: Request, res: Response) {
   }
 }
 
-const userDevToken = z.object({
-  email: z.string().email(),
-  deviceToken: z.string(),
-});
-
-/**
- * @brief Function that calls the service to save the token of the employee
- *
- * @param req: Request
- * @param res: Response
- *
- * @return status 200 if the token was saved successfully, 500 if an error occurred
- */
-
-async function saveToken(req: Request, res: Response) {
-  try {
-    const data = {
-      email: req.body.email,
-      deviceToken: req.body.deviceToken,
-    };
-    const parsed = userDevToken.parse(data);
-    const deviceToken = await EmployeeService.saveToken(parsed);
-
-    res.status(200).json({ message: 'Device Token registered successfully.', deviceToken });
-  } catch (error: any) {
-    res.status(500).json({ message: 'Internal server error occurred.', error });
-  }
-}
-
-export const EmployeeController = { userExists, getAllEmployees, saveToken };
+export const EmployeeController = { userExists, getAllEmployees };
