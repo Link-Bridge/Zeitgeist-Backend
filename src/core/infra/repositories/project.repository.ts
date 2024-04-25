@@ -85,6 +85,11 @@ async function findProjetsByClientId(clientId: string): Promise<ProjectEntity[]>
   }
 }
 
+/**
+ * A function that calls the Prisma interface to create a project
+ * @param entity A backend defined project entity, mapped from the db
+ * @returns The created entity mapped from the db response
+ */
 async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
   const createData = await Prisma.project.create({
     data: {

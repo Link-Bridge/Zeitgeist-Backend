@@ -78,6 +78,11 @@ async function getProjectsClient(req: Request, res: Response) {
   }
 }
 
+/**
+ * A function that calls the service to get all projects in the database.
+ * @param req HTTP Request
+ * @param res Server response
+ */
 async function getAllProjects(req: Request, res: Response) {
   try {
     const data = await ProjectService.getAllProjects();

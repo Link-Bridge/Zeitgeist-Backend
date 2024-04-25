@@ -15,7 +15,11 @@ export interface CreateProjectData {
   periodicity: string | null;
   startDate: Date;
 }
-
+/**
+ * A function that calls the repository to create a project in the database
+ * @param data The data required to create a project in the database
+ * @returns The entity created
+ */
 async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
   const newProject = await ProjectRepository.createProject({
     id: randomUUID(),
