@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { NotificationService } from '../../core/app/services/notification.services';
+import { NotificationService } from '../../core/app/services/notification.service';
 
 /**
  * Creates a new notification and sends it as a response
