@@ -11,7 +11,7 @@ import { NotificationService } from '../../core/app/services/notification.servic
  * @return {z.ZodObject} - The schema for the user device token
  */
 
-const userDevToken = z.object({
+const userToken = z.object({
   email: z.string().email(),
   deviceToken: z.string(),
 });
@@ -31,7 +31,7 @@ async function saveToken(req: Request, res: Response) {
       email: req.body.email,
       deviceToken: req.body.deviceToken,
     };
-    const parsed = userDevToken.parse(data);
+    const parsed = userToken.parse(data);
     const deviceToken = await NotificationService.saveToken(parsed);
 
     res.status(200).json({ message: 'Device Token registered successfully.', deviceToken });
