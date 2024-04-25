@@ -48,4 +48,14 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findAll };
+/**
+ * Update company entity based on id
+ * @param {CompanyEntity} company
+ * @returns {Promise<CompanyEntity>} a promise that resolves to the updated company entity
+ */
+async function update(company: CompanyEntity): Promise<CompanyEntity> {
+  const updatedCompany = await CompanyRepository.update(company);
+  return updatedCompany;
+}
+
+export const CompanyService = { findAll, update };
