@@ -1,9 +1,3 @@
-/**
- * @description Los enums que estan en diccionario de datos los pondremos como constantes aqui
- */
-
-export enum AllowedGenders {}
-
 export enum SupportedRoles {
   WITHOUT_ROLE = 'SIN_ROL',
   ADMIN = 'ADMINISTRADOR',
@@ -19,11 +13,12 @@ export enum SupportedDepartments {
 export enum TaskStatus {
   NOT_STARTED = 'NOT STARTED',
   IN_PROGRESS = 'IN PROGRESS',
-  UNDER_REVISION = 'UNDER REVISION',
+  UNDER_REVISSION = 'UNDER REVISSION',
   DELAYED = 'DELAYED',
   POSTPONED = 'POSTPONED',
   DONE = 'DONE',
   CANCELLED = 'CANCELLED',
+  DEFAULT = '-',
 }
 
 export enum ProjectStatus {
@@ -32,6 +27,7 @@ export enum ProjectStatus {
   NOT_STARTED = 'NOT STARTED',
   IN_PROCESS = 'IN PROCESS',
   UNDER_REVISION = 'UNDER REVISION',
+  UNDER_REVISSION = 'UNDER REVISSION',
   DELAYED = 'DELAYED',
   POSTPONED = 'POSTPONED',
   DONE = 'DONE',
@@ -40,6 +36,5 @@ export enum ProjectStatus {
 }
 
 export enum AllowedProjectStatus {}
-
 
 export enum AllowedProjectCategory {}

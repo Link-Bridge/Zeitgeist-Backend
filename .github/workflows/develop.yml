@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      
       - uses: actions/checkout@v2
 
       - name: Install PNPM
@@ -30,6 +29,9 @@ jobs:
 
       - name: Prisma Generate
         run: pnpm run prisma:generate
+
+      - name: Linter
+        run: pnpm run lint
 
       - name: Compile
         run: pnpm run build

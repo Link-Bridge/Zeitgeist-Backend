@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon, { SinonStubbedInstance } from 'sinon';
 import { ProjectStatus } from '../../../../utils/enums';
-import { Project } from '../../../domain/entities/project.entity';
+import { ProjectEntity } from '../../../domain/entities/project.entity';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
-import { ProjectService } from '../project.services';
+import { ProjectService } from '../project.service';
 
 describe('ProjectService', () => {
   let projectService: typeof ProjectService;
@@ -25,7 +25,7 @@ describe('ProjectService', () => {
   describe('findProjectsByClientId', () => {
     it('Should get the projects of a client with the given id', async () => {
       const clientId = '3ea24e0c-519e-46d8-a45e-62bc5fcbada0';
-      const projects: Project[] = [
+      const projects: ProjectEntity[] = [
         {
           id: randomUUID(),
           name: 'Nuevo Proyecto de Desarrollo',
