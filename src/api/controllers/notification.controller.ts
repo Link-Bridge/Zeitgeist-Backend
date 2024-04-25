@@ -28,7 +28,7 @@ const userToken = z.object({
 async function saveToken(req: Request, res: Response) {
   try {
     const data = {
-      email: req.body.email,
+      email: req.body.auth.email,
       deviceToken: req.body.deviceToken,
     };
     const parsed = userToken.parse(data);
