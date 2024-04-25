@@ -66,9 +66,4 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
   return await EmployeeRepository.findAll();
 }
 
-export interface userToken {
-  email: string;
-  deviceToken: string;
-}
-
 export const EmployeeService = { signIn, getAllEmployees };

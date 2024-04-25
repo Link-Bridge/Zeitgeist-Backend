@@ -1,6 +1,18 @@
 import { Notification } from '../../domain/entities/notification.entity';
 import { NotificationRepository } from '../../infra/repositories/notification.repository';
-import { userToken } from './employee.service';
+
+/**
+ * @brief Interface for the userToken
+ *
+ * @param email: string
+ * @param deviceToken: string
+ *
+ * @returns userToken
+ */
+export interface userToken {
+  email: string;
+  deviceToken: string;
+}
 
 /**
  * @brief Function that saves the token of the employee
