@@ -24,7 +24,7 @@ async function saveToken(body: userToken) {
   try {
     return await NotificationRepository.saveToken(body.email, body.deviceToken);
   } catch (error) {
-    console.error('Error saving token: ', error);
+    throw new Error('Error saving token.' + error);
   }
 }
 
@@ -43,8 +43,7 @@ async function createNotification(notification: Notification): Promise<Notificat
     const notificationRecord = await NotificationRepository.createNotification(notification);
     return notificationRecord;
   } catch (error: any) {
-    console.error('Error: ', error);
-    throw new Error('An unexpected error occurred');
+    throw new Error('Error creating notification.' + error);
   }
 }
 
@@ -62,8 +61,7 @@ async function getAllNotifications(): Promise<Notification[]> {
     const notificationRecords = await NotificationRepository.findAllNotifications();
     return notificationRecords;
   } catch (error: any) {
-    console.error('Error: ', error);
-    throw new Error('An unexpected error occurred');
+    throw new Error('Error getting notifications.' + error);
   }
 }
 
