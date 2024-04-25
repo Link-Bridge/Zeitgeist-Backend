@@ -2,10 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { Express } from 'express';
-import swaggerJSDoc, { OAS3Options } from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 import { baseRouter } from './api/routes/index.routes';
-import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
 
 export const Prisma: PrismaClient = new PrismaClient();
@@ -27,9 +24,6 @@ app.use(
 
 app.use(express.json());
 app.use(baseRouter);
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions as OAS3Options);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(PORT, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);
