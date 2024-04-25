@@ -9,7 +9,7 @@ import { EmployeeNotification } from '../../domain/entities/employee-notificatio
  *
  */
 
-export function mapNotificationEntityFromDbModel(model: employee_notification): EmployeeNotification {
+export function mapEmployeeNotificationEntityFromDbModel(model: employee_notification): EmployeeNotification {
   return {
     id: model.id,
     idEmployee: model.id_employee,
