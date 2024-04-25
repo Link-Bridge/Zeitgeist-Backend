@@ -12,7 +12,6 @@ const RESOURCE_NAME = 'Company';
  * @throws {NotFoundError} if no entities are found
  * @throws {Error} if an unexpected error occurs
  */
-
 async function findAll(): Promise<CompanyEntity[]> {
   try {
     const data = await Prisma.company.findMany({
@@ -30,6 +29,11 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
+/**
+ * Find a company entity by id
+ * @param id
+ * @returns {CompanyEntity} a promise that resolves to a company entity
+ */
 async function findById(id: string): Promise<CompanyEntity> {
   try {
     const data = await Prisma.company.findUnique({
@@ -48,4 +52,28 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById };
+async function update(company: CompanyEntity): Promise<CompanyEntity> {
+  try {
+    const updatedCompany = await Prisma.company.update({
+      where: {
+        id: company.id,
+      },
+      data: {
+        name: company.name,
+        email: company.email,
+        phone_number: company.phoneNumber,
+        landline_phone: company.landlinePhone,
+        archived: company.archived,
+        id_company_direct_contact: company.idCompanyDirectContact,
+        id_form: company.idForm,
+        updated_at: new Date(),
+      },
+    });
+
+    return mapCompanyEntityFromDbModel(updatedCompany);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+export const CompanyRepository = { findAll, findById, update };
