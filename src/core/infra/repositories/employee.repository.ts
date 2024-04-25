@@ -130,4 +130,12 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, updateRoleById, deleteEmployeeById };
+export const EmployeeRepository = {
+  create,
+  findAll,
+  findByEmail,
+  findById,
+  existByEmail,
+  updateRoleById,
+  deleteEmployeeById,
+};

@@ -72,19 +72,16 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
 
 async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
   try {
-      const employee = await EmployeeRepository.findById(id);
-      if (!employee) {
-          throw new Error('Employee not found');
-      }
+    const employee = await EmployeeRepository.findById(id);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
 
-      return await EmployeeRepository.deleteEmployeeById(id);
+    return await EmployeeRepository.deleteEmployeeById(id);
   } catch (error: unknown) {
-      console.error('Error: ', error);
-      throw new Error('An unexpected error occurred');
+    console.error('Error: ', error);
+    throw new Error('An unexpected error occurred');
   }
 }
 
-
 export const EmployeeService = { signIn, getAllEmployees, deleteEmployeeById };
-
-
