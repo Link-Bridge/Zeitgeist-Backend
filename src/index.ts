@@ -27,5 +27,4 @@ app.use(baseRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);
-  console.log(`Swagger Docs available on http://${HOST}:${PORT}/docs`);
 });
