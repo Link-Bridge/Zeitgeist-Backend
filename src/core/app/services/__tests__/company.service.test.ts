@@ -12,10 +12,14 @@ chai.use(chaiAsPromised);
 describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
   let findAllProjectsStub: sinon.SinonStub;
+  let updateCompanyStub: sinon.SinonStub;
+  let findCompanyByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
+    updateCompanyStub = sinon.stub(CompanyRepository, 'update');
+    findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
   });
 
   afterEach(() => {
@@ -368,4 +372,14 @@ describe('CompanyService', () => {
     expect(res[0].chargeableHours).to.eql(new Decimal(30));
     expect(res[0].totalProjects).to.eql(4);
   });
+
+  it('should update a company if exists', async () => {});
+
+  it('should throw an error if no companies are found', async () => {
+    findCompanyByIdStub.resolves();
+
+    await expect().to.be.rejectedWith('No companies or projects found');
+  });
+
+  it('', async () => {});
 });
