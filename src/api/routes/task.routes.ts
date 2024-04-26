@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import { TaskController } from '../controllers/task.controller';
+import { SupportedRoles } from '../../utils/enums';
+import { checkAuthToken } from '../middlewares/auth.middleware';
+import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
@@ -140,8 +143,8 @@ const router = Router();
 router.post('/create', TaskController.createTask);
 router.get(
   '/:id',
-  // checkAuthToken,
-  //checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.getTaskById
 );
 
