@@ -3,9 +3,10 @@ import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+
 /**
- * Gets all data from all companies
- * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
+ * Gets all data from a unique company
+ * @returns {Promise<CompanyEntity>} a promise that resolves a unique company entity
  * @throws {Error} if an unexpected error occurs
  */
 
@@ -18,6 +19,12 @@ async function findById(id: string): Promise<CompanyEntity> {
     throw new Error('An unexpected error occurred');
   }
 }
+
+/**
+ * Gets all data from all companies
+ * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
+ * @throws {Error} if an unexpected error occurs
+ */
 
 async function findAll(): Promise<CompanyEntity[]> {
   try {
