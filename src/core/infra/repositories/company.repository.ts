@@ -48,7 +48,7 @@ async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
         phone_number: company.phoneNumber,
         landline_phone: company.landlinePhone,
         archived: false,
-        constitution_date: company.constitutionDate,
+        constitution_date: company.constitutionDate ? new Date(company.constitutionDate) : null,
         rfc: company.rfc,
         tax_residence: company.taxResidence,
         id_company_direct_contact: company.idCompanyDirectContact,

@@ -42,7 +42,7 @@ async function create(req: Request, res: Response) {
     res.status(200).json(data);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      res.status(500).json({ error: error.issues });
+      res.status(500).json({ error: error.errors[0].message });
     } else res.status(500).json({ error: error.message });
   }
 }
