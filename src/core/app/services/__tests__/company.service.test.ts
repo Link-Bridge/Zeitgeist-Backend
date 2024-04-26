@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
-import { CompanyService } from '../company.services';
+import { CompanyService } from '../company.service';
 
 chai.use(chaiAsPromised);
 
@@ -371,7 +371,7 @@ describe('CompanyService', () => {
     expect(res[0].totalProjects).to.eql(4);
   });
 
-  it("should create a new company", async () => {
+  it('should create a new company', async () => {
     const newCompany = {
       id: '',
       name: 'Zeitgeist',
@@ -383,20 +383,20 @@ describe('CompanyService', () => {
       updatedAt: null,
       idCompanyDirectContact: null,
       idForm: null,
-    }
+    };
 
-    findAllProjectsStub.resolves(null)
-    findAllCompaniesStub.resolves(null)
-    createCompanySub.resolves(newCompany)
+    findAllProjectsStub.resolves(null);
+    findAllCompaniesStub.resolves(null);
+    createCompanySub.resolves(newCompany);
 
-    const res = await CompanyService.create(newCompany)
+    const res = await CompanyService.create(newCompany);
 
-    expect(res).not.to.be.null
-    expect(res?.id).not.to.be.null
-    expect(res?.name).to.eql('Zeitgeist')
-    expect(res?.email).to.eql('info@zeitgeist.mx')
-    expect(res?.phoneNumber).to.eql('1234567890')
-    expect(res?.landlinePhone).to.eql('0987654321')
-    expect(res?.archived).to.eql(false)
-  })
+    expect(res).not.to.be.null;
+    expect(res?.id).not.to.be.null;
+    expect(res?.name).to.eql('Zeitgeist');
+    expect(res?.email).to.eql('info@zeitgeist.mx');
+    expect(res?.phoneNumber).to.eql('1234567890');
+    expect(res?.landlinePhone).to.eql('0987654321');
+    expect(res?.archived).to.eql(false);
+  });
 });

@@ -19,6 +19,7 @@ async function findAll(): Promise<CompanyEntity[]> {
         name: 'asc',
       },
     });
+
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
@@ -56,16 +57,15 @@ async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
     return mapCompanyEntityFromDbModel(res);
   } catch (error: any) {
     // P2002 = Prisma Error code for unique constraints
-    if(error.code == "P2002" && error.meta.target[0] == 'email')
-      throw new Error("Email already registered")
+    if (error.code == 'P2002' && error.meta.target[0] == 'email') throw new Error('Email already registered');
 
-    throw new Error(error)
+    throw new Error(error);
   }
 }
 
 async function findById(id: string): Promise<CompanyEntity> {
   try {
-    let data = await Prisma.company.findUnique({
+    const data = await Prisma.company.findUnique({
       where: {
         id: id,
       },

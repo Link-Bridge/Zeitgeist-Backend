@@ -1,17 +1,26 @@
-import { Request, Response, json } from 'express';
-import { EmployeeService } from '../../core/app/services/employee.services';
+import { Request, Response } from 'express';
+import * as z from 'zod';
+import { EmployeeService } from '../../core/app/services/employee.service';
 import { NotFoundError } from '../../core/errors/not-found.error';
-import * as z from 'zod'
 
 const authSchema = z.object({
   auth: z.object({
-    name: z.string(),
-    email: z.string().email(),
-    picture: z.string().url(),
-  })
+    name: z
+      .string()
+      .min(1, { message: "Provided name can't be empty" })
+      .max(255, { message: 'Provided name must be less than 256 characters' }),
+    email: z.string().email({ message: 'Provided email is not valid' }),
+    picture: z.string().url({ message: 'Provided picture URL is not valid' }),
+  }),
 });
 
-async function userExists(req: Request, res: Response) {
+/**
+ * Function to call the signIn service method, which will create a new employee if not exists
+ *
+ * @param req
+ * @param res
+ */
+async function signIn(req: Request, res: Response) {
   try {
     const parsed = authSchema.parse(req.body);
 
@@ -32,9 +41,9 @@ async function userExists(req: Request, res: Response) {
 
 /**
  * Controller to get all employees
- * 
- * @param req 
- * @param res 
+ *
+ * @param req
+ * @param res
  */
 async function getAllEmployees(req: Request, res: Response) {
   try {
@@ -45,4 +54,4 @@ async function getAllEmployees(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { userExists, getAllEmployees };
+export const EmployeeController = { userExists: signIn, getAllEmployees };

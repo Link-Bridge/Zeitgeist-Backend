@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { CompanyService } from '../../core/app/services/company.services';
+import { z } from 'zod';
+import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema } from '../validation/companyValidation';
-import { z } from 'zod'
 
 /**
  * Finds all companies
@@ -41,12 +41,11 @@ async function create(req: Request, res: Response) {
     const data = await CompanyService.create(company);
     res.status(200).json(data);
   } catch (error: any) {
-    
-    if(error instanceof z.ZodError) {
-      return res.status(500).json({error: error.issues});
+    if (error instanceof z.ZodError) {
+      return res.status(500).json({ error: error.issues });
     }
 
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 }
 

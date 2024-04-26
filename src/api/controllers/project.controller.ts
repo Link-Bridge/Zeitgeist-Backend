@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { ProjectReportService } from '../../core/app/services/project-report.services';
-import { ProjectService } from '../../core/app/services/project.services';
+import { ProjectReportService } from '../../core/app/services/project-report.service';
+import { ProjectService } from '../../core/app/services/project.service';
 
 const reportSchema = z.object({
   id: z.string().min(1, { message: 'projectId cannot be empty' }),
@@ -17,6 +17,15 @@ async function getReportData(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
+
+/**
+ * @param {Request} req - The request object containing the clientID.
+ * @param {Response} res
+ *
+ * @returns {Promise<void>}
+ *
+ * @throws {Error}
+ */
 
 async function getProjectsClient(req: Request, res: Response) {
   try {

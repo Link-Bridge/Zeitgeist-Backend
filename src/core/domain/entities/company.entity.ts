@@ -1,5 +1,6 @@
+import { Decimal } from '@prisma/client/runtime/library';
 /**
- * @brief Esta clase es para establecer la estructura de la entidad company
+ * @brief This class is used to define the company entity
  *
  * @param id: string
  * @param name: string
@@ -18,25 +19,64 @@
  *
  * @return void
  *
- * @description La estructura basicamente es lo que esta en el MER,
- * se tiene la idea usar tipos de datos personalizados, como UUID.
+ * @description The structure is based in the MER
  */
 
-import { Decimal } from '@prisma/client/runtime/library';
-
 export interface CompanyEntity {
+  /**
+   * @param id: string - Unique identifier of the company.
+   */
   id: string;
+  /**
+   * @param name: string - Company title
+   */
   name: string;
+  /**
+   * @param email: string - Company email
+   */
   email?: string | null;
+  /**
+   * @param phoneNumber: string - Company phone number
+   */
   phoneNumber?: string | null;
+  /**
+   * @param landlinePhone: string - Company landline phone number
+   */
   landlinePhone?: string | null;
+  /**
+   * @param archived: boolean - Determines whether the company is archived or not
+   */
   archived?: boolean;
+  /**
+   * @param idCompanyDirectContact: string - Id for company direct contact
+   */
   idCompanyDirectContact?: string | null;
+  /**
+   * @param idForm: string - Id for company form
+   */
   idForm?: string | null;
+  /**
+   * @param createdAt: Date - Company creation date
+   */
   createdAt: Date;
+  /**
+   * @param updatedAt: Date - Company update date
+   */
   updatedAt: Date | null;
+  /**
+   * @param accountingHours: Decimal - Company accounting worked hours
+   */
   accountingHours?: Decimal;
+  /**
+   * @param legalHours?: Decimal - Company legal worked hours
+   */
   legalHours?: Decimal;
+  /**
+   * @param chargeableHours?: Decimal - Company chargeable hours
+   */
   chargeableHours?: Decimal;
+  /**
+   * @param totalProjects?: number - Company total projects
+   */
   totalProjects?: number;
 }

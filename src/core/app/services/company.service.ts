@@ -14,13 +14,12 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
   try {
-    const res = await CompanyRepository.create(company)
-    return res
+    const res = await CompanyRepository.create(company);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
 }
-
 
 /**
  * Gets all data from all companies
@@ -42,7 +41,6 @@ async function findAll(): Promise<CompanyEntity[]> {
       company.chargeableHours ??= new Decimal(0);
 
       projectRecords.forEach(project => {
-
         if (project.idCompany == company.id)
           // Add to total projects
           company.totalProjects! += 1;
