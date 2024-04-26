@@ -66,7 +66,7 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
         archived: company.archived,
         id_company_direct_contact: company.idCompanyDirectContact,
         id_form: company.idForm,
-        updated_at: new Date(),
+        updated_at: company.updatedAt,
       },
     });
 

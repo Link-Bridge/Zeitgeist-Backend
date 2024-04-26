@@ -1,14 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
-import {
-  zodValidCreatedAtDate,
-  zodValidEmail,
-  zodValidPhoneNumber,
-  zodValidString,
-  zodValidUpdatedAtDate,
-  zodValidUuid,
-} from '../validators/zod.validators';
+import { zodValidEmail, zodValidPhoneNumber, zodValidString, zodValidUuid } from '../validators/zod.validators';
 
 /**
  * @param {Request} req
@@ -29,18 +22,12 @@ async function getAll(res: Response) {
 }
 
 const updateCompanySchema = z.object({
-  company: z.object({
-    id: zodValidUuid,
-    name: zodValidString,
-    email: zodValidEmail,
-    phoneNumber: zodValidPhoneNumber,
-    landlinePhone: zodValidPhoneNumber,
-    archived: z.boolean(),
-    idCompanyDirectContact: zodValidUuid.nullable(),
-    idForm: zodValidUuid.nullable(),
-    createdAt: zodValidCreatedAtDate,
-    updatedAt: zodValidUpdatedAtDate,
-  }),
+  id: zodValidUuid,
+  name: zodValidString,
+  email: zodValidEmail,
+  phoneNumber: zodValidPhoneNumber,
+  landlinePhone: zodValidPhoneNumber,
+  archived: z.boolean(),
 });
 
 /**
@@ -48,10 +35,10 @@ const updateCompanySchema = z.object({
  * @param req
  * @param res
  */
-export function updateClient(req: Request, res: Response) {
+async function updateClient(req: Request, res: Response) {
   try {
-    const { company } = updateCompanySchema.parse(req.body);
-    const updatedCompany = CompanyService.update(company);
+    const validSchema = updateCompanySchema.parse(req.body);
+    const updatedCompany = await CompanyService.update(validSchema);
 
     res.status(200).json({ data: updatedCompany });
   } catch (error: any) {

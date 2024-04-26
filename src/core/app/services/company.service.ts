@@ -3,6 +3,7 @@ import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { UpdateCompanyBody } from '../interfaces/company.interface';
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -53,9 +54,21 @@ async function findAll(): Promise<CompanyEntity[]> {
  * @param {CompanyEntity} company
  * @returns {Promise<CompanyEntity>} a promise that resolves to the updated company entity
  */
-async function update(company: CompanyEntity): Promise<CompanyEntity> {
-  const updatedCompany = await CompanyRepository.update(company);
-  return updatedCompany;
+async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
+  const company = await CompanyRepository.findById(body.id);
+
+  return await CompanyRepository.update({
+    id: company.id,
+    name: body.name,
+    email: body.email,
+    phoneNumber: body.phoneNumber,
+    landlinePhone: body.landlinePhone,
+    archived: body.archived,
+    idCompanyDirectContact: company.idCompanyDirectContact,
+    idForm: company.idForm,
+    createdAt: company.createdAt,
+    updatedAt: new Date(),
+  });
 }
 
 export const CompanyService = { findAll, update };
