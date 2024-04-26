@@ -66,10 +66,9 @@ async function createTask(req: Request, res: Response) {
     }
 
     const newNotification = await createNotification(req.body, res);
-    
 
     if (newNotification) {
-      createEmployeeNotification(req.body.waitingFor, newNotification.id as string);
+      await createEmployeeNotification(req.body.waitingFor, newNotification.id as string);
       console.log('Started to create employee notification 2.');
     } else if (!newNotification) {
       console.log('Error creating employee notification.');

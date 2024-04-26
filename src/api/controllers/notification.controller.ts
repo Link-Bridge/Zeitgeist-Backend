@@ -97,10 +97,15 @@ async function getAllNotifications(req: Request, res: Response) {
  */
 export async function createEmployeeNotification(idEmployee: string, idNotification: string) {
   try {
-    const data = await NotificationService.createEmployeeNotification(idEmployee, idNotification);
+    await NotificationService.createEmployeeNotification(idEmployee, idNotification);
   } catch (error: any) {
     throw new Error('Error creating employee notification.' + error);
   }
 }
 
-export const NotificationController = { saveToken, createNotification, getAllNotifications, createEmployeeNotification };
+export const NotificationController = {
+  saveToken,
+  createNotification,
+  getAllNotifications,
+  createEmployeeNotification,
+};

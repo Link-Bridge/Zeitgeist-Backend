@@ -76,12 +76,12 @@ async function getAllNotifications(): Promise<Notification[]> {
 
 /**
  * Creates employee notification data in the repository
- * 
+ *
  * @param {string} idEmployee - The employee id
  * @param {string} idNotification - The notification id
- * 
+ *
  * @returns {Promise<void>} A promise that resolves to void
- * 
+ *
  * @throws {Error} If an unexpected error occurs
  */
 async function createEmployeeNotification(idEmployee: string, idNotification: string) {
