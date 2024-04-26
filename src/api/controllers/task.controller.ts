@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.service';
 import { BareboneTask } from '../../core/domain/entities/task.entity';
 import { TaskStatus } from '../../utils/enums';
+import { createEmployeeNotification, createNotification } from './notification.controller';
 
 const taskStatusSchema = z.enum([
   TaskStatus.NOT_STARTED,
@@ -62,6 +63,17 @@ async function createTask(req: Request, res: Response) {
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
+    }
+
+    const newNotification = await createNotification(req.body, res);
+    
+
+    if (newNotification) {
+      createEmployeeNotification(req.body.waitingFor, newNotification.id as string);
+      console.log('Started to create employee notification 2.');
+    } else if (!newNotification) {
+      console.log('Error creating employee notification.');
+      throw new Error('Error creating notification');
     }
 
     res.status(201).json(payloadTask);

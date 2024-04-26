@@ -1,6 +1,9 @@
+import { randomUUID } from 'crypto';
 import { Prisma } from '../../..';
+import { EmployeeNotification } from '../../domain/entities/employee-notification.entity';
 import { Notification } from '../../domain/entities/notification.entity';
 import { NotFoundError } from '../../errors/not-found.error';
+import { mapEmployeeNotificationEntityFromDbModel } from '../mappers/employee-notif-from-db-mapper';
 import { mapNotificationEntityFromDbModel } from '../mappers/notification-entity-from-db-model-mapper';
 
 /**
@@ -44,6 +47,8 @@ async function saveToken(email: string, token: string): Promise<boolean> {
 
 async function createNotification(notification: Notification): Promise<Notification> {
   try {
+    console.log(notification);
+
     const data = await Prisma.notification.create({
       data: {
         id: notification.id,
@@ -56,6 +61,7 @@ async function createNotification(notification: Notification): Promise<Notificat
 
     return mapNotificationEntityFromDbModel(data);
   } catch (error: unknown) {
+    console.log(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
@@ -80,4 +86,31 @@ async function findAllNotifications(): Promise<Notification[]> {
   }
 }
 
-export const NotificationRepository = { saveToken, findAllNotifications, createNotification };
+/**
+ * @brief Function that creates a new notification and sends it as a response
+ *
+ * @return
+ */
+async function createEmployeeNotification(idEmployee: string, idNotification: string): Promise<EmployeeNotification> {
+  try {
+    const data = await Prisma.employee_notification.create({
+      data: {
+        id: randomUUID(),
+        id_employee: idEmployee,
+        id_notification: idNotification,
+        created_at: new Date(),
+      },
+    });
+
+    return mapEmployeeNotificationEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error('Error creating employee notification');
+  }
+}
+
+export const NotificationRepository = {
+  saveToken,
+  findAllNotifications,
+  createNotification,
+  createEmployeeNotification,
+};

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Notification } from '../../domain/entities/notification.entity';
 import { NotificationRepository } from '../../infra/repositories/notification.repository';
 
@@ -38,9 +39,17 @@ async function saveToken(body: userToken) {
  * @throws {Error} If an unexpected error occurs
  */
 
-async function createNotification(notification: Notification): Promise<Notification> {
+async function createNotification(newNotification: Notification): Promise<Notification> {
   try {
+    const notification: Notification = {
+      id: randomUUID(),
+      title: newNotification.title,
+      body: newNotification.body,
+      createdAt: new Date(),
+    };
+
     const notificationRecord = await NotificationRepository.createNotification(notification);
+
     return notificationRecord;
   } catch (error: any) {
     throw new Error('Error creating notification.' + error);
@@ -65,4 +74,22 @@ async function getAllNotifications(): Promise<Notification[]> {
   }
 }
 
-export const NotificationService = { saveToken, getAllNotifications, createNotification };
+/**
+ * Creates employee notification data in the repository
+ * 
+ * @param {string} idEmployee - The employee id
+ * @param {string} idNotification - The notification id
+ * 
+ * @returns {Promise<void>} A promise that resolves to void
+ * 
+ * @throws {Error} If an unexpected error occurs
+ */
+async function createEmployeeNotification(idEmployee: string, idNotification: string) {
+  try {
+    await NotificationRepository.createEmployeeNotification(idEmployee, idNotification);
+  } catch (error: any) {
+    throw new Error('Error creating employee notification.' + error);
+  }
+}
+
+export const NotificationService = { saveToken, getAllNotifications, createNotification, createEmployeeNotification };
