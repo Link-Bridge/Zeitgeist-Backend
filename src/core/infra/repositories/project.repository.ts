@@ -18,6 +18,7 @@ async function findAll(): Promise<ProjectEntity[]> {
 
     return data.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
+    console.log(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
