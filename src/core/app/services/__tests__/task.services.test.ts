@@ -91,3 +91,44 @@ describe('TaskService', () => {
     });
   });
 });
+
+describe('findTaskById', () => {
+  let findTaskByIdStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  describe('getTaskById', () => {
+    it('should return a all data in the database of the selected taks', async () => {
+      const taskId = randomUUID();
+      const existingTask = {
+        id: taskId,
+        title: 'ITESM task',
+        description: 'ITESM task description',
+        status: 'DELAYED',
+        startDate: new Date(),
+        workedHours: 100,
+        createdAt: new Date(),
+        idProject: randomUUID,
+      };
+
+      findTaskByIdStub.resolves(existingTask);
+
+      const result = await TaskRepository.findTaskById(taskId);
+
+      expect(result).to.eql(existingTask);
+    });
+
+    it('should throw an error if the task id does not exist', async () => {
+      const errorMessage = 'An unexpected error occurred';
+      findTaskByIdStub.rejects(new Error(errorMessage));
+
+      await expect(TaskService.getTaskById(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+    });
+  });
+});
