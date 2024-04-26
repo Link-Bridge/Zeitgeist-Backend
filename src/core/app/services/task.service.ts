@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { BareboneTask, Task } from '../../domain/entities/task.entity';
+import { TaskDetail } from '../interfaces/task.interface';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 
@@ -40,13 +41,17 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
  * Gets a task using the repository.
  *
  * @param id: Task - Task to be searched.
- * @returns {Promise<Task>} - Info of the task.
+ * @returns {Promise<TaskDetail>} - Info of the task.
  *
  * @throws {Error} - If an error occurs when looking for the task.
  */
-async function getTaskById(id: string): Promise<Task> {
+async function getTaskById(id: string): Promise<TaskDetail> {
   try {
-    return await TaskRepository.findTaskById(id);
+    const task =  await TaskRepository.findTaskById(id);
+    const project = await ProjectRepository.findById(task.idProject);
+
+    return {...task, projectName: project.name};
+
   } catch (error: unknown) {
     throw new Error('An unexpected error occurred');
   }

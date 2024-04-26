@@ -6,6 +6,7 @@ import { BareboneTask, Task } from '../../../domain/entities/task.entity';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
+import { TaskDetail } from '../../interfaces/task.interface';
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
@@ -94,9 +95,11 @@ describe('TaskService', () => {
 
 describe('findTaskById', () => {
   let findTaskByIdStub: sinon.SinonStub;
+  let findProjectByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
+    findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
   });
 
   afterEach(() => {
@@ -105,6 +108,18 @@ describe('findTaskById', () => {
 
   describe('getTaskById', () => {
     it('should return a all data in the database of the selected taks', async () => {
+      const projectId = randomUUID();
+      const existingProject = {
+        id: projectId,
+        name: 'ITESM Project',
+        matter: 'SAT',
+        description: 'ITESM Project description',
+        status: 'ACCEPTED',
+        startDate: new Date(),
+        createdAt: new Date(),
+        idCompany: randomUUID(),
+      };
+      
       const taskId = randomUUID();
       const existingTask = {
         id: taskId,
@@ -114,14 +129,18 @@ describe('findTaskById', () => {
         startDate: new Date(),
         workedHours: 100,
         createdAt: new Date(),
-        idProject: randomUUID,
+        idProject: projectId,
       };
 
+      const taskDetail = {...existingTask, projectName: existingProject.name};
+
       findTaskByIdStub.resolves(existingTask);
+      findProjectByIdStub.resolves(existingProject);
 
-      const result = await TaskRepository.findTaskById(taskId);
+      const result = await TaskService.getTaskById(taskId);
 
-      expect(result).to.eql(existingTask);
+      expect(result).to.eql(taskDetail);
+      expect(findProjectByIdStub.calledOnce).to.be.true;
     });
 
     it('should throw an error if the task id does not exist', async () => {
