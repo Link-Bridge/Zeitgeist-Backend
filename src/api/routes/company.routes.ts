@@ -14,8 +14,8 @@ router.get(
 );
 router.put(
   '/:id',
-  // checkAuthRole,
-  // checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL]),
+  checkAuthRole,
+  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.updateClient
 );
 

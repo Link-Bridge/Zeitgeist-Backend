@@ -373,13 +373,38 @@ describe('CompanyService', () => {
     expect(res[0].totalProjects).to.eql(4);
   });
 
-  it('should update a company if exists', async () => {});
+  it('should update a company and return the updated entity', async () => {
+    const fakeId = randomUUID();
+    const fakeCompany = {
+      id: fakeId,
+      name: 'Old Company Name',
+      email: 'oldemail@example.com',
+      phoneNumber: '+123456789012',
+      landlinePhone: '+123456789012',
+      archived: false,
+      idCompanyDirectContact: null,
+      idForm: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    findCompanyByIdStub.resolves(fakeCompany);
 
-  it('should throw an error if no companies are found', async () => {
-    findCompanyByIdStub.resolves();
+    const expectedUpdatedCompany = {
+      ...fakeCompany,
+      name: 'New Company Name',
+      email: 'newemail@example.com',
+    };
+    updateCompanyStub.resolves(expectedUpdatedCompany);
 
-    await expect().to.be.rejectedWith('No companies or projects found');
+    const result = await CompanyService.update({
+      id: fakeId,
+      name: 'New Company Name',
+      email: 'newemail@example.com',
+      phoneNumber: '+123456789012',
+      landlinePhone: '+123456789012',
+      archived: false,
+    });
+
+    expect(result).to.deep.equal(expectedUpdatedCompany);
   });
-
-  it('', async () => {});
 });

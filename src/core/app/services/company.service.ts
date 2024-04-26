@@ -57,6 +57,8 @@ async function findAll(): Promise<CompanyEntity[]> {
 async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
   const company = await CompanyRepository.findById(body.id);
 
+  if (!company) throw new Error('Company not found');
+
   return await CompanyRepository.update({
     id: company.id,
     name: body.name,
