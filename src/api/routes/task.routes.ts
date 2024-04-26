@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { TaskController } from '../controllers/task.controller';
 import { SupportedRoles } from '../../utils/enums';
+import { TaskController } from '../controllers/task.controller';
 import { checkAuthToken } from '../middlewares/auth.middleware';
 import { checkAuthRole } from '../middlewares/rbac.middleware';
 
