@@ -15,8 +15,8 @@ function supportedRoleFromString(maybeRole: string): SupportedRoles {
     return SupportedRoles.LEGAL;
   }
 
-  if (maybeRole.toUpperCase() === SupportedRoles.CONTABLE) {
-    return SupportedRoles.CONTABLE;
+  if (maybeRole.toUpperCase() === SupportedRoles.ACCOUNTING) {
+    return SupportedRoles.ACCOUNTING;
   }
 
   throw new Error(`Unsupported role: ${maybeRole}`);

@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { Prisma } from '../../..';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
@@ -38,11 +37,11 @@ async function findAll(): Promise<CompanyEntity[]> {
  * @returns {null} if an error occured
  */
 
-async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
+async function create(company: CompanyEntity, uuid: string, date: Date): Promise<CompanyEntity | null> {
   try {
     const res = await Prisma.company.create({
       data: {
-        id: randomUUID(),
+        id: uuid,
         name: company.name,
         email: company.email,
         phone_number: company.phoneNumber,
@@ -53,7 +52,7 @@ async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
         tax_residence: company.taxResidence,
         id_company_direct_contact: company.idCompanyDirectContact,
         id_form: company.idForm,
-        created_at: new Date(),
+        created_at: date,
         updated_at: null,
       },
     });

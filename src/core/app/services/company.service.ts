@@ -1,4 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
@@ -14,7 +15,9 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
   try {
-    const res = await CompanyRepository.create(company);
+    const uuid = randomUUID();
+    const date = new Date();
+    const res = await CompanyRepository.create(company, uuid, date);
     return res;
   } catch (error: any) {
     throw new Error(error.message);

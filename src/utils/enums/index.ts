@@ -2,7 +2,7 @@ export enum SupportedRoles {
   WITHOUT_ROLE = 'SIN_ROL',
   ADMIN = 'ADMINISTRADOR',
   LEGAL = 'LEGAL',
-  CONTABLE = 'CONTABLE',
+  ACCOUNTING = 'ACCOUNTING',
 }
 
 export enum SupportedDepartments {
