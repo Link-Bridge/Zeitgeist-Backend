@@ -3,13 +3,13 @@ import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.service';
 import { ProjectService } from '../../core/app/services/project.service';
 
-const reportSchema = z.object({
+const idSchema = z.object({
   id: z.string().min(1, { message: 'projectId cannot be empty' }),
 });
 
 async function getReportData(req: Request, res: Response) {
   try {
-    const { id } = reportSchema.parse({ id: req.params.id });
+    const { id } = idSchema.parse({ id: req.params.id });
 
     const data = await ProjectReportService.getReport(id);
     res.status(200).json(data);

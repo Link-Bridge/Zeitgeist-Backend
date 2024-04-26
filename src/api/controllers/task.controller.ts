@@ -26,6 +26,10 @@ const taskSchema = z.object({
   idProject: z.string().uuid(),
 });
 
+const idSchema = z.object({
+  id: z.string().min(1, { message: 'taskId cannot be empty' }),
+});
+
 /**
  * Validates the data received through the POST method
  *
@@ -70,4 +74,15 @@ async function createTask(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask };
+async function getTaskById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+
+    const data = await TaskService.getTaskById(id);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, getTaskById };

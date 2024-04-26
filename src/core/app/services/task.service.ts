@@ -36,4 +36,20 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
   }
 }
 
-export const TaskService = { createTask };
+/**
+ * Gets a task using the repository.
+ *
+ * @param id: Task - Task to be searched.
+ * @returns {Promise<Task>} - Info of the task.
+ *
+ * @throws {Error} - If an error occurs when looking for the task.
+ */
+async function getTaskById(id: string): Promise<Task> {
+  try {
+    return await TaskRepository.findTaskById(id);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const TaskService = { createTask, getTaskById };
