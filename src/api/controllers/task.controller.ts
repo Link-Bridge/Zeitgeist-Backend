@@ -50,6 +50,7 @@ function validateTaskDate(data: BareboneTask) {
  *
  * @param req: Request - The request object.
  * @param res: Response - The response object.
+ *
  * @returns res.status(201).json(createdTask) - The created task.
  * @returns res.status(409).json({ message }) - If the task already exists.
  * @returns res.status(500).json({ message }) - If an error occurs.
@@ -65,14 +66,10 @@ async function createTask(req: Request, res: Response) {
       return res.status(409).json({ message: 'Task already exists' });
     }
 
-    const newNotification = await createNotification(req.body, res);
+    const newNotification = await createNotification(req.body.notification);
 
     if (newNotification) {
       await createEmployeeNotification(req.body.waitingFor, newNotification.id as string);
-      console.log('Started to create employee notification 2.');
-    } else if (!newNotification) {
-      console.log('Error creating employee notification.');
-      throw new Error('Error creating notification');
     }
 
     res.status(201).json(payloadTask);

@@ -54,4 +54,27 @@ async function getAllEmployees(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { userExists: signIn, getAllEmployees };
+/**
+ * Controller to find an employee by name
+ *
+ * @param req
+ * @param res
+ *
+ * @returns res.status(200).json({ data: employee }) - The employee found.
+ * @returns res.status(404).json({ message }) - If the employee is not found.
+ * @returns res.status(500).json({ message }) - If an error occurs.
+ */
+async function findEmployeeByName(req: Request, res: Response) {
+  try {
+    const employee = await EmployeeService.findEmployeeByName(req.params.name);
+    res.status(200).json({ data: employee });
+  } catch (error: any) {
+    if (error instanceof NotFoundError) {
+      res.status(404).json({ message: 'Employee not found for the provided name.' });
+    } else {
+      res.status(500).json({ message: 'Internal server error occurred.' });
+    }
+  }
+}
+
+export const EmployeeController = { userExists: signIn, getAllEmployees, findEmployeeByName };

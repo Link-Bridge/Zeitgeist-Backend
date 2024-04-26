@@ -130,4 +130,20 @@ async function findRoleByEmail(email: string): Promise<SupportedRoles> {
   return role.title as SupportedRoles;
 }
 
-export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail };
+/**
+ * Function to find an employee by name
+ *
+ * @param name
+ * @returns {}
+ *
+ * @throws {NotFoundError} If the employee is not found
+ */
+async function findEmployeeByName(name: string): Promise<EmployeeEntity> {
+  try {
+    return await EmployeeRepository.findByName(name);
+  } catch (error) {
+    throw new NotFoundError(`Employee not found for the provided name '${name}'`);
+  }
+}
+
+export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail, findEmployeeByName };

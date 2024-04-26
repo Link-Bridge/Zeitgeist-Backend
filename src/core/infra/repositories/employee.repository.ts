@@ -112,4 +112,30 @@ async function create(entity: EmployeeEntity): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, updateRoleById };
+/**
+ * Function to find an employee by name
+ *
+ * @param name
+ * @returns {EmployeeEntity}
+ *
+ * @throws {Error} If an unexpected error occurs
+ */
+async function findByName(name: string): Promise<EmployeeEntity> {
+  try {
+    const data = await Prisma.employee.findFirst({
+      where: {
+        first_name: name,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapEmployeeEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`Failed to fetch employee by name: ${error}`);
+  }
+}
+
+export const EmployeeRepository = { create, findAll, findByEmail, findById, existByEmail, updateRoleById, findByName };

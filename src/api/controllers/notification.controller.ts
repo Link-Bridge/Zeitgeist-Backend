@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as z from 'zod';
+import { EmployeeService } from '../../core/app/services/employee.service';
 import { NotificationService } from '../../core/app/services/notification.service';
 import { Notification } from '../../core/domain/entities/notification.entity';
 
@@ -52,16 +53,13 @@ async function saveToken(req: Request, res: Response) {
  * @throws {Error} If an unexpected error occurs
  */
 
-export async function createNotification(req: Request, res: Response): Promise<Notification | undefined> {
+export async function createNotification(notification: Notification): Promise<Notification | undefined> {
   try {
-    const { notification } = req.body;
     const data = await NotificationService.createNotification(notification);
 
-    res.status(201).json({ data });
     return data;
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    throw new Error('Error creating notification.' + error);
   }
 }
 
@@ -95,9 +93,10 @@ async function getAllNotifications(req: Request, res: Response) {
  *
  * @throws {Error} If an unexpected error occurs
  */
-export async function createEmployeeNotification(idEmployee: string, idNotification: string) {
+export async function createEmployeeNotification(name: string, idNotification: string) {
   try {
-    await NotificationService.createEmployeeNotification(idEmployee, idNotification);
+    const Employee = await EmployeeService.findEmployeeByName(name);
+    await NotificationService.createEmployeeNotification(Employee.id, idNotification);
   } catch (error: any) {
     throw new Error('Error creating employee notification.' + error);
   }
