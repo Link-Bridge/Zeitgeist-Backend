@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon, { SinonStubbedInstance } from 'sinon';
-import { ProjectStatus } from '../../../../utils/enums';
+import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../../../utils/enums';
 import { ProjectEntity } from '../../../domain/entities/project.entity';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { ProjectService } from '../project.service';
@@ -85,12 +85,12 @@ describe('ProjectService', () => {
         description:
           'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
         status: ProjectStatus.IN_PROCESS,
-        category: 'Government',
+        category: ProjectCategory.GOVERNMENT,
         startDate: new Date('2023-04-01T00:00:00.000Z'),
         endDate: new Date('2023-12-01T00:00:00.000Z'),
-        periodicity: '1 week',
+        periodicity: ProjectPeriodicity.ONE_WEEK,
         isChargeable: true,
-        area: 'Client',
+        area: SupportedDepartments.ACCOUNTING,
         createdAt: new Date('2024-04-19T01:23:49.555Z'),
         idCompany: clientUuid,
       };

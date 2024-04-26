@@ -10,7 +10,7 @@ const reportSchema = z.object({
 
 const createProjectRequestSchema = z.object({
   projectName: z.string(),
-  client: z.string().uuid(),
+  client: z.string().uuid({ message: 'Please provide valid UUID' }),
   category: z.nativeEnum(ProjectCategory),
   matter: z.string().optional(),
   description: z.string().optional(),
@@ -21,6 +21,7 @@ const createProjectRequestSchema = z.object({
   chargable: z.boolean(),
   area: z.nativeEnum(SupportedDepartments),
 });
+
 /**
  * @description Create a new project
  * @param req
