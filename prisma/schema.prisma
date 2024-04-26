@@ -24,12 +24,12 @@ model company {
   landline_phone            String?                 @db.VarChar(15)
   created_at                DateTime                @default(now()) @db.Timestamp(6)
   updated_at                DateTime?               @db.Timestamp(6)
-  id_company_direct_contact String?                 @db.Uuid
-  id_form                   String?                 @db.Uuid
   archived                  Boolean                 @default(false)
   constitution_date         DateTime?               @db.Timestamp(6)
   rfc                       String?                 @db.VarChar(13)
   tax_residence             String?                 @db.VarChar(255)
+  id_company_direct_contact String?                 @db.Uuid
+  id_form                   String?                 @db.Uuid
   company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
   form                      form?                   @relation(fields: [id_form], references: [id], onDelete: NoAction, onUpdate: NoAction)
   project                   project[]
