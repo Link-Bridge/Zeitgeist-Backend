@@ -6,7 +6,6 @@ import { BareboneTask, Task } from '../../../domain/entities/task.entity';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
-import { TaskDetail } from '../../interfaces/task.interface';
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
@@ -119,7 +118,7 @@ describe('findTaskById', () => {
         createdAt: new Date(),
         idCompany: randomUUID(),
       };
-      
+
       const taskId = randomUUID();
       const existingTask = {
         id: taskId,
@@ -132,7 +131,7 @@ describe('findTaskById', () => {
         idProject: projectId,
       };
 
-      const taskDetail = {...existingTask, projectName: existingProject.name};
+      const taskDetail = { ...existingTask, projectName: existingProject.name };
 
       findTaskByIdStub.resolves(existingTask);
       findProjectByIdStub.resolves(existingProject);
@@ -140,6 +139,7 @@ describe('findTaskById', () => {
       const result = await TaskService.getTaskById(taskId);
 
       expect(result).to.eql(taskDetail);
+      expect(findTaskByIdStub.calledOnce).to.be.true;
       expect(findProjectByIdStub.calledOnce).to.be.true;
     });
 

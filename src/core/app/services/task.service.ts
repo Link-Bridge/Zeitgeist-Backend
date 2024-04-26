@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import { BareboneTask, Task } from '../../domain/entities/task.entity';
-import { TaskDetail } from '../interfaces/task.interface';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
+import { TaskDetail } from '../interfaces/task.interface';
 
 /**
  * Creates a new task using the repository.
@@ -47,11 +47,10 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
  */
 async function getTaskById(id: string): Promise<TaskDetail> {
   try {
-    const task =  await TaskRepository.findTaskById(id);
+    const task = await TaskRepository.findTaskById(id);
     const project = await ProjectRepository.findById(task.idProject);
 
-    return {...task, projectName: project.name};
-
+    return { ...task, projectName: project.name };
   } catch (error: unknown) {
     throw new Error('An unexpected error occurred');
   }
