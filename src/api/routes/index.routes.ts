@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { AdminRouter } from './admin.routes';
 import { CompanyRouter } from './company.routes';
 import { EmployeeRouter } from './employee.routes';
+import { NotificationRouter } from './notification.routes';
 import { ProjectRouter } from './project.routes';
 import { TaskRouter } from './task.routes';
 
@@ -23,6 +24,9 @@ baseRouter.use(`${V1_PATH}/tasks`, TaskRouter);
 
 //Company
 baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
+
+// Notification
+baseRouter.use(`${V1_PATH}/notification`, NotificationRouter);
 
 // Health check
 baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
