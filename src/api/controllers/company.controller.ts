@@ -16,7 +16,7 @@ import { companySchema } from '../validation/companyValidation';
 async function getAll(req: Request, res: Response) {
   try {
     const data = await CompanyService.findAll();
-    res.status(200).json({ data });
+    res.status(200).json(data);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -42,10 +42,8 @@ async function create(req: Request, res: Response) {
     res.status(200).json(data);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      return res.status(500).json({ error: error.issues });
-    }
-
-    res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.issues });
+    } else res.status(500).json({ error: error.message });
   }
 }
 
