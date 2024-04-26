@@ -1,42 +1,41 @@
 /**
- * @brief Esta clase establece la estructura de la entidad EmployeeTask
+ * @brief This class is used to define the structure of the EmployeeTask entity
  *
- * @param id: string
- * @param createdAt: Date
- * @param updatedAt: Date
- * @param idEmployee: string
- * @param idTask: string
+ * @param id: string - Unique identifier of the relationship
+ * @param createdAt: Date - Date when the relationship was created
+ * @param updatedAt?: Date - Last modification date (optional)
+ * @param idEmployee: string - Unique identifier of the associated employee
+ * @param idTask: string - Unique identifier of the associated task
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de EmployeeTask.
- *
+ * @description The structure contains the schema data of an EmployeeTask.
  */
 
 export interface EmployeeTask {
   /**
-   * @param id: string - Identificador único de la relación
+   * @param id: string - Unique identifier of the relationship
    */
   id: string;
 
   /**
-   * @param createdAt: Date - Fecha de registro de la relación
+   * @param createdAt: Date - Date when the relationship was created
    */
   createdAt: Date;
 
   /**
-   * @param updatedAt: Date - Última fecha de modificación
+   * @param updatedAt: Date - Last modification date (optional)
    */
 
   updatedAt?: Date;
 
   /**
-   * @param idEmployee: string - Identificador único del empleado asociado
+   * @param idEmployee: string - Unique identifier of the associated employee
    */
   idEmployee: string;
 
   /**
-   * @param idTask: string - Identificador único de la tarea asociada
+   * @param idTask: string - Unique identifier of the associated task
    */
   idTask: string;
 }

@@ -1,82 +1,79 @@
 import { TaskStatus } from '../../../utils/enums/index';
 
 /**
- * @brief Esta clase establece la estructura de la entidad Task
+ * @brief This class defines the structure of the Task entity
  *
- * @param id: string
- * @param title: string
- * @param description: string
- * @param status: TaskStatus
- * @param waitingFor: string
- * @param startDate: Date
- * @param endDate: Date
- * @param workedHours: Number
- * @param createdAt: Date
- * @param updatedAt: Date
- * @param idProject: string
+ * @param id: string - Unique identifier of the task
+ * @param title: string - Title of the task
+ * @param description: string - Description of the task
+ * @param status: TaskStatus - Status of the task
+ * @param waitingFor: string - Employee needed to proceed with the task (optional)
+ * @param startDate: Date - Start date of the task
+ * @param endDate: Date - End date of the task (optional)
+ * @param workedHours: number - Hours worked on the task (optional)
+ * @param createdAt: Date - Task creation date
+ * @param updatedAt: Date - Last modification date (optional)
+ * @param idProject: string - Unique identifier of the associated project
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de Task,
- * pero se identifican como atributos opcionales aquellos que no
- * son requeridos por una tarea.
- *
+ * @description The structure contains the schema data of a Task, with some attributes identified as optional, which are not required for a task.
  */
 
 export interface Task {
   /**
-   * @param id: string - Identificador único de la tarea
+   * @param id: string - Unique identifier of the task
    */
   id: string;
 
   /**
-   * @param title: string - Titulo de la tarea
+   * @param title: string - Title of the task
    */
   title: string;
 
   /**
-   * @param description: string - Descripcion de la tarea
+   * @param description: string - Description of the task
    */
   description: string;
 
   /**
-   * @param status: TaskStatus - Estatus de la tarea
+   * @param status: TaskStatus - Status of the task
    */
   status: TaskStatus;
 
   /**
-   * @param waitingFor: string - Empleado necesario para poder continuar con la tarea
+   * @param waitingFor: string - Employee needed to proceed with the task (optional)
    */
   waitingFor?: string;
 
   /**
-   * @param startDate: Date - Fecha de inicio de la tarea
+   * @param startDate: Date - Start date of the task
    */
   startDate: Date;
 
   /**
-   * @param endDate: Date - Fecha de fin de la tarea
+   * @param endDate: Date - End date of the task (optional)
    */
   endDate?: Date;
 
   /**
-   * @param workedHours: number - Horas trabajadas en la tarea
+   * @param workedHours: number - Hours worked on the task (optional)
    */
   workedHours?: number;
 
   /**
-   * @param createdAt: Date - Fecha de registro de la tarea
+   * @param createdAt: Date - Task creation date
    */
   createdAt: Date;
 
   /**
-   * @param updatedAt: Date - Última fecha de modificación
+   * @param updatedAt: Date - Last modification date (optional)
    */
 
   updatedAt?: Date;
 
   /**
-   * @param idProject: string - Identificador único del proyecto asociado
+   * @param idProject: string - Unique identifier of the associated project
    */
   idProject: string;
 }

@@ -2,20 +2,20 @@ import { Decimal } from '@prisma/client/runtime/library';
 /**
  * @brief This class is used to define the company entity
  *
- * @param id: string
- * @param name: string
- * @param email: string
- * @param phoneNumber: string
- * @param landlinePhone: string
- * @param archived: boolean
- * @param idCompanyDirectContact: string
- * @param idForm: string
- * @param createdAt: Date
- * @param updatedAt: Date
- * @param accountingHours: number
- * @param legalHours: number
- * @param chargeableHours: number
- * @param totalProjects: number
+ * @param id: string - Unique identifier of the company.
+ * @param name: string - Company title
+ * @param email: string - Company email
+ * @param phoneNumber: string - Company phone number
+ * @param landlinePhone: string - Company landline phone number
+ * @param archived: boolean - Determines whether the company is archived or not
+ * @param idCompanyDirectContact: string - Id for company direct contact
+ * @param idForm: string - Id for company form
+ * @param createdAt: Date - Company creation date
+ * @param updatedAt: Date - Company update date
+ * @param accountingHours: Decimal - Company accounting worked hours
+ * @param legalHours: Decimal - Company legal worked hours
+ * @param chargeableHours: Decimal - Company chargeable hours
+ * @param totalProjects: number - Company total projects
  *
  * @return void
  *
