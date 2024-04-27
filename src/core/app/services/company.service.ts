@@ -1,8 +1,29 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+
+/**
+ * Creates a new company
+ * @param {CompanyEntity} company data
+ * @returns {String} id from created company
+ * @returns {null} if an error occured
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
+  try {
+    const uuid = randomUUID();
+    const date = new Date();
+    const res = await CompanyRepository.create(company, uuid, date);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -48,4 +69,4 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findAll };
+export const CompanyService = { findAll, create };

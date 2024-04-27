@@ -6,13 +6,13 @@ import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { Project, ProjectStatistics, Report, Task } from '../interfaces/project-report.interface';
 
 /**
- * @brief Esta función inicializa las estadísticas de un reporte
+ * @brief This function initializes the statistics of a report
  *
- * @param total: Number
+ * @param total: Number - Total number of tasks
  *
- * @return ProjectStatistics
+ * @return ProjectStatistics - Object containing the initialized statistics
  *
- * @description Las tareas se agrupan segun su estatus y se inicializan en 0.
+ * @description Tasks are grouped according to their status and initialized to 0.
  *
  */
 function initilizeStatistics(total: number): ProjectStatistics {
@@ -29,16 +29,16 @@ function initilizeStatistics(total: number): ProjectStatistics {
 }
 
 /**
- * @brief Esta función genera el reporte de un proyecto
+ * @brief This function generates a report for a project
  *
- * @param id: string
+ * @param id: string - Project ID
  *
- * @return Report
+ * @return Report - The generated report
  *
- * @description Se hace la distinción entre un proyecto en cotización o
- * cancelado y un proyecto en cualquier otro estatus. El reporte de un proyecto en cotización
- * o cancelado retorna datos generales del proyecto y los demás incluyen tareas asociadas
- * al proyecto y sus estadísticas.
+ * @description A distinction is made between a project in the quotation or
+ * canceled status and a project in any other status. The report for a project in quotation
+ * or canceled status returns general project data, while for other statuses it includes
+ * associated tasks and their statistics.
  *
  */
 async function getReport(id: string): Promise<Report> {
