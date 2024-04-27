@@ -4,8 +4,8 @@ import { ProjectReportService } from '../../core/app/services/project-report.ser
 import { ProjectService } from '../../core/app/services/project.service';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../utils/enums';
 
-const reportSchema = z.object({
-  id: z.string().min(1, { message: 'projectId cannot be empty' }),
+const idSchema = z.object({
+  id: z.string().uuid(),
 });
 
 const createProjectRequestSchema = z.object({
@@ -52,7 +52,7 @@ async function createProject(req: Request, res: Response) {
 
 async function getReportData(req: Request, res: Response) {
   try {
-    const { id } = reportSchema.parse({ id: req.params.id });
+    const { id } = idSchema.parse({ id: req.params.id });
 
     const data = await ProjectReportService.getReport(id);
     res.status(200).json(data);
