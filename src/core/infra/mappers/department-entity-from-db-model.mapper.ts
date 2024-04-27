@@ -7,8 +7,8 @@ function supportedDepartmentsFromString(maybeSupportedDepartment: string): Suppo
     return SupportedDepartments.WITHOUT_DEPARTMENT;
   }
 
-  if (maybeSupportedDepartment.toUpperCase() === SupportedDepartments.CONTABLE) {
-    return SupportedDepartments.CONTABLE;
+  if (maybeSupportedDepartment.toUpperCase() === SupportedDepartments.ACCOUNTING) {
+    return SupportedDepartments.ACCOUNTING;
   }
 
   if (maybeSupportedDepartment.toUpperCase() === SupportedDepartments.LEGAL) {

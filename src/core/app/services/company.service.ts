@@ -32,7 +32,7 @@ async function findAll(): Promise<CompanyEntity[]> {
           if (project.area == SupportedDepartments.LEGAL)
             company.legalHours = company.legalHours!.add(new Decimal(project.totalHours.toString()));
           // Add to accounting hours
-          if (project.area == SupportedDepartments.CONTABLE)
+          if (project.area == SupportedDepartments.ACCOUNTING)
             company.accountingHours = company.accountingHours!.add(new Decimal(project.totalHours.toString()));
         }
       });
