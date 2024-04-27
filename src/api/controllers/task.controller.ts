@@ -70,10 +70,19 @@ async function createTask(req: Request, res: Response) {
   }
 }
 
+/**
+ * Sends a request to the service to fetch an array of tasks form a unique project.
+ *
+ * @param req: Request - The request object.
+ * @param res: Response - The response object.
+ * @returns res.status(200).json(tasks) - The array of tasks.
+ * @returns res.status(500).json({ message }) - If an error occurs.
+ *
+ * @throws 500 - If an error occurs.
+ */
+
 async function getTasksFromProject(req: Request, res: Response) {
   try {
-    // const { idProject } = taskSchema.parse({ idProject: req.params.idProject });
-
     const data = await TaskService.getTasksFromProject(req.params.idProject);
     res.status(200).json({ data });
   } catch (error: any) {

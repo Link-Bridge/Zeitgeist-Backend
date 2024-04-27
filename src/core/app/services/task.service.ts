@@ -3,6 +3,15 @@ import { BareboneTask, Task } from '../../domain/entities/task.entity';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 
+/**
+ * Gets all tasks from a unique project using the repository.
+ *
+ * @param projectId: string - projectId to which the tasks are related.
+ * @returns {Promise<Task[]>} - Array of tasks from a unique project.
+ *
+ * @throws {Error} - If an error occurs when creating the task.
+ */
+
 async function getTasksFromProject(projectId: string): Promise<Task[]> {
   try {
     const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
