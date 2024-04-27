@@ -5,13 +5,25 @@ import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-m
 
 const RESOURCE_NAME = 'Task';
 
-async function findTaskById(id: string): Promise<Task | null> {
+/**
+ * Creates a new task in the database.
+ *
+ * @param id: string - The id of the task
+ * @returns {Promise<Task>} - Task.
+ *
+ * @throws {Error} - If an error occurs when creating the task.
+ */
+async function findTaskById(id: string): Promise<Task> {
   try {
     const existingTask = await Prisma.task.findUnique({
       where: { id },
     });
 
-    return existingTask ? mapTaskEntityFromDbModel(existingTask) : null;
+    if (!existingTask) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapTaskEntityFromDbModel(existingTask);
   } catch (error) {
     throw new Error(`Failed to find task on ${RESOURCE_NAME} with id ${id}`);
   }
@@ -77,4 +89,4 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId };
+export const TaskRepository = { createTask, findTasksByProjectId, findTaskById };
