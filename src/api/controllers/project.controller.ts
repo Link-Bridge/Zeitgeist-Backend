@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.service';
 import { ProjectService } from '../../core/app/services/project.service';
+import { ProjectRepository } from '../../core/infra/repositories/project.repository';
 
 const reportSchema = z.object({
   id: z.string().min(1, { message: 'projectId cannot be empty' }),
@@ -36,4 +37,8 @@ async function getProjectsClient(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, getProjectsClient };
+async function getAllProjects(req: Request, res: Response) {
+  res.json(await ProjectRepository.findAll());
+}
+
+export const ProjectController = { getReportData, getProjectsClient, getAllProjects };

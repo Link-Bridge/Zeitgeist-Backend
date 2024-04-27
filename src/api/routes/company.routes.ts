@@ -35,5 +35,11 @@ router.get(
   checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getAll
 );
+router.get(
+  '/:id',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  CompanyController.getById
+);
 
 export { router as CompanyRouter };

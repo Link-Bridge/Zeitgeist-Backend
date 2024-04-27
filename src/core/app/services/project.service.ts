@@ -21,4 +21,8 @@ async function findProjectsClient(clientId: string): Promise<ProjectEntity[]> {
   }
 }
 
-export const ProjectService = { findProjectsClient };
+async function getAllProjects(): Promise<ProjectEntity[]> {
+  return await ProjectRepository.findAll();
+}
+
+export const ProjectService = { findProjectsClient, getAllProjects };

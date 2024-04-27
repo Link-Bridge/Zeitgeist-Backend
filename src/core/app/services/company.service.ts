@@ -48,4 +48,8 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findAll };
+async function findById(id: string) {
+  return CompanyRepository.findById(id);
+}
+
+export const CompanyService = { findAll, findById };

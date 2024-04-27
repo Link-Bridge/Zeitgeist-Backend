@@ -15,6 +15,7 @@ describe('ProjectService', () => {
     projectService = {
       ...ProjectService,
       findProjectsClient: projectRepository.findProjetsByClientId,
+      getAllProjects: projectRepository.findAll,
     };
   });
 
@@ -63,6 +64,50 @@ describe('ProjectService', () => {
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.be.equal('Error getting projects');
       }
+    });
+  });
+  describe('getAllProjects', () => {
+    it('should return all projects', async () => {
+      const projects = [
+        {
+          id: randomUUID(),
+          name: 'Nuevo Proyecto de Desarrollo',
+          matter: 'Desarrollo de un sistema de gestión interna',
+          description:
+            'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
+          status: ProjectStatus.IN_PROCESS,
+          category: 'Government',
+          startDate: new Date('2023-04-01T00:00:00.000Z'),
+          endDate: new Date('2023-12-01T00:00:00.000Z'),
+          periodicity: '1 week',
+          isChargeable: true,
+          area: 'Client',
+          createdAt: new Date('2024-04-19T01:23:49.555Z'),
+          idCompany: randomUUID(),
+        },
+        {
+          id: randomUUID(),
+          name: 'Nuevo Proyecto de Desarrollo 2',
+          matter: 'Desarrollo de un sistema de gestión interna 2',
+          description:
+            'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
+          status: ProjectStatus.IN_PROCESS,
+          category: 'Government',
+          startDate: new Date('2023-04-01T00:00:00.000Z'),
+          endDate: new Date('2023-12-01T00:00:00.000Z'),
+          periodicity: '1 week',
+          isChargeable: true,
+          area: 'Client',
+          createdAt: new Date('2024-04-19T01:23:49.555Z'),
+          idCompany: randomUUID(),
+        },
+      ];
+
+      projectRepository.findAll.resolves(projects);
+
+      const getProjects = await projectService.getAllProjects();
+
+      expect(getProjects).eql(projects);
     });
   });
 });

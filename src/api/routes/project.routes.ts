@@ -19,5 +19,11 @@ router.get(
   ProjectController.getProjectsClient
 );
 router.get('/report/:id', ProjectController.getReportData);
+router.get(
+  '/',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.getAllProjects
+);
 
 export { router as ProjectRouter };

@@ -12,10 +12,12 @@ chai.use(chaiAsPromised);
 describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
   let findAllProjectsStub: sinon.SinonStub;
+  let findByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
+    findByIdStub = sinon.stub(CompanyRepository, 'findById');
   });
 
   afterEach(() => {
@@ -367,5 +369,27 @@ describe('CompanyService', () => {
     expect(res[0].accountingHours).to.eql(new Decimal(20));
     expect(res[0].chargeableHours).to.eql(new Decimal(30));
     expect(res[0].totalProjects).to.eql(4);
+  });
+
+  it('should get a single company', async () => {
+    const idCompany1 = randomUUID();
+    const company = {
+      id: idCompany1,
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumnber: '1234567890',
+      landline_phone: '0987654321',
+      archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    };
+
+    findByIdStub.resolves(company);
+    const aCompany = await CompanyService.findById(idCompany1);
+
+    expect(findByIdStub.calledWith(idCompany1)).to.be.true;
+    expect(aCompany).eql(company);
   });
 });
