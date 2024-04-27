@@ -143,7 +143,7 @@ async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
 
     return await EmployeeRepository.deleteEmployeeById(id);
   } catch (error: unknown) {
-    console.error('Error: ', error);
+    console.log('Error: ', error);
     throw new Error('An unexpected error occurred');
   }
 }
