@@ -15,7 +15,6 @@ async function findById(id: string): Promise<CompanyEntity> {
     const companyRecord = await CompanyRepository.findById(id);
     return companyRecord;
   } catch (error: any) {
-    console.log(error);
     throw new Error('An unexpected error occurred');
   }
 }
@@ -58,7 +57,6 @@ async function findAll(): Promise<CompanyEntity[]> {
 
     return companyRecords;
   } catch (error: any) {
-    console.log(error);
     throw new Error('an unexpected error occurred');
   }
 }

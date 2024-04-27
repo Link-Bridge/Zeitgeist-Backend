@@ -6,35 +6,7 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-/**
- * @openapi
- * /company/:id:
- *  get:
- *    summary: Obtiene información de una compañía específica por su ID
- *    tags:
- *      - Company
- *    description: Retorna información de una compañía específica identificada por su ID
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        description: ID de la compañía
- *        schema:
- *          type: string
- *    responses:
- *      200:
- *        description: Información de la compañía
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                id:
- *                  type: string
- *                  description: El ID de la compañía
- *                  example: "f4105be8-3b4a-44bb-8707-d1e3eec927ba"
- *
- */
+// Get Unique Client
 router.get('/:id', CompanyController.getUnique);
 
 /**
