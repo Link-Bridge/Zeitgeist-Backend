@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.service';
 import { ProjectService } from '../../core/app/services/project.service';
 
-const idSchema = z.object({ 
+const idSchema = z.object({
   id: z.string().uuid(),
 });
 

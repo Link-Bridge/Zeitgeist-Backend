@@ -26,7 +26,7 @@ const taskSchema = z.object({
   idProject: z.string().uuid(),
 });
 
-const idSchema = z.object({ 
+const idSchema = z.object({
   id: z.string().uuid(),
 });
 
