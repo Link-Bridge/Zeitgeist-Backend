@@ -61,7 +61,7 @@ async function getTaskById(id: string): Promise<TaskDetail> {
       return { ...task, projectName: project.name };
     }
 
-   const employee = await EmployeeRepository.findById(selectedEmployeeTask.idEmployee);
+    const employee = await EmployeeRepository.findById(selectedEmployeeTask.idEmployee);
 
     return {
       ...task,

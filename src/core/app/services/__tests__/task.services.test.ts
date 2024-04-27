@@ -3,11 +3,11 @@ import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { TaskStatus } from '../../../../utils/enums';
 import { BareboneTask, Task } from '../../../domain/entities/task.entity';
+import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
-import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
@@ -149,12 +149,14 @@ describe('findTaskById', () => {
       };
 
       const employeeTaskId = randomUUID();
-      const existingEmployeeTask = [{
-        id: employeeTaskId,
-        createdAt: new Date(),
-        idEmployee: employeeId,
-        idTask: taskId,
-      }];
+      const existingEmployeeTask = [
+        {
+          id: employeeTaskId,
+          createdAt: new Date(),
+          idEmployee: employeeId,
+          idTask: taskId,
+        },
+      ];
 
       const taskDetail = {
         ...existingTask,
