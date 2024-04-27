@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { updateUserRole as updateUserRoleService } from '../../core/app/services/admin-role.service';
+import { updateUserRole as updateUserRoleService, getAllRoles as getAllRolesService } from '../../core/app/services/admin-role.service';
 
 // Defines a schema for validations
 const updateUserRoleSchema = z.object({
@@ -23,4 +23,13 @@ async function updateUserRole(req: Request, res: Response) {
   }
 }
 
-export { updateUserRole as updateUserRole };
+async function getAllRoles(_: Request, res: Response) {
+  try {
+    const roles = await getAllRolesService();
+    res.status(200).json({ data: roles });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { updateUserRole, getAllRoles };
