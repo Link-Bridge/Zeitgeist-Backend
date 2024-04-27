@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
+import { SupportedDepartments } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { CompanyService } from '../company.service';
@@ -300,7 +301,7 @@ describe('CompanyService', () => {
         totalHours: 10,
         periodicity: null,
         isChargeable: true,
-        area: 'LEGAL',
+        area: SupportedDepartments.LEGAL,
         createdAt: new Date(),
         updatedAt: null,
         idCompany: idCompany1,
@@ -317,7 +318,7 @@ describe('CompanyService', () => {
         totalHours: 5,
         periodicity: null,
         isChargeable: true,
-        area: 'CONTABLE',
+        area: SupportedDepartments.ACCOUNTING,
         createdAt: new Date(),
         updatedAt: null,
         idCompany: idCompany1,
@@ -334,7 +335,7 @@ describe('CompanyService', () => {
         totalHours: 15,
         periodicity: null,
         isChargeable: true,
-        area: 'CONTABLE',
+        area: SupportedDepartments.ACCOUNTING,
         createdAt: new Date(),
         updatedAt: null,
         idCompany: idCompany1,
@@ -351,7 +352,7 @@ describe('CompanyService', () => {
         totalHours: 10,
         periodicity: null,
         isChargeable: false,
-        area: 'LEGAL',
+        area: SupportedDepartments.LEGAL,
         createdAt: new Date(),
         updatedAt: null,
         idCompany: idCompany1,
