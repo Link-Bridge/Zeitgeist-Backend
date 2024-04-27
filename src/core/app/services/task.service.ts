@@ -3,6 +3,15 @@ import { BareboneTask, Task } from '../../domain/entities/task.entity';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 
+async function getTasksFromProject(projectId: string): Promise<Task[]> {
+  try {
+    const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
+    return taskRecords;
+  } catch (error: unknown) {
+    throw new Error('Error fetching array of tasks from project');
+  }
+}
+
 /**
  * Creates a new task using the repository.
  *
@@ -36,4 +45,4 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
   }
 }
 
-export const TaskService = { createTask };
+export const TaskService = { getTasksFromProject, createTask };

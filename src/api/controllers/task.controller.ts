@@ -70,4 +70,15 @@ async function createTask(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask };
+async function getTasksFromProject(req: Request, res: Response) {
+  try {
+    // const { idProject } = taskSchema.parse({ idProject: req.params.idProject });
+
+    const data = await TaskService.getTasksFromProject(req.params.idProject);
+    res.status(200).json({ data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, getTasksFromProject };

@@ -139,4 +139,6 @@ const router = Router();
 
 router.post('/create', TaskController.createTask);
 
+router.get('/:idProject', TaskController.getTasksFromProject);
+
 export { router as TaskRouter };
