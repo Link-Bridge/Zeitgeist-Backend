@@ -10,6 +10,7 @@ router.get(
   '/report/:id',
   checkAuthToken,
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getReportData
 );
 router.get(
@@ -31,5 +32,12 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectsClient
 );
+router.post(
+  '/create',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.createProject
+);
+router.get('/', ProjectController.getAllProjects);
 
 export { router as ProjectRouter };

@@ -17,7 +17,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:pull-schema": "prisma db pull",
-    "prisma:migrate:status": "prisma migrate status"
+    "prisma:migrate:status": "prisma migrate status",
+    "seed": "tsc ./prisma/seeder.ts --outDir ./dist && node ./dist/prisma/seeder.js"
   },
   "husky": {
     "hooks": {
@@ -70,6 +71,7 @@
     "sinon": "^17.0.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
   }
 }

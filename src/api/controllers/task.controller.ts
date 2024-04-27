@@ -26,6 +26,10 @@ const taskSchema = z.object({
   idProject: z.string().uuid(),
 });
 
+const idSchema = z.object({
+  id: z.string().uuid(),
+});
+
 /**
  * Validates the data received through the POST method
  *
@@ -70,4 +74,25 @@ async function createTask(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask };
+/**
+ * Sends a request to the service to create a new task with the given data.
+ *
+ * @param req: Request - The request object.
+ * @param res: Response - The response object.
+ * @returns res.status(200).json(data) - The detailed task.
+ * @returns res.status(500).json({ message }) - If an error occurs.
+ *
+ * @throws 500 - If an error occurs.
+ */
+async function findTaskById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+
+    const data = await TaskService.findUnique(id);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, findTaskById };
