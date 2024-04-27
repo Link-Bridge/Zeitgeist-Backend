@@ -7,15 +7,17 @@ const prisma = new PrismaClient();
 async function seedRoles(): Promise<void> {
   console.log('Seeding roles...');
   for (const roleKey of Object.values(SupportedRoles)) {
-    const id = randomUUID();
-    await prisma.role.upsert({
-      where: { title: roleKey },
-      update: {},
-      create: {
-        id,
-        title: roleKey,
-      },
-    });
+    if (await prisma.role.findFirst({ where: { title: roleKey } })) {
+      continue;
+    } else {
+      const id = randomUUID();
+      await prisma.role.create({
+        data: {
+          id,
+          title: roleKey,
+        },
+      });
+    }
   }
   console.log('Roles seeded.');
 }
@@ -23,15 +25,17 @@ async function seedRoles(): Promise<void> {
 async function seedDepartments(): Promise<void> {
   console.log('Seeding departments...');
   for (const departmentKey of Object.values(SupportedDepartments)) {
-    const id = randomUUID();
-    await prisma.department.upsert({
-      where: { title: departmentKey },
-      update: {},
-      create: {
-        id,
-        title: departmentKey,
-      },
-    });
+    if (await prisma.department.findFirst({ where: { title: departmentKey } })) {
+      continue;
+    } else {
+      const id = randomUUID();
+      await prisma.department.create({
+        data: {
+          id,
+          title: departmentKey,
+        },
+      });
+    }
   }
   console.log('Departments seeded successfully.');
 }
@@ -47,4 +51,4 @@ async function runSeeder(): Promise<void> {
   }
 }
 
-runSeeder();
+void runSeeder();
