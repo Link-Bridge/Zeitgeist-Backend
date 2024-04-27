@@ -10,6 +10,7 @@ import { TaskService } from '../task.service';
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
+  let taskFetchRepositoryStub: sinon.SinonStub;
 
   const projectID = randomUUID();
 
@@ -37,9 +38,20 @@ describe('TaskService', () => {
     idProject: projectID,
   };
 
+  const existingTask: Task = {
+    id: randomUUID(),
+    title: 'Application form',
+    description: 'Creating an application for a process',
+    status: TaskStatus.DONE,
+    startDate: new Date('1970-01-01'),
+    createdAt: new Date(),
+    idProject: '72bd0b52-1a6a-4fa4-beca-d9d24a721df1',
+  };
+
   beforeEach(() => {
     taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
     projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
+    taskFetchRepositoryStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
   });
 
   afterEach(() => {
@@ -87,6 +99,30 @@ describe('TaskService', () => {
       } catch (error: any) {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Could not create task');
+      }
+    });
+  });
+
+  describe('getTasksFromProject', () => {
+    it('Should get an array of tasks from the repository', async () => {
+      // taskFetchRepositoryStub.returns(existingTask);
+      taskFetchRepositoryStub.resolves(existingTask);
+
+      const result = await TaskService.getTasksFromProject(existingTask.id);
+
+      expect(result).to.deep.equal(existingTask);
+      expect(taskFetchRepositoryStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw an error if the task could not be created', async () => {
+      taskFetchRepositoryStub.withArgs(existingTask).throws(new Error('Could not get tasks'));
+      // projectRepositoryStub.resolves({ id: projectID });
+
+      try {
+        await TaskService.getTasksFromProject(existingTask.id);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Could not get tasks');
       }
     });
   });
