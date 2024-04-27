@@ -3,9 +3,11 @@ import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { TaskStatus } from '../../../../utils/enums';
 import { BareboneTask, Task } from '../../../domain/entities/task.entity';
+import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
+import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
@@ -95,10 +97,14 @@ describe('TaskService', () => {
 describe('findTaskById', () => {
   let findTaskByIdStub: sinon.SinonStub;
   let findProjectByIdStub: sinon.SinonStub;
+  let findEmployeeByIdStub: sinon.SinonStub;
+  let findAllEmployeeTaskStub: sinon.SinonStub;
 
   beforeEach(() => {
     findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
+    findEmployeeByIdStub = sinon.stub(EmployeeRepository, 'findById');
+    findAllEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'findAll');
   });
 
   afterEach(() => {
@@ -119,6 +125,17 @@ describe('findTaskById', () => {
         idCompany: randomUUID(),
       };
 
+      const employeeId = randomUUID();
+      const existingEmployee = {
+        id: employeeId,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      };
+
       const taskId = randomUUID();
       const existingTask = {
         id: taskId,
@@ -131,16 +148,33 @@ describe('findTaskById', () => {
         idProject: projectId,
       };
 
-      const taskDetail = { ...existingTask, projectName: existingProject.name };
+      const employeeTaskId = randomUUID();
+      const existingEmployeeTask = [{
+        id: employeeTaskId,
+        createdAt: new Date(),
+        idEmployee: employeeId,
+        idTask: taskId,
+      }];
+
+      const taskDetail = {
+        ...existingTask,
+        projectName: existingProject.name,
+        employeeFirstName: existingEmployee.firstName,
+        employeeLastName: existingEmployee.lastName,
+      };
 
       findTaskByIdStub.resolves(existingTask);
       findProjectByIdStub.resolves(existingProject);
+      findEmployeeByIdStub.resolves(existingEmployee);
+      findAllEmployeeTaskStub.resolves(existingEmployeeTask);
 
       const result = await TaskService.getTaskById(taskId);
 
       expect(result).to.eql(taskDetail);
       expect(findTaskByIdStub.calledOnce).to.be.true;
       expect(findProjectByIdStub.calledOnce).to.be.true;
+      expect(findEmployeeByIdStub.calledOnce).to.be.true;
+      expect(findAllEmployeeTaskStub.calledOnce).to.be.true;
     });
 
     it('should throw an error if the task id does not exist', async () => {

@@ -1,5 +1,7 @@
 import { randomUUID } from 'crypto';
 import { BareboneTask, Task } from '../../domain/entities/task.entity';
+import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
+import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
@@ -49,8 +51,24 @@ async function getTaskById(id: string): Promise<TaskDetail> {
   try {
     const task = await TaskRepository.findTaskById(id);
     const project = await ProjectRepository.findById(task.idProject);
+    const employeeTask = await EmployeeTaskRepository.findAll();
 
-    return { ...task, projectName: project.name };
+    const selectedEmployeeTask = employeeTask.find(record => {
+      if (record.idTask === task.id) return record;
+    });
+
+    if (!selectedEmployeeTask) {
+      return { ...task, projectName: project.name };
+    }
+
+   const employee = await EmployeeRepository.findById(selectedEmployeeTask.idEmployee);
+
+    return {
+      ...task,
+      projectName: project.name,
+      employeeFirstName: employee.firstName,
+      employeeLastName: employee.lastName,
+    };
   } catch (error: unknown) {
     throw new Error('An unexpected error occurred');
   }

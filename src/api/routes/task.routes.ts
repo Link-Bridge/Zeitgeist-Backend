@@ -143,8 +143,8 @@ const router = Router();
 router.post('/create', TaskController.createTask);
 router.get(
   '/:id',
-  checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+//  checkAuthToken,
+ // checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.getTaskById
 );
 
