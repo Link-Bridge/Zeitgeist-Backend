@@ -24,6 +24,12 @@ router.post(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.createProject
 );
+router.get(
+  '/details/:id',
+  //checkAuthToken,
+  //checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.getProjectById
+);
 router.get('/', ProjectController.getAllProjects);
 
 export { router as ProjectRouter };

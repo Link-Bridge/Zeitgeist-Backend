@@ -64,4 +64,20 @@ async function findProjectsClient(clientId: string): Promise<ProjectEntity[]> {
   }
 }
 
-export const ProjectService = { createProject, getAllProjects, findProjectsClient };
+/**
+ *
+ * @param projectId the id of the proyect we want the details
+ * @returns {Promise<ProjectEntity>} a promise that resolves the details of the project
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function getProjectById(projectId: string): Promise<ProjectEntity> {
+  try {
+    const project = await ProjectRepository.findById(projectId);
+    return project;
+  } catch (error) {
+    throw new Error('An unexpected error occured');
+  }
+}
+
+export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById };

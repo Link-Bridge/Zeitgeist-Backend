@@ -93,4 +93,16 @@ async function getAllProjects(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient };
+async function getProjectById(req: Request, res: Response) {
+  try {
+    const { id } = reportSchema.parse({ id: req.params.id });
+    const projectDetails = await ProjectService.getProjectById(id);
+    if (projectDetails) {
+      res.status(200).json(projectDetails);
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient, getProjectById };
