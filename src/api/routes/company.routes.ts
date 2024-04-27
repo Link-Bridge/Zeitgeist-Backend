@@ -32,7 +32,7 @@ const router = Router();
 router.get(
   '/',
   checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getAll
 );
 
