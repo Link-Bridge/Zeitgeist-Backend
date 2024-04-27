@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.service';
 import { ProjectService } from '../../core/app/services/project.service';
 
-const idSchema = z.object({
-  id: z.string().min(1, { message: 'projectId cannot be empty' }),
+const idSchema = z.object({ 
+  id: z.string().uuid(),
 });
 
 async function getReportData(req: Request, res: Response) {

@@ -142,7 +142,7 @@ router.get(
   '/:id',
   //  checkAuthToken,
   // checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  TaskController.getTaskById
+  TaskController.findTaskById
 );
 
 export { router as TaskRouter };

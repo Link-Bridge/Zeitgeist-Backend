@@ -94,7 +94,7 @@ describe('TaskService', () => {
   });
 });
 
-describe('findTaskById', () => {
+describe('TaskService', () => {
   let findTaskByIdStub: sinon.SinonStub;
   let findProjectByIdStub: sinon.SinonStub;
   let findEmployeeByIdStub: sinon.SinonStub;
@@ -111,7 +111,7 @@ describe('findTaskById', () => {
     sinon.restore();
   });
 
-  describe('getTaskById', () => {
+  describe('findTaskById', () => {
     it('should return a all data in the database of the selected taks', async () => {
       const projectId = randomUUID();
       const existingProject = {
@@ -170,7 +170,7 @@ describe('findTaskById', () => {
       findEmployeeByIdStub.resolves(existingEmployee);
       findAllEmployeeTaskStub.resolves(existingEmployeeTask);
 
-      const result = await TaskService.getTaskById(taskId);
+      const result = await TaskService.findUnique(taskId);
 
       expect(result).to.eql(taskDetail);
       expect(findTaskByIdStub.calledOnce).to.be.true;
@@ -183,7 +183,7 @@ describe('findTaskById', () => {
       const errorMessage = 'An unexpected error occurred';
       findTaskByIdStub.rejects(new Error(errorMessage));
 
-      await expect(TaskService.getTaskById(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+      await expect(TaskService.findUnique(randomUUID())).to.be.rejectedWith(Error, errorMessage);
     });
   });
 });

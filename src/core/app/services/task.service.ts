@@ -47,7 +47,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
  *
  * @throws {Error} - If an error occurs when looking for the task.
  */
-async function getTaskById(id: string): Promise<TaskDetail> {
+async function findUnique(id: string): Promise<TaskDetail> {
   try {
     const task = await TaskRepository.findTaskById(id);
     const project = await ProjectRepository.findById(task.idProject);
@@ -74,4 +74,4 @@ async function getTaskById(id: string): Promise<TaskDetail> {
   }
 }
 
-export const TaskService = { createTask, getTaskById };
+export const TaskService = { createTask, findUnique };

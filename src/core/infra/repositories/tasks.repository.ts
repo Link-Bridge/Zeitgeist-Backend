@@ -5,6 +5,14 @@ import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-m
 
 const RESOURCE_NAME = 'Task';
 
+/**
+ * Creates a new task in the database.
+ *
+ * @param id: string - The id of the task
+ * @returns {Promise<Task>} - Task.
+ *
+ * @throws {Error} - If an error occurs when creating the task.
+ */
 async function findTaskById(id: string): Promise<Task> {
   try {
     const existingTask = await Prisma.task.findUnique({
