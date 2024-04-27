@@ -1,14 +1,14 @@
 export enum SupportedRoles {
-  WITHOUT_ROLE = 'SIN_ROL',
-  ADMIN = 'ADMINISTRADOR',
-  LEGAL = 'LEGAL',
-  CONTABLE = 'CONTABLE',
+  WITHOUT_ROLE = 'No Role',
+  ADMIN = 'Admin',
+  LEGAL = 'Legal',
+  ACCOUNTING = 'Accounting',
 }
 
 export enum SupportedDepartments {
-  WITHOUT_DEPARTMENT = 'SIN_DEPARTAMENTO',
-  LEGAL = 'LEGAL',
-  CONTABLE = 'CONTABLE',
+  WITHOUT_DEPARTMENT = 'Without Department',
+  LEGAL = 'Legal',
+  ACCOUNTING = 'Accounting',
 }
 
 export enum TaskStatus {
