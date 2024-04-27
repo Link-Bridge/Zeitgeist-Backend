@@ -91,7 +91,7 @@ describe('EmployeeService', () => {
     };
 
     findEmployeeByIdStub.resolves(employee.id);
-    deleteEmployeeByIdStub.resolves(null);	
+    deleteEmployeeByIdStub.resolves(null);
 
     const result = await EmployeeService.deleteEmployeeById(employee.id);
 
