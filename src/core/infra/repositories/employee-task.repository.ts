@@ -19,4 +19,26 @@ async function findAll(): Promise<EmployeeTask[]> {
   }
 }
 
-export const EmployeeTaskRepository = { findAll };
+/**
+ * Creates a new employee task in the database.
+ *
+ * @param newEmployeeTask: EmployeeTask - New employee task to be created.
+ * @returns {Promise<EmployeeTask>} - Created employee task.
+ *
+ * @throws {Error} - If an error occurs when creating the employee task.
+ */
+async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | null> {
+  return await Prisma.$transaction(async (prisma: any) => {
+    try {
+      const createdEmployeeTask = await prisma.employee_task.create({
+        data: { newEmployeeTask },
+      });
+
+      return mapEmployeeTaskEntityFromDbModel(createdEmployeeTask);
+    } catch (error) {
+      throw new Error(`Failed to create employee task on ${RESOURCE_NAME}`);
+    }
+  });
+}
+
+export const EmployeeTaskRepository = { findAll, create };

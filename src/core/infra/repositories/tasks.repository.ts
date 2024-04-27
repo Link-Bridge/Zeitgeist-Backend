@@ -5,6 +5,14 @@ import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-m
 
 const RESOURCE_NAME = 'Task';
 
+/**
+ * Finds a task by its id.
+ *
+ * @param id: string - Task id.
+ * @returns {Promise<Task | null>} - Task found or null if not found.
+ *
+ * @throws {Error} - If an error occurs when finding the task.
+ */
 async function findTaskById(id: string): Promise<Task | null> {
   try {
     const existingTask = await Prisma.task.findUnique({
@@ -22,6 +30,7 @@ async function findTaskById(id: string): Promise<Task | null> {
  *
  * @param new_task: Task - New task to be created.
  * @returns {Promise<Task>} - Created task.
+ * @returns {Promise<null>}    - If the task already exists.
  *
  * @throws {Error} - If an error occurs when creating the task.
  */
@@ -31,7 +40,6 @@ async function createTask(newTask: Task): Promise<Task | null> {
       const existingTask = await findTaskById(newTask.id);
 
       if (existingTask) {
-        console.log(`Task with id ${newTask.id} already exists`);
         return null;
       }
 
@@ -41,7 +49,6 @@ async function createTask(newTask: Task): Promise<Task | null> {
           title: newTask.title,
           description: newTask.description,
           status: newTask.status,
-          waiting_for: newTask.waitingFor,
           start_date: newTask.startDate,
           end_date: newTask.endDate,
           worked_hours: Number(newTask.workedHours),
@@ -52,8 +59,8 @@ async function createTask(newTask: Task): Promise<Task | null> {
       });
 
       return mapTaskEntityFromDbModel(createdTask);
-    } catch (error) {
-      console.error(`Error creating task: ${error}`);
+    } catch (error: any) {
+      console.error(error.message);
       throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
     }
   });

@@ -16,14 +16,36 @@ const taskStatusSchema = z.enum([
 ]);
 
 const taskSchema = z.object({
-  title: z.string().min(1).max(70),
-  description: z.string().min(1).max(255),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Title must have at least 1 character',
+    })
+    .max(70, {
+      message: 'Title must have at most 70 characters',
+    }),
+  description: z
+    .string()
+    .min(1, {
+      message: 'Description must have at least 1 character',
+    })
+    .max(255, {
+      message: 'Description must have at most 255 characters',
+    }),
   status: taskStatusSchema,
-  waitingFor: z.string().min(1).max(70),
-  startDate: z.coerce.date(),
-  dueDate: z.coerce.date(),
+  waitingFor: z
+    .string()
+    .min(1, {
+      message: 'Waiting for must have at least 1 character',
+    })
+    .max(70, {
+      message: 'Waiting for must have at most 70 characters',
+    }),
+  startDate: z.coerce.date({ required_error: 'Start date is required' }),
+  dueDate: z.coerce.date({ required_error: 'Due date is required' }),
   workedHours: z.string().optional(),
-  idProject: z.string().uuid(),
+  idProject: z.string().uuid({ message: 'Invalid UUID format' }),
+  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }),
 });
 
 /**
@@ -41,6 +63,7 @@ function validateTaskDate(data: BareboneTask) {
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
     dueDate: bodyTask.dueDate,
+    employeeId: bodyTask.idEmployee,
   };
 }
 
