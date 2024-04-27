@@ -20,4 +20,4 @@ async function getAllRoles(): Promise<RoleEntity[]> {
   }
 }
 
-export { updateUserRole, getAllRoles };
+export { getAllRoles, updateUserRole };

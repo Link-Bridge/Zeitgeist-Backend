@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { updateUserRole as updateUserRoleService, getAllRoles as getAllRolesService } from '../../core/app/services/admin-role.service';
+import {
+  getAllRoles as getAllRolesService,
+  updateUserRole as updateUserRoleService,
+} from '../../core/app/services/admin-role.service';
 
 // Defines a schema for validations
 const updateUserRoleSchema = z.object({
@@ -32,4 +35,4 @@ async function getAllRoles(_: Request, res: Response) {
   }
 }
 
-export { updateUserRole, getAllRoles };
+export { getAllRoles, updateUserRole };

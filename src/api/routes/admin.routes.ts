@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { SupportedRoles } from '../../utils/enums';
-import { updateUserRole, getAllRoles } from '../controllers/admin.controller';
+import { getAllRoles, updateUserRole } from '../controllers/admin.controller';
 import { checkAuthToken } from '../middlewares/auth.middleware';
 import { checkAuthRole } from '../middlewares/rbac.middleware';
 
