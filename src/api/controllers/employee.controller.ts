@@ -50,7 +50,6 @@ async function getAllEmployees(req: Request, res: Response) {
     const employees = await EmployeeService.getAllEmployees();
     res.status(200).json({ data: employees });
   } catch (error: any) {
-    console.error('Error: ', error);
     res.status(500).json({ message: 'Internal server error occurred.' });
   }
 }
@@ -68,7 +67,6 @@ async function deleteEmployee(req: Request, res: Response) {
     const employee = await EmployeeService.deleteEmployeeById(id);
     res.status(200).json({ data: employee });
   } catch (error: any) {
-    console.error('Error: ', error);
     res.status(500).json({ message: 'Internal server error occurred.' });
   }
 }

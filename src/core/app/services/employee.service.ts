@@ -132,6 +132,11 @@ async function findRoleByEmail(email: string): Promise<SupportedRoles> {
 
 /**
  * Function to delete an employee by id
+ * @param id
+ * @returns {EmployeeEntity} - Deleted employee
+ * @throws {Error} - If the employee is not found
+ * @throws {Error} - If an unexpected error occurs
+ *
  */
 
 async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
@@ -143,7 +148,6 @@ async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
 
     return await EmployeeRepository.deleteEmployeeById(id);
   } catch (error: unknown) {
-    console.log('Error: ', error);
     throw new Error('An unexpected error occurred');
   }
 }
