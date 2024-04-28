@@ -41,11 +41,8 @@ async function findTaskById(id: string): Promise<Task> {
 async function createTask(newTask: Task): Promise<Task | null> {
   return await Prisma.$transaction(async (prisma: any) => {
     try {
-      const existingTask = await findTaskById(newTask.id);
-
-      if (existingTask) {
-        return null;
-      }
+      const existingTask = findTaskById(newTask.id);
+      if (!existingTask) return null;
 
       const createdTask = await prisma.task.create({
         data: {

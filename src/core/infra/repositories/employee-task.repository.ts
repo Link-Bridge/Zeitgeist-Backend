@@ -31,11 +31,17 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
   return await Prisma.$transaction(async (prisma: any) => {
     try {
       const createdEmployeeTask = await prisma.employee_task.create({
-        data: { newEmployeeTask },
+        data: {
+          id: newEmployeeTask.id,
+          created_at: newEmployeeTask.createdAt || new Date(),
+          id_employee: newEmployeeTask.idEmployee,
+          id_task: newEmployeeTask.idTask,
+        },
       });
 
       return mapEmployeeTaskEntityFromDbModel(createdEmployeeTask);
     } catch (error) {
+      console.error(error);
       throw new Error(`Failed to create employee task on ${RESOURCE_NAME}`);
     }
   });
