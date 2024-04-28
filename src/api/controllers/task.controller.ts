@@ -58,7 +58,7 @@ const idSchema = z.object({
  * @param data:
  * @returns
  */
-function validateTaskDate(data: BareboneTask) {
+function validateTaskData(data: BareboneTask) {
   const bodyTask = taskSchema.parse(data);
   const status = data.status as TaskStatus;
 
@@ -84,8 +84,8 @@ function validateTaskDate(data: BareboneTask) {
  */
 async function createTask(req: Request, res: Response) {
   try {
-    const validateTaskData = validateTaskDate(req.body);
-    const payloadTask = await TaskService.createTask(validateTaskData);
+    const validatedTaskData = validateTaskData(req.body);
+    const payloadTask = await TaskService.createTask(validatedTaskData);
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
