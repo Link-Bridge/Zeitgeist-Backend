@@ -7,7 +7,12 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 const router = Router();
 
 // Get Unique Client
-router.get('/:id', CompanyController.getUnique);
+router.get(
+  '/:id',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  CompanyController.getUnique
+);
 
 /**
  * @opeanapi
