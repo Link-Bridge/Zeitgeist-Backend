@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
 
 const reportSchema = z.object({
-  id: z.string().min(1, { message: 'clientId cannot be empty' }),
+  id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
 });
 
 /**
