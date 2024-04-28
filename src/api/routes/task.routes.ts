@@ -12,6 +12,7 @@ router.post(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.createTask
 );
+
 router.get(
   '/:id',
   checkAuthToken,
