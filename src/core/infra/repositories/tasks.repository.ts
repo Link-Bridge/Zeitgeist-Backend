@@ -13,7 +13,7 @@ const RESOURCE_NAME = 'Task';
  *
  * @throws {Error} - If an error occurs when finding the task.
  */
-async function findTaskById(id: string): Promise<Task | null> {
+async function findTaskById(id: string): Promise<Task> {
   try {
     const existingTask = await Prisma.task.findUnique({
       where: { id },

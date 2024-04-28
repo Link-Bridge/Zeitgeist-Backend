@@ -86,7 +86,7 @@ async function findUnique(id: string): Promise<TaskDetail> {
     const selectedEmployeeTask = employeeTask.find(record => {
       if (record.idTask === task.id) return record;
     });
-
+    
     if (!selectedEmployeeTask) {
       return { ...task, projectName: project.name };
     }
