@@ -45,7 +45,7 @@ model company_direct_contact {
 
 model department {
   id         String     @id @db.Uuid
-  title      String     @db.VarChar(256)
+  title      String     @unique @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime?  @db.Timestamp(6)
   employee   employee[]
@@ -217,7 +217,7 @@ model project {
 
 model role {
   id         String     @id @db.Uuid
-  title      String     @default("SIN_ROL") @db.VarChar(256)
+  title      String     @unique @default("No Role") @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime?  @db.Timestamp(6)
   employee   employee[]

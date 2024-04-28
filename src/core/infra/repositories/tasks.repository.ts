@@ -19,7 +19,11 @@ async function findTaskById(id: string): Promise<Task | null> {
       where: { id },
     });
 
-    return existingTask ? mapTaskEntityFromDbModel(existingTask) : null;
+    if (!existingTask) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapTaskEntityFromDbModel(existingTask);
   } catch (error) {
     throw new Error(`Failed to find task on ${RESOURCE_NAME} with id ${id}`);
   }
@@ -84,4 +88,4 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId };
+export const TaskRepository = { createTask, findTasksByProjectId, findTaskById };

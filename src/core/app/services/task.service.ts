@@ -6,6 +6,7 @@ import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.r
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
+import { TaskDetail } from '../interfaces/task.interface';
 
 /**
  * Creates a new task using the payload from the client.
@@ -68,4 +69,39 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
   }
 }
 
-export const TaskService = { createTask };
+/**
+ * Gets a task using the repository.
+ *
+ * @param id: Task - Task to be searched.
+ * @returns {Promise<TaskDetail>} - Info of the task.
+ *
+ * @throws {Error} - If an error occurs when looking for the task.
+ */
+async function findUnique(id: string): Promise<TaskDetail> {
+  try {
+    const task = await TaskRepository.findTaskById(id);
+    const project = await ProjectRepository.findById(task.idProject);
+    const employeeTask = await EmployeeTaskRepository.findAll();
+
+    const selectedEmployeeTask = employeeTask.find(record => {
+      if (record.idTask === task.id) return record;
+    });
+
+    if (!selectedEmployeeTask) {
+      return { ...task, projectName: project.name };
+    }
+
+    const employee = await EmployeeRepository.findById(selectedEmployeeTask.idEmployee);
+
+    return {
+      ...task,
+      projectName: project.name,
+      employeeFirstName: employee.firstName,
+      employeeLastName: employee.lastName,
+    };
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const TaskService = { createTask, findUnique };

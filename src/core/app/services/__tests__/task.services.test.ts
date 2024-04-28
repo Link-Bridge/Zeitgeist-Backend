@@ -110,3 +110,97 @@ describe('Task Service', () => {
     });
   });
 });
+
+describe('TaskService', () => {
+  let findTaskByIdStub: sinon.SinonStub;
+  let findProjectByIdStub: sinon.SinonStub;
+  let findEmployeeByIdStub: sinon.SinonStub;
+  let findAllEmployeeTaskStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
+    findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
+    findEmployeeByIdStub = sinon.stub(EmployeeRepository, 'findById');
+    findAllEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'findAll');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  describe('findTaskById', () => {
+    it('should return a all data in the database of the selected taks', async () => {
+      const projectId = randomUUID();
+      const existingProject = {
+        id: projectId,
+        name: 'ITESM Project',
+        matter: 'SAT',
+        description: 'ITESM Project description',
+        status: 'ACCEPTED',
+        startDate: new Date(),
+        createdAt: new Date(),
+        idCompany: randomUUID(),
+      };
+
+      const employeeId = randomUUID();
+      const existingEmployee = {
+        id: employeeId,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      };
+
+      const taskId = randomUUID();
+      const existingTask = {
+        id: taskId,
+        title: 'ITESM task',
+        description: 'ITESM task description',
+        status: 'DELAYED',
+        startDate: new Date(),
+        workedHours: 100,
+        createdAt: new Date(),
+        idProject: projectId,
+      };
+
+      const employeeTaskId = randomUUID();
+      const existingEmployeeTask = [
+        {
+          id: employeeTaskId,
+          createdAt: new Date(),
+          idEmployee: employeeId,
+          idTask: taskId,
+        },
+      ];
+
+      const taskDetail = {
+        ...existingTask,
+        projectName: existingProject.name,
+        employeeFirstName: existingEmployee.firstName,
+        employeeLastName: existingEmployee.lastName,
+      };
+
+      findTaskByIdStub.resolves(existingTask);
+      findProjectByIdStub.resolves(existingProject);
+      findEmployeeByIdStub.resolves(existingEmployee);
+      findAllEmployeeTaskStub.resolves(existingEmployeeTask);
+
+      const result = await TaskService.findUnique(taskId);
+
+      expect(result).to.eql(taskDetail);
+      expect(findTaskByIdStub.calledOnce).to.be.true;
+      expect(findProjectByIdStub.calledOnce).to.be.true;
+      expect(findEmployeeByIdStub.calledOnce).to.be.true;
+      expect(findAllEmployeeTaskStub.calledOnce).to.be.true;
+    });
+
+    it('should throw an error if the task id does not exist', async () => {
+      const errorMessage = 'An unexpected error occurred';
+      findTaskByIdStub.rejects(new Error(errorMessage));
+
+      await expect(TaskService.findUnique(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+    });
+  });
+});

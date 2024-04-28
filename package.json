@@ -17,7 +17,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:pull-schema": "prisma db pull",
-    "prisma:migrate:status": "prisma migrate status"
+    "prisma:migrate:status": "prisma migrate status",
+    "seed": "tsc ./prisma/seeder.ts --outDir ./dist && node ./dist/prisma/seeder.js"
   },
   "husky": {
     "hooks": {
