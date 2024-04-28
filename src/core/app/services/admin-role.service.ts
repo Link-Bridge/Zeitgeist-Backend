@@ -12,6 +12,10 @@ async function updateUserRole(userId: string, roleId: string): Promise<EmployeeE
   }
 }
 
+/**
+ * @description Get all roles
+ * @return Role
+ */
 async function getAllRoles(): Promise<RoleEntity[]> {
   try {
     return await RoleRepository.findAll();

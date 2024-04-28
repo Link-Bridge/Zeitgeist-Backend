@@ -26,6 +26,10 @@ async function updateUserRole(req: Request, res: Response) {
   }
 }
 
+/**
+ * @description Get all roles
+ * @param res
+ */
 async function getAllRoles(_: Request, res: Response) {
   try {
     const roles = await getAllRolesService();
