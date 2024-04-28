@@ -54,4 +54,21 @@ async function getAllEmployees(req: Request, res: Response) {
   }
 }
 
-export const EmployeeController = { userExists: signIn, getAllEmployees };
+/**
+ * Controller to delete an employee
+ * @description
+ * @param req
+ * @param res
+ */
+
+async function deleteEmployee(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const employee = await EmployeeService.deleteEmployeeById(id);
+    res.status(200).json({ data: employee });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export const EmployeeController = { userExists: signIn, getAllEmployees, deleteEmployee };
