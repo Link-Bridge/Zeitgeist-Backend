@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
+
+const reportSchema = z.object({
+  id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
+});
 
 /**
  * @param {Request} req
@@ -10,6 +15,17 @@ import { CompanyService } from '../../core/app/services/company.service';
  * @throws {Error}
  */
 
+async function getUnique(req: Request, res: Response) {
+  try {
+    const { id } = reportSchema.parse({ id: req.params.id });
+
+    const data = await CompanyService.findById(id);
+    res.status(200).json({ data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 async function getAll(req: Request, res: Response) {
   try {
     const data = await CompanyService.findAll();
@@ -19,4 +35,4 @@ async function getAll(req: Request, res: Response) {
   }
 }
 
-export const CompanyController = { getAll };
+export const CompanyController = { getUnique, getAll };

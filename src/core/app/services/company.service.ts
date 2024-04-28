@@ -3,6 +3,22 @@ import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+
+/**
+ * Gets all data from a unique company
+ * @returns {Promise<CompanyEntity>} a promise that resolves a unique company entity
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function findById(id: string): Promise<CompanyEntity> {
+  try {
+    const companyRecord = await CompanyRepository.findById(id);
+    return companyRecord;
+  } catch (error: any) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
 /**
  * Gets all data from all companies
  * @returns {Promise<CompanyEntity[]>} a promise that resolves to an array of company entities
@@ -11,10 +27,8 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 async function findAll(): Promise<CompanyEntity[]> {
   try {
-    const projectRecords = await ProjectRepository.findAll();
     const companyRecords = await CompanyRepository.findAll();
-
-    if (!companyRecords || !projectRecords) throw new Error('No companies or projects found');
+    const projectRecords = await ProjectRepository.findAll();
 
     companyRecords.map(company => {
       company.totalProjects ??= 0;
@@ -43,9 +57,8 @@ async function findAll(): Promise<CompanyEntity[]> {
 
     return companyRecords;
   } catch (error: any) {
-    console.log(error);
-    throw new Error(error.message);
+    throw new Error('an unexpected error occurred');
   }
 }
 
-export const CompanyService = { findAll };
+export const CompanyService = { findById, findAll };

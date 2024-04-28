@@ -21,6 +21,10 @@ import { Decimal } from '@prisma/client/runtime/library';
  *
  * @return void
  *
+ * @description La estructura contiene los datos del esquema de Project,
+ * pero se identifican como atributos opcionales aquellos que no
+ * son requeridos por un proyecto.
+ *
  * @description La estructura basicamente es lo que esta en el MER,
  * se tiene la idea usar tipos de datos personalizados, como UUID.
  */

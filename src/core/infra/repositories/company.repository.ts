@@ -30,6 +30,14 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
+/**
+ * Finds a unique company entity in the database
+ * @version 1.0.0
+ * @returns {Promise<CompanyEntity>} a promise that resolves to a company entity
+ * @throws {NotFoundError} if no entities are found
+ * @throws {Error} if an unexpected error occurs
+ */
+
 async function findById(id: string): Promise<CompanyEntity> {
   try {
     const data = await Prisma.company.findUnique({
