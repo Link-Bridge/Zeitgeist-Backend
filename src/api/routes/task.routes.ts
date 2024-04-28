@@ -6,7 +6,12 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.post('/create', TaskController.createTask);
+router.post(
+  '/create',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.createTask
+);
 router.get(
   '/:id',
   checkAuthToken,
