@@ -228,7 +228,6 @@ model task {
   title         String          @db.VarChar(70)
   description   String          @db.VarChar(256)
   status        String          @db.VarChar(256)
-  waiting_for   String?         @db.VarChar(70)
   start_date    DateTime        @db.Date
   end_date      DateTime?       @db.Date
   worked_hours  Decimal?        @db.Decimal(8, 2)
