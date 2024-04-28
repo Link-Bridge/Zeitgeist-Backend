@@ -48,6 +48,11 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
+/**
+ * A function that calls the repository to retrieve a company given its id.
+ * @param id A string representing a UUID from a company
+ * @returns The response of the company repository
+ */
 async function findById(id: string) {
   return CompanyRepository.findById(id);
 }

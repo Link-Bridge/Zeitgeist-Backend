@@ -19,6 +19,11 @@ async function getAll(req: Request, res: Response) {
   }
 }
 
+/**
+ * A function that calls the company service to get a company given its id.
+ * @param req an HTTP Request containing the id in its params
+ * @param res an HTTP response
+ */
 async function getById(req: Request, res: Response) {
   try {
     const data = await CompanyService.findById(req.params.id);

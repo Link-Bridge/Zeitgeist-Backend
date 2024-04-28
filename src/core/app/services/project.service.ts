@@ -21,6 +21,10 @@ async function findProjectsClient(clientId: string): Promise<ProjectEntity[]> {
   }
 }
 
+/**
+ * A function that gets all available projects from the repository.
+ * @returns An array of projects
+ */
 async function getAllProjects(): Promise<ProjectEntity[]> {
   return await ProjectRepository.findAll();
 }

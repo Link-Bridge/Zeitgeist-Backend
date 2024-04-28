@@ -37,6 +37,11 @@ async function getProjectsClient(req: Request, res: Response) {
   }
 }
 
+/**
+ * A function that calls the projects repository to fetch all available projects in the database.
+ * @param req An HTTP Request
+ * @param res An HTTP Response
+ */
 async function getAllProjects(req: Request, res: Response) {
   res.json(await ProjectRepository.findAll());
 }
