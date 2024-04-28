@@ -26,9 +26,6 @@ import { Decimal } from '@prisma/client/runtime/library';
  */
 
 export interface CompanyEntity {
-  /**
-   * @param id: string - Unique identifier of the company.
-   */
   id: string;
   /**
    * @param name: string - Company title
