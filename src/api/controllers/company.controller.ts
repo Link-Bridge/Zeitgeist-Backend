@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
 
 /**
@@ -26,7 +27,8 @@ async function getAll(req: Request, res: Response) {
  */
 async function getById(req: Request, res: Response) {
   try {
-    const data = await CompanyService.findById(req.params.id);
+    const id = z.string().uuid({ message: 'Invalid UUID' }).parse(req.params.id);
+    const data = await CompanyService.findById(id);
     res.json(data);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
