@@ -75,6 +75,15 @@ describe('EmployeeService', () => {
         createdAt: new Date(),
         idRole: randomUUID(),
       },
+      {
+        id: randomUUID(),
+        firstName: 'Jake',
+        lastName: 'Moore',
+        email: 'Jake.Moore@email.com',
+        imageUrl: null,
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      },
     ];
 
     findAllStub.resolves(employees);
