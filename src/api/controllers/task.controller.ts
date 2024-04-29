@@ -33,14 +33,6 @@ const taskSchema = z.object({
       message: 'Description must have at most 255 characters',
     }),
   status: taskStatusSchema,
-  waitingFor: z
-    .string()
-    .min(1, {
-      message: 'Waiting for must have at least 1 character',
-    })
-    .max(70, {
-      message: 'Waiting for must have at most 70 characters',
-    }),
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
   dueDate: z.coerce.date().optional(),
   workedHours: z.string().optional(),
