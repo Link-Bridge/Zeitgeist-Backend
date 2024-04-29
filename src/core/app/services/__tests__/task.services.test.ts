@@ -148,7 +148,6 @@ describe('Task Service', () => {
 
     it('Should throw an error if the task could not be created', async () => {
       taskFetchRepositoryStub.withArgs(existingTasks).throws(new Error('Could not get tasks'));
-      // projectRepositoryStub.resolves({ id: projectID });
 
       try {
         await TaskService.getTasksFromProject(idProject);
