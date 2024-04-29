@@ -72,11 +72,23 @@ async function createTask(newTask: Task): Promise<Task | null> {
   });
 }
 
+/**
+ * Get all tasks from a unique project from the db.
+ *
+ * @param idProject: string - projectId to which the task is related.
+ * @returns {Promise<Task[]>} - Array of tasks.
+ *
+ * @throws {Error} - If an error occurs when getting array of tsks.
+ */
+
 async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   try {
     const data = await Prisma.task.findMany({
       where: {
         id_project: idProject,
+      },
+      orderBy: {
+        end_date: 'asc',
       },
     });
 
