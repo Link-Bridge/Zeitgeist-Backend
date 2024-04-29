@@ -8,6 +8,9 @@ import { Decimal } from '@prisma/client/runtime/library';
  * @param phoneNumber: string
  * @param landlinePhone: string
  * @param archived: boolean
+ * @param rfc: string
+ * @param constitution_date: Date
+ * @param mexican_address: string
  * @param idCompanyDirectContact: string
  * @param idForm: string
  * @param createdAt: Date
@@ -23,9 +26,6 @@ import { Decimal } from '@prisma/client/runtime/library';
  */
 
 export interface CompanyEntity {
-  /**
-   * @param id: string - Unique identifier of the company.
-   */
   id: string;
   /**
    * @param name: string - Company title
@@ -47,6 +47,18 @@ export interface CompanyEntity {
    * @param archived: boolean - Determines whether the company is archived or not
    */
   archived?: boolean;
+  /**
+   * @param rfc: string - Company RFC
+   */
+  rfc?: string | null;
+  /**
+   * @param constitution_date: Date - Company constitution date
+   */
+  constitution_date?: Date | null;
+  /**
+   * @param mexican_address: string - Company address in Mexico
+   */
+  mexican_address?: string | null;
   /**
    * @param idCompanyDirectContact: string - Id for company direct contact
    */

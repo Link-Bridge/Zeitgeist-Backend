@@ -9,16 +9,21 @@ const router = Router();
 router.get(
   '/report/:id',
   checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getReportData
 );
 router.get(
   '/:clientId',
   checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectsClient
 );
-router.get('/report/:id', ProjectController.getReportData);
+router.post(
+  '/create',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.createProject
+);
 router.get(
   '/',
   checkAuthToken,
