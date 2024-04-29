@@ -27,6 +27,11 @@ jobs:
       - name: Check for leaked secrets
         uses: zricethezav/gitleaks-action@v1.6.0
 
+      - name: Validate Migrations
+        run: pnpm prisma migrate dev --preview-feature
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Prisma Generate
         run: pnpm run prisma:generate
 

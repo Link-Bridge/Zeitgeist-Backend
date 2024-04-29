@@ -12,7 +12,7 @@ import admin from '../../config/firebase-admin.config';
 export const checkAuthToken = (req: Request, res: Response, next: NextFunction) => {
   const authToken = req.headers.authorization;
   if (!authToken || !authToken.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'User is not authorize' });
+    return res.status(401).json({ message: 'User is not authorized' });
   }
 
   const token = authToken.split(' ')[1];

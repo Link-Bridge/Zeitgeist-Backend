@@ -8,5 +8,12 @@ const router = Router();
 
 router.post('/signup', checkAuthToken, EmployeeController.userExists);
 router.get('/', checkAuthToken, checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
+router.delete('/delete/:id', checkAuthToken, checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.deleteEmployee);
+router.get(
+  '/getAllEmployees',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ADMIN]),
+  EmployeeController.getAllEmployees
+);
 
 export { router as EmployeeRouter };

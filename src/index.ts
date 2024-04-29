@@ -4,6 +4,7 @@ import 'dotenv/config';
 import express, { Express } from 'express';
 import { baseRouter } from './api/routes/index.routes';
 import { EnvConfigKeys } from './utils/constants';
+import { logger } from './utils/logger';
 
 export const Prisma: PrismaClient = new PrismaClient();
 const app: Express = express();
@@ -21,8 +22,9 @@ app.use(
     allowedHeaders: 'Content-Type, Authorization',
   })
 );
-
 app.use(express.json());
+
+app.use(logger);
 app.use(baseRouter);
 
 app.listen(PORT, () => {

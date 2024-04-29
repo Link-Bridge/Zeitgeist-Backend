@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
+import { SupportedDepartments } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { CompanyService } from '../company.service';
@@ -14,12 +15,14 @@ describe('CompanyService', () => {
   let findAllProjectsStub: sinon.SinonStub;
   let updateCompanyStub: sinon.SinonStub;
   let findCompanyByIdStub: sinon.SinonStub;
+  let findByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     updateCompanyStub = sinon.stub(CompanyRepository, 'update');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
+    findByIdStub = sinon.stub(CompanyRepository, 'findById');
   });
 
   afterEach(() => {
@@ -27,343 +30,31 @@ describe('CompanyService', () => {
   });
 
   it('should return an array of all companies', async () => {
-    const idCompany1 = randomUUID();
-    const idCompany2 = randomUUID();
-    const idProject1 = randomUUID();
-    const idProject2 = randomUUID();
-    const idProject3 = randomUUID();
-    const idProject4 = randomUUID();
-
-    const existingCompanies = [
-      {
-        id: idCompany1,
-        name: 'Zeitgeist',
-        email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-      {
-        id: idCompany2,
-        name: 'Microsoft',
-        email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-    ];
-
-    const existingProjects = [
-      {
-        id: idProject1,
-        name: 'Zeitgeist P1',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: true,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject2,
-        name: 'Zeitgeist P2',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 5,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject3,
-        name: 'Zeitgeist P3',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 15,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject4,
-        name: 'Zeitgeist P4',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: false,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-    ];
-
-    findAllProjectsStub.resolves(existingProjects);
-    findAllCompaniesStub.resolves(existingCompanies);
+    const mockData = prepareMockData();
+    findAllProjectsStub.resolves(mockData.existingProjects);
+    findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
 
-    expect(res).to.deep.equal(existingCompanies);
-    expect(res).length(2);
+    expect(res).to.deep.equal(mockData.existingCompanies);
+    expect(res).to.have.lengthOf(2);
   });
 
   it('should match the name of the companies', async () => {
-    const idCompany1 = randomUUID();
-    const idCompany2 = randomUUID();
-    const idProject1 = randomUUID();
-    const idProject2 = randomUUID();
-    const idProject3 = randomUUID();
-    const idProject4 = randomUUID();
-
-    const existingCompanies = [
-      {
-        id: idCompany1,
-        name: 'Zeitgeist',
-        email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-      {
-        id: idCompany2,
-        name: 'Microsoft',
-        email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-    ];
-
-    const existingProjects = [
-      {
-        id: idProject1,
-        name: 'Zeitgeist P1',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: true,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject2,
-        name: 'Zeitgeist P2',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 5,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject3,
-        name: 'Zeitgeist P3',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 15,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject4,
-        name: 'Zeitgeist P4',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: false,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-    ];
-
-    findAllProjectsStub.resolves(existingProjects);
-    findAllCompaniesStub.resolves(existingCompanies);
+    const mockData = prepareMockData();
+    findAllProjectsStub.resolves(mockData.existingProjects);
+    findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
 
-    expect(res[0].name).to.eql('Zeitgeist');
-    expect(res[1].name).to.eql('Microsoft');
+    expect(res[0].name).to.equal('Zeitgeist');
+    expect(res[1].name).to.equal('Microsoft');
   });
 
-  it('should update legal, accounting and chargeable hours, and total projects', async () => {
-    const idCompany1 = randomUUID();
-    const idCompany2 = randomUUID();
-    const idProject1 = randomUUID();
-    const idProject2 = randomUUID();
-    const idProject3 = randomUUID();
-    const idProject4 = randomUUID();
-
-    const existingCompanies = [
-      {
-        id: idCompany1,
-        name: 'Zeitgeist',
-        email: 'info@zeitgeist.mx',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-      {
-        id: idCompany2,
-        name: 'Microsoft',
-        email: 'info@microsoft.com',
-        phoneNumnber: '1234567890',
-        landline_phone: '0987654321',
-        archived: false,
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompanyDirectContact: null,
-        idForm: null,
-      },
-    ];
-
-    const existingProjects = [
-      {
-        id: idProject1,
-        name: 'Zeitgeist P1',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: true,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject2,
-        name: 'Zeitgeist P2',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 5,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject3,
-        name: 'Zeitgeist P3',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 15,
-        periodicity: null,
-        isChargeable: true,
-        area: 'CONTABLE',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-      {
-        id: idProject4,
-        name: 'Zeitgeist P4',
-        matter: null,
-        description: 'Desc',
-        status: 'Not started',
-        category: 'null',
-        startDate: new Date(),
-        endDate: null,
-        totalHours: 10,
-        periodicity: null,
-        isChargeable: false,
-        area: 'LEGAL',
-        createdAt: new Date(),
-        updatedAt: null,
-        idCompany: idCompany1,
-      },
-    ];
-
-    findAllProjectsStub.resolves(existingProjects);
-    findAllCompaniesStub.resolves(existingCompanies);
+  it('should update legal, accounting, chargeable hours, and total projects', async () => {
+    const mockData = prepareMockData();
+    findAllProjectsStub.resolves(mockData.existingProjects);
+    findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
 
@@ -374,37 +65,128 @@ describe('CompanyService', () => {
   });
 
   it('should update a company and return the updated entity', async () => {
-    const fakeId = randomUUID();
-    const fakeCompany = {
-      id: fakeId,
-      name: 'Old Company Name',
-      email: 'oldemail@example.com',
-      phoneNumber: '+123456789012',
-      landlinePhone: '+123456789012',
+    const fakeCompany = prepareSingleFakeCompany();
+    findCompanyByIdStub.resolves(fakeCompany.original);
+    updateCompanyStub.resolves(fakeCompany.updated);
+
+    const result = await CompanyService.update(fakeCompany.updatePayload);
+
+    expect(result).to.deep.equal(fakeCompany.updated);
+  });
+
+  it('should get a single company', async () => {
+    const idCompany1 = randomUUID();
+    const company = {
+      id: idCompany1,
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumber: '1234567890',
+      landlinePhone: '0987654321',
       archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
       idCompanyDirectContact: null,
       idForm: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
-    findCompanyByIdStub.resolves(fakeCompany);
 
-    const expectedUpdatedCompany = {
-      ...fakeCompany,
-      name: 'New Company Name',
-      email: 'newemail@example.com',
-    };
-    updateCompanyStub.resolves(expectedUpdatedCompany);
+    findByIdStub.resolves(company);
+    const aCompany = await CompanyService.findById(idCompany1);
 
-    const result = await CompanyService.update({
-      id: fakeId,
-      name: 'New Company Name',
-      email: 'newemail@example.com',
-      phoneNumber: '+123456789012',
-      landlinePhone: '+123456789012',
-      archived: false,
-    });
-
-    expect(result).to.deep.equal(expectedUpdatedCompany);
+    expect(findByIdStub.calledWith(idCompany1)).to.be.true;
+    expect(aCompany).to.eql(company);
   });
 });
+
+function prepareMockData() {
+  const idCompany1 = randomUUID();
+  const idCompany2 = randomUUID();
+  const existingCompanies = [
+    {
+      id: idCompany1,
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumber: '1234567890',
+      landlinePhone: '0987654321',
+      archived: false,
+      constitutionDate: new Date(),
+      rfc: 'ASDF907856RFT',
+      taxResidence: 'Epigmenio Gonzalez 123',
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    },
+    {
+      id: idCompany2,
+      name: 'Microsoft',
+      email: 'info@microsoft.com',
+      phoneNumber: '1234567890',
+      landlinePhone: '0987654321',
+      archived: false,
+      constitutionDate: new Date(),
+      rfc: 'ASDF907856RFT',
+      taxResidence: 'Epigmenio Gonzalez 123',
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    },
+  ];
+
+  const existingProjects = [
+    {
+      id: randomUUID(),
+      name: 'Zeitgeist P1',
+      description: 'Desc',
+      status: 'Not started',
+      startDate: new Date(),
+      totalHours: 10,
+      isChargeable: true,
+      area: SupportedDepartments.LEGAL,
+      createdAt: new Date(),
+      idCompany: idCompany1,
+    },
+    {
+      id: randomUUID(),
+      name: 'Zeitgeist P2',
+      description: 'Desc',
+      status: 'Not started',
+      startDate: new Date(),
+      totalHours: 5,
+      isChargeable: true,
+      area: SupportedDepartments.ACCOUNTING,
+      createdAt: new Date(),
+      idCompany: idCompany1,
+    },
+  ];
+
+  return { existingCompanies, existingProjects };
+}
+
+function prepareSingleFakeCompany() {
+  const fakeId = randomUUID();
+  const original = {
+    id: fakeId,
+    name: 'Old Company Name',
+    email: 'oldemail@example.com',
+    phoneNumber: '+123456789012',
+    landlinePhone: '+123456789012',
+    archived: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const updated = {
+    ...original,
+    name: 'New Company Name',
+    email: 'newemail@example.com',
+  };
+  const updatePayload = {
+    id: fakeId,
+    name: 'New Company Name',
+    email: 'newemail@example.com',
+    phoneNumber: '+123456789012',
+    landlinePhone: '+123456789012',
+    archived: false,
+  };
+  return { original, updated, updatePayload };
+}

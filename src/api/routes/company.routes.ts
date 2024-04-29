@@ -6,17 +6,32 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
+// Get Unique Client
+router.get(
+  '/:id',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  CompanyController.getUnique
+);
+
 router.get(
   '/',
   checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getAll
 );
 router.put(
   '/:id',
   checkAuthRole,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.updateClient
+);
+
+router.post(
+  '/new',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  CompanyController.create
 );
 
 export { router as CompanyRouter };

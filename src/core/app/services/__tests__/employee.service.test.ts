@@ -16,6 +16,8 @@ describe('EmployeeService', () => {
   let findByTitleStub: sinon.SinonStub;
   let findAllStub: sinon.SinonStub;
   let findByIdStub: sinon.SinonStub;
+  let findEmployeeByIdStub: sinon.SinonStub;
+  let deleteEmployeeByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
@@ -23,6 +25,8 @@ describe('EmployeeService', () => {
     findByTitleStub = sinon.stub(RoleRepository, 'findByTitle');
     findAllStub = sinon.stub(EmployeeRepository, 'findAll');
     findByIdStub = sinon.stub(RoleRepository, 'findById');
+    findEmployeeByIdStub = sinon.stub(EmployeeRepository, 'findById');
+    deleteEmployeeByIdStub = sinon.stub(EmployeeRepository, 'deleteEmployeeById');
     sinon
       .stub(DepartmentRepository, 'findByTitle')
       .resolves({ id: randomUUID(), title: SupportedDepartments.WITHOUT_DEPARTMENT, createdAt: new Date() });
@@ -71,6 +75,15 @@ describe('EmployeeService', () => {
         createdAt: new Date(),
         idRole: randomUUID(),
       },
+      {
+        id: randomUUID(),
+        firstName: 'Jake',
+        lastName: 'Moore',
+        email: 'Jake.Moore@email.com',
+        imageUrl: null,
+        createdAt: new Date(),
+        idRole: randomUUID(),
+      },
     ];
 
     findAllStub.resolves(employees);
@@ -79,6 +92,20 @@ describe('EmployeeService', () => {
 
     expect(result).to.eql(employees);
     expect(findAllStub.calledOnce).to.be.true;
+  });
+
+  it('should trow an error if employee is not deleted from the DB', async () => {
+    const employee = {
+      id: randomUUID(),
+    };
+
+    findEmployeeByIdStub.resolves(employee.id);
+    deleteEmployeeByIdStub.resolves(null);
+
+    const result = await EmployeeService.deleteEmployeeById(employee.id);
+
+    expect(result).to.eql(null);
+    expect(deleteEmployeeByIdStub.calledOnce).to.be.true;
   });
 
   describe('signIn', () => {
