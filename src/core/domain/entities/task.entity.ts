@@ -117,58 +117,58 @@ export interface BareboneTask {
 
 export interface UpdatedTask {
   /**
-   * @param id: string - Identificador único de la tarea
+   * @param id: string - The unique identifier of the task
    */
   id: string;
 
   /**
-   * @param title: string - Titulo de la tarea
+   * @param title: string - The title of the task
    */
   title?: string;
 
   /**
-   * @param description: string - Descripcion de la tarea
+   * @param description: string - The description of the task
    */
   description?: string;
 
   /**
-   * @param status: TaskStatus - Estatus de la tarea
+   * @param status: TaskStatus - The status of the task
    */
   status?: TaskStatus;
 
   /**
-   * @param startDate: Date - Fecha de inicio de la tarea
+   * @param startDate: Date - Start date of the task
    */
   startDate?: Date;
 
   /**
-   * @param endDate: Date - Fecha de fin de la tarea
+   * @param endDate: Date - End date of the task
    */
   endDate?: Date;
 
   /**
-   * @param workedHours: number - Horas trabajadas en la tarea
+   * @param workedHours: number - Number of hours worked on the task
    */
   workedHours?: number;
 
   /**
-   * @param createdAt: Date - Fecha de registro de la tarea
+   * @param createdAt: Date - The creation date of the task
    */
   createdAt?: Date;
 
   /**
-   * @param updatedAt: Date - Última fecha de modificación
+   * @param updatedAt: Date - The last modification date of the task
    */
 
   updatedAt?: Date;
 
   /**
-   * @param idProject: string - Identificador único del proyecto asociado
+   * @param idProject: string - The project associated with the task
    */
   idProject?: string;
 
   /**
-   * @param idEmployee: string - Identificador único del empleado asociado
+   * @param idEmployee: string - The employee associated with the task
    */
   idEmployee?: string;
 }
