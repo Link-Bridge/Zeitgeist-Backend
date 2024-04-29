@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { TaskStatus } from '../../../../utils/enums';
-import { BareboneTask, Task } from '../../../domain/entities/task.entity';
+import { BareboneTask, Task, UpdatedTask } from '../../../domain/entities/task.entity';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
@@ -201,6 +201,58 @@ describe('TaskService', () => {
       findTaskByIdStub.rejects(new Error(errorMessage));
 
       await expect(TaskService.findUnique(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+    });
+  });
+});
+
+describe('TaskService', () => {
+  let taskRepositoryStub: sinon.SinonStub;
+  let projectRepositoryStub: sinon.SinonStub;
+  let employeeRepositoryStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    taskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
+    projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
+    employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  const task: UpdatedTask = {
+    id: randomUUID(),
+    title: faker.lorem.words(3),
+    description: faker.lorem.words(10),
+    status: faker.helpers.arrayElement(Object.values(TaskStatus)),
+    startDate: faker.date.recent(),
+    endDate: faker.date.future(),
+    workedHours: faker.number.int(),
+    idProject: randomUUID(),
+    idEmployee: randomUUID(),
+  };
+
+  const updatedTask: UpdatedTask = {
+    id: task.id,
+    title: task.title,
+    description: task.description,
+    status: task.status,
+    startDate: task.startDate,
+    endDate: task.endDate,
+    workedHours: task.workedHours,
+    idProject: task.idProject,
+    idEmployee: task.idEmployee,
+  };
+
+  describe('updateTask', () => {
+    it('Should update the task and send it to the repository', async () => {
+      taskRepositoryStub.resolves(updatedTask);
+      projectRepositoryStub.resolves({ id: task.idProject });
+      employeeRepositoryStub.resolves({ id: task.idEmployee });
+
+      const result = await TaskService.updateTask(task.id, task);
+
+      expect(result).to.deep.equal(updatedTask);
     });
   });
 });
