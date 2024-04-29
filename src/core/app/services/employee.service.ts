@@ -128,9 +128,8 @@ async function findRoleByEmail(email: string): Promise<SupportedRoles> {
       throw new NotFoundError(`Role not found for employee '${employee.id}'`);
     }
 
-    return role.title as SupportedRoles;
+    return role.title.toUpperCase() as SupportedRoles;
   } catch (error: any) {
-    console.log(error);
     throw new NotFoundError(`An unexpected error occurred`);
   }
 }
