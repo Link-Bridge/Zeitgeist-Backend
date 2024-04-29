@@ -1,21 +1,20 @@
 /**
- * @brief Esta clase establece la estructura de la entidad Employee
+ * @brief This class is used to define the structure of the Employee entity
  *
- * @param id: string
- * @param firstName: string
- * @param lastName: string
- * @param email: string
- * @param imageUrl: string
- * @param createdAt: Date
- * @param updatedAt: Date
- * @param idDepartment: string
- * @param idRole: string
- * @param deviceToken: string
+ * @param id: string - Unique identifier of the employee
+ * @param firstName: string - First name of the employee
+ * @param lastName: string - Last name of the employee
+ * @param email: string - Email of the employee
+ * @param imageUrl?: string - Image URL of the employee (optional)
+ * @param createdAt: Date - Date when the employee was created
+ * @param updatedAt?: Date - Date when the employee was updated (optional)
+ * @param idDepartment?: string - ID of the department where the employee belongs (optional)
+ * @param idRole: string - ID of the role of the employee
+ * @param deviceToken?: string - Device token of the employee (optional)
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de Employee.
- *
+ * @description The structure contains the schema data of an Employee.
  */
 
 export interface EmployeeEntity {

@@ -117,17 +117,44 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
  * @returns {SupportedRoles} - Role of the employee
  */
 async function findRoleByEmail(email: string): Promise<SupportedRoles> {
-  const employee = await EmployeeRepository.findByEmail(email);
-  if (!employee) {
-    throw new NotFoundError(`Employee not found with email '${email}'`);
-  }
+  try {
+    const employee = await EmployeeRepository.findByEmail(email);
+    if (!employee) {
+      throw new NotFoundError(`Employee not found with email '${email}'`);
+    }
 
-  const role = await RoleRepository.findById(employee.idRole);
-  if (!role) {
-    throw new NotFoundError(`Role not found for employee '${employee.id}'`);
-  }
+    const role = await RoleRepository.findById(employee.idRole);
+    if (!role) {
+      throw new NotFoundError(`Role not found for employee '${employee.id}'`);
+    }
 
-  return role.title as SupportedRoles;
+    return role.title as SupportedRoles;
+  } catch (error: any) {
+    console.log(error);
+    throw new NotFoundError(`An unexpected error occurred`);
+  }
 }
 
-export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail };
+/**
+ * Function to delete an employee by id
+ * @param id
+ * @returns {EmployeeEntity} - Deleted employee
+ * @throws {Error} - If the employee is not found
+ * @throws {Error} - If an unexpected error occurs
+ *
+ */
+
+async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
+  try {
+    const employee = await EmployeeRepository.findById(id);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
+
+    return await EmployeeRepository.deleteEmployeeById(id);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail, deleteEmployeeById };

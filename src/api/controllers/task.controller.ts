@@ -16,14 +16,32 @@ const taskStatusSchema = z.enum([
 ]);
 
 const taskSchema = z.object({
-  title: z.string().min(1).max(70),
-  description: z.string().min(1).max(255),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Title must have at least 1 character',
+    })
+    .max(70, {
+      message: 'Title must have at most 70 characters',
+    }),
+  description: z
+    .string()
+    .min(1, {
+      message: 'Description must have at least 1 character',
+    })
+    .max(255, {
+      message: 'Description must have at most 255 characters',
+    }),
   status: taskStatusSchema,
-  waitingFor: z.string().min(1).max(70),
-  startDate: z.coerce.date(),
-  dueDate: z.coerce.date(),
+  startDate: z.coerce.date({ required_error: 'Start date is required' }),
+  dueDate: z.coerce.date().optional(),
   workedHours: z.string().optional(),
-  idProject: z.string().uuid(),
+  idProject: z.string().uuid({ message: 'Invalid UUID format' }),
+  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }),
+});
+
+const idSchema = z.object({
+  id: z.string().uuid(),
 });
 
 /**
@@ -32,7 +50,7 @@ const taskSchema = z.object({
  * @param data:
  * @returns
  */
-function validateTaskDate(data: BareboneTask) {
+function validateTaskData(data: BareboneTask) {
   const bodyTask = taskSchema.parse(data);
   const status = data.status as TaskStatus;
 
@@ -40,7 +58,8 @@ function validateTaskDate(data: BareboneTask) {
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
-    dueDate: bodyTask.dueDate,
+    dueDate: bodyTask.dueDate || null,
+    employeeId: bodyTask.idEmployee,
   };
 }
 
@@ -57,8 +76,8 @@ function validateTaskDate(data: BareboneTask) {
  */
 async function createTask(req: Request, res: Response) {
   try {
-    const validateTaskData = validateTaskDate(req.body);
-    const payloadTask = await TaskService.createTask(validateTaskData);
+    const validatedTaskData = validateTaskData(req.body);
+    const payloadTask = await TaskService.createTask(validatedTaskData);
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
@@ -76,8 +95,7 @@ async function createTask(req: Request, res: Response) {
  * @param req: Request - The request object.
  * @param res: Response - The response object.
  * @returns res.status(200).json(tasks) - The array of tasks.
- * @returns res.status(500).json({ message }) - If an error occurs.
- *
+ * Sends a request to the service to create a new task with the given data.
  * @throws 500 - If an error occurs.
  */
 
@@ -90,4 +108,15 @@ async function getTasksFromProject(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask, getTasksFromProject };
+async function findTaskById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+
+    const data = await TaskService.findUnique(id);
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, getTasksFromProject, findTaskById };

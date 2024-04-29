@@ -9,8 +9,6 @@ const RESOURCE_NAME = 'Company';
  * Finds all company entities in the database
  * @version 1.0.0
  * @returns {Promise<CompanyEntity[]>} a promise taht resolves to an array of company entities
- * @throws {NotFoundError} if no entities are found
- * @throws {Error} if an unexpected error occurs
  */
 
 async function findAll(): Promise<CompanyEntity[]> {
@@ -20,6 +18,7 @@ async function findAll(): Promise<CompanyEntity[]> {
         name: 'asc',
       },
     });
+
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
@@ -27,6 +26,42 @@ async function findAll(): Promise<CompanyEntity[]> {
     return data.map(mapCompanyEntityFromDbModel);
   } catch (error: any) {
     throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+/**
+ * Creates a new company in the database
+ * @version 1.0.0
+ * @param {CompanyEntity} company data
+ * @returns {String} id from created company
+ * @returns {null} if an error occured
+ */
+
+async function create(company: CompanyEntity, uuid: string, date: Date): Promise<CompanyEntity | null> {
+  try {
+    const res = await Prisma.company.create({
+      data: {
+        id: uuid,
+        name: company.name,
+        email: company.email,
+        phone_number: company.phoneNumber,
+        landline_phone: company.landlinePhone,
+        archived: false,
+        constitution_date: company.constitutionDate ? new Date(company.constitutionDate) : null,
+        rfc: company.rfc,
+        tax_residence: company.taxResidence,
+        id_company_direct_contact: company.idCompanyDirectContact,
+        id_form: company.idForm,
+        created_at: date,
+        updated_at: null,
+      },
+    });
+    return mapCompanyEntityFromDbModel(res);
+  } catch (error: any) {
+    // P2002 = Prisma Error code for unique constraints
+    if (error.code == 'P2002' && error.meta.target[0] == 'email') throw new Error('Email already registered');
+
+    throw new Error(error);
   }
 }
 
@@ -48,4 +83,4 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById };
+export const CompanyRepository = { create, findAll, findById };

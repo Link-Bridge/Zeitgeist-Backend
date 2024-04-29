@@ -18,7 +18,7 @@ const CLIENT_URL = process.env[EnvConfigKeys.CLIENT_URL];
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization',

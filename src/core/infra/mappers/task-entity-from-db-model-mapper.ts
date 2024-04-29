@@ -8,7 +8,6 @@ export function mapTaskEntityFromDbModel(model: task): Task {
     title: model.title,
     description: model.description,
     status: model.status as TaskStatus,
-    waitingFor: model.waiting_for ? model.waiting_for : undefined,
     startDate: model.start_date,
     endDate: model.end_date ? model.end_date : undefined,
     workedHours: Number(model.worked_hours) ? Number(model.worked_hours) : undefined,
