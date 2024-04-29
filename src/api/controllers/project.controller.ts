@@ -95,7 +95,7 @@ async function getAllProjects(req: Request, res: Response) {
 
 async function getProjectById(req: Request, res: Response) {
   try {
-    const { id } = reportSchema.parse({ id: req.params.id });
+    const { id } = idSchema.parse({ id: req.params.id });
     const projectDetails = await ProjectService.getProjectById(id);
     if (projectDetails) {
       res.status(200).json(projectDetails);
