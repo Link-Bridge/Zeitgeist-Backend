@@ -13,12 +13,38 @@ import { TaskService } from '../task.service';
 describe('Task Service', () => {
   let taskRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
+  let taskFetchRepositoryStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
   let employeeTaskRepositoryStub: sinon.SinonStub;
+
+  const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
+
+  const existingTasks: Task[] = [
+    {
+      id: randomUUID(),
+      title: 'Zombie',
+      description: 'Zombie',
+      status: TaskStatus.DONE,
+      startDate: new Date(),
+      createdAt: new Date(),
+      idProject: 'fb6bde87-5890-4cf7-978b-8daa13f105f7',
+    },
+    {
+      id: randomUUID(),
+      title: 'Nether update',
+      description:
+        'The Nether is a dimension that is supposedly located below the Mother Rock in Minecraft. Its appearance is similar to the idea of hell, with many dark rocks and lava and magma plaguing the entire setting.',
+      status: TaskStatus.POSTPONED,
+      startDate: new Date(),
+      createdAt: new Date(),
+      idProject: 'fb6bde87-5890-4cf7-978b-8daa13f105f7',
+    },
+  ];
 
   beforeEach(() => {
     taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
     projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
+    taskFetchRepositoryStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
     employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
     employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
   });
@@ -106,6 +132,28 @@ describe('Task Service', () => {
         await TaskService.createTask(task);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Error assigning a task to an employee');
+      }
+    });
+  });
+
+  describe('getTasksFromProject', () => {
+    it('Should get an array of tasks from the repository', async () => {
+      taskFetchRepositoryStub.resolves(existingTasks);
+
+      const result = await TaskService.getTasksFromProject(idProject);
+
+      expect(result).to.deep.equal(existingTasks);
+      expect(taskFetchRepositoryStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw an error if the task could not be created', async () => {
+      taskFetchRepositoryStub.withArgs(existingTasks).throws(new Error('Could not get tasks'));
+
+      try {
+        await TaskService.getTasksFromProject(idProject);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Could not get tasks');
       }
     });
   });
