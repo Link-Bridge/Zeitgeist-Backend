@@ -44,6 +44,10 @@ const idSchema = z.object({
   id: z.string().uuid(),
 });
 
+const idProjectSchema = z.object({
+  idProject: z.string().uuid({ message: 'Invalid UUID format' }),
+});
+
 /**
  * Validates the data received through the POST method
  *
@@ -101,7 +105,8 @@ async function createTask(req: Request, res: Response) {
 
 async function getTasksFromProject(req: Request, res: Response) {
   try {
-    const data = await TaskService.getTasksFromProject(req.params.idProject);
+    const { idProject } = idProjectSchema.parse({ idProject: req.params.idProject });
+    const data = await TaskService.getTasksFromProject(idProject);
     res.status(200).json({ data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

@@ -20,6 +20,11 @@ router.get(
   TaskController.findTaskById
 );
 
-router.get('/project/:idProject', TaskController.getTasksFromProject);
+router.get(
+  '/project/:idProject',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.getTasksFromProject
+);
 
 export { router as TaskRouter };
