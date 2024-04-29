@@ -1,32 +1,27 @@
 import { Decimal } from '@prisma/client/runtime/library';
 
 /**
- * @brief Esta clase es para establecer la estructura de la entidad proyecto
+ * @brief This class is used to define the structure of the Project entity
  *
- * @param id: string
- * @param name: string
- * @param matter: string
- * @param description: string
- * @param status: ProjectStatus
- * @param category: string
- * @param startDate: Date
- * @param endDate: Date
- * @param totalHours: Deciaml
- * @param perodicity: string
- * @param isChargeable: boolean
- * @param area: string
- * @param createdAt: Date
- * @param updatedAt: Date
- * @param idCompany: string
+ * @param id: string - Unique identifier of the project
+ * @param name: string - Project name
+ * @param matter?: string - Project matter (optional)
+ * @param description?: string - Project description (optional)
+ * @param status: string - Project status
+ * @param category: string - Project category
+ * @param startDate: Date - Project start date
+ * @param endDate?: Date - Project end date (optional)
+ * @param totalHours?: Decimal - Project total hours (optional)
+ * @param periodicity?: string - Project periodicity (optional)
+ * @param isChargeable?: boolean - Determines whether the project is chargeable or not (optional)
+ * @param area?: string - Project area (optional)
+ * @param createdAt: Date - Project creation date
+ * @param updatedAt?: Date - Project update date (optional)
+ * @param idCompany: string - Id for project company
  *
  * @return void
  *
- * @description La estructura contiene los datos del esquema de Project,
- * pero se identifican como atributos opcionales aquellos que no
- * son requeridos por un proyecto.
- *
- * @description La estructura basicamente es lo que esta en el MER,
- * se tiene la idea usar tipos de datos personalizados, como UUID.
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
  */
 
 export interface ProjectEntity {

@@ -117,17 +117,22 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
  * @returns {SupportedRoles} - Role of the employee
  */
 async function findRoleByEmail(email: string): Promise<SupportedRoles> {
-  const employee = await EmployeeRepository.findByEmail(email);
-  if (!employee) {
-    throw new NotFoundError(`Employee not found with email '${email}'`);
-  }
+  try {
+    const employee = await EmployeeRepository.findByEmail(email);
+    if (!employee) {
+      throw new NotFoundError(`Employee not found with email '${email}'`);
+    }
 
-  const role = await RoleRepository.findById(employee.idRole);
-  if (!role) {
-    throw new NotFoundError(`Role not found for employee '${employee.id}'`);
-  }
+    const role = await RoleRepository.findById(employee.idRole);
+    if (!role) {
+      throw new NotFoundError(`Role not found for employee '${employee.id}'`);
+    }
 
-  return role.title as SupportedRoles;
+    return role.title as SupportedRoles;
+  } catch (error: any) {
+    console.log(error);
+    throw new NotFoundError(`An unexpected error occurred`);
+  }
 }
 
 /**

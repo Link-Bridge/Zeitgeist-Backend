@@ -1,4 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
@@ -16,6 +17,25 @@ async function findById(id: string): Promise<CompanyEntity> {
     return companyRecord;
   } catch (error: any) {
     throw new Error('An unexpected error occurred');
+  }
+}
+
+/**
+ * Creates a new company
+ * @param {CompanyEntity} company data
+ * @returns {String} id from created company
+ * @returns {null} if an error occured
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function create(company: CompanyEntity): Promise<CompanyEntity | null> {
+  try {
+    const uuid = randomUUID();
+    const date = new Date();
+    const res = await CompanyRepository.create(company, uuid, date);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 }
 
@@ -61,4 +81,4 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findById, findAll };
+export const CompanyService = { findById, findAll, create };

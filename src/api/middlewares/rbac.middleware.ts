@@ -10,9 +10,13 @@ import { SupportedRoles } from '../../utils/enums';
  * @returns
  */
 async function checkRole(req: Request, res: Response, allowedRoles: SupportedRoles[]) {
-  const role = await EmployeeService.findRoleByEmail(req.body.auth.email);
-  if (!allowedRoles.includes(role)) {
-    return res.status(403).json({ message: 'User is not authorized' });
+  try {
+    const role = await EmployeeService.findRoleByEmail(req.body.auth.email);
+    if (!allowedRoles.includes(role)) {
+      throw new Error('User is not authorized');
+    }
+  } catch (error: any) {
+    throw new Error('User is not authorized');
   }
 }
 
@@ -23,7 +27,11 @@ async function checkRole(req: Request, res: Response, allowedRoles: SupportedRol
  */
 export const checkAuthRole = (allowedRoles: SupportedRoles[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    await checkRole(req, res, allowedRoles);
-    next();
+    try {
+      await checkRole(req, res, allowedRoles);
+      next();
+    } catch (error: any) {
+      res.status(403).json({ message: error.message });
+    }
   };
 };
