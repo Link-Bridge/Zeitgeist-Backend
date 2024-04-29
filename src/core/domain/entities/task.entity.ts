@@ -166,4 +166,9 @@ export interface UpdatedTask {
    * @param idProject: string - Identificador único del proyecto asociado
    */
   idProject?: string;
+
+  /**
+   * @param idEmployee: string - Identificador único del empleado asociado
+   */
+  idEmployee?: string;
 }
