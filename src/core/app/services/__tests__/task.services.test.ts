@@ -206,11 +206,13 @@ describe('TaskService', () => {
 });
 
 describe('TaskService', () => {
+  let taskIdRepositoryStub: sinon.SinonStub;
   let taskRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
 
   beforeEach(() => {
+    taskIdRepositoryStub = sinon.stub(TaskRepository, 'findTaskById');
     taskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
     projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
     employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
@@ -220,8 +222,8 @@ describe('TaskService', () => {
     sinon.restore();
   });
 
-  const task: UpdatedTask = {
-    id: randomUUID(),
+  const taskToUpdate: UpdatedTask = {
+    id: '1ac384ff-5fb6-4d84-bf3c-dd9613a8d5fc',
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
@@ -233,24 +235,24 @@ describe('TaskService', () => {
   };
 
   const updatedTask: UpdatedTask = {
-    id: task.id,
-    title: task.title,
-    description: task.description,
-    status: task.status,
-    startDate: task.startDate,
-    endDate: task.endDate,
-    workedHours: task.workedHours,
-    idProject: task.idProject,
-    idEmployee: task.idEmployee,
+    id: taskToUpdate.id,
+    title: taskToUpdate.title,
+    description: taskToUpdate.description,
+    status: taskToUpdate.status,
+    startDate: taskToUpdate.startDate,
+    endDate: taskToUpdate.endDate,
+    workedHours: taskToUpdate.workedHours,
+    idProject: taskToUpdate.idProject,
+    idEmployee: taskToUpdate.idEmployee,
   };
 
   describe('updateTask', () => {
     it('Should update the task and send it to the repository', async () => {
       taskRepositoryStub.resolves(updatedTask);
-      projectRepositoryStub.resolves({ id: task.idProject });
-      employeeRepositoryStub.resolves({ id: task.idEmployee });
+      projectRepositoryStub.resolves({ id: taskToUpdate.idProject });
+      employeeRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
 
-      const result = await TaskService.updateTask(task.id, task);
+      const result = await TaskService.updateTask(taskToUpdate.id, updatedTask);
 
       expect(result).to.deep.equal(updatedTask);
     });
