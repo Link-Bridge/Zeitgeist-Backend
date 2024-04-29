@@ -14,11 +14,13 @@ describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
   let findAllProjectsStub: sinon.SinonStub;
   let createCompanySub: sinon.SinonStub;
+  let findByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     createCompanySub = sinon.stub(CompanyRepository, 'create');
+    findByIdStub = sinon.stub(CompanyRepository, 'findById');
   });
 
   afterEach(() => {
@@ -420,5 +422,27 @@ describe('CompanyService', () => {
     expect(res?.phoneNumber).to.eql('1234567890');
     expect(res?.landlinePhone).to.eql('0987654321');
     expect(res?.archived).to.eql(false);
+  });
+
+  it('should get a single company', async () => {
+    const idCompany1 = randomUUID();
+    const company = {
+      id: idCompany1,
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumnber: '1234567890',
+      landline_phone: '0987654321',
+      archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    };
+
+    findByIdStub.resolves(company);
+    const aCompany = await CompanyService.findById(idCompany1);
+
+    expect(findByIdStub.calledWith(idCompany1)).to.be.true;
+    expect(aCompany).eql(company);
   });
 });

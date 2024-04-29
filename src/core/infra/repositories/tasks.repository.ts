@@ -6,12 +6,12 @@ import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-m
 const RESOURCE_NAME = 'Task';
 
 /**
- * Creates a new task in the database.
+ * Finds a task by its id.
  *
- * @param id: string - The id of the task
- * @returns {Promise<Task>} - Task.
+ * @param id: string - Task id.
+ * @returns {Promise<Task | null>} - Task found or null if not found.
  *
- * @throws {Error} - If an error occurs when creating the task.
+ * @throws {Error} - If an error occurs when finding the task.
  */
 async function findTaskById(id: string): Promise<Task> {
   try {
@@ -34,18 +34,15 @@ async function findTaskById(id: string): Promise<Task> {
  *
  * @param new_task: Task - New task to be created.
  * @returns {Promise<Task>} - Created task.
+ * @returns {Promise<null>}    - If the task already exists.
  *
  * @throws {Error} - If an error occurs when creating the task.
  */
 async function createTask(newTask: Task): Promise<Task | null> {
   return await Prisma.$transaction(async (prisma: any) => {
     try {
-      const existingTask = await findTaskById(newTask.id);
-
-      if (existingTask) {
-        console.log(`Task with id ${newTask.id} already exists`);
-        return null;
-      }
+      const existingTask = findTaskById(newTask.id);
+      if (!existingTask) return null;
 
       const createdTask = await prisma.task.create({
         data: {
@@ -53,7 +50,6 @@ async function createTask(newTask: Task): Promise<Task | null> {
           title: newTask.title,
           description: newTask.description,
           status: newTask.status,
-          waiting_for: newTask.waitingFor,
           start_date: newTask.startDate,
           end_date: newTask.endDate,
           worked_hours: Number(newTask.workedHours),
@@ -64,8 +60,8 @@ async function createTask(newTask: Task): Promise<Task | null> {
       });
 
       return mapTaskEntityFromDbModel(createdTask);
-    } catch (error) {
-      console.error(`Error creating task: ${error}`);
+    } catch (error: any) {
+      console.error(error.message);
       throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
     }
   });

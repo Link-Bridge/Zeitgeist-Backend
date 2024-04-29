@@ -42,11 +42,6 @@ export interface Task {
   status: TaskStatus;
 
   /**
-   * @param waitingFor: string - Employee needed to proceed with the task (optional)
-   */
-  waitingFor?: string;
-
-  /**
    * @param startDate: Date - Start date of the task
    */
   startDate: Date;
@@ -78,13 +73,25 @@ export interface Task {
   idProject: string;
 }
 
+/**
+ * Interface representing the payload from the client to create a task
+ *
+ * @param title: string - Title of the task
+ * @param description: string - Description of the task
+ * @param status: TaskStatus - Status of the task
+ * @param startDate: Date - Start date of the task
+ * @param dueDate: Date | null - Due date of the task
+ * @param workedHours: number | null - Worked hours of the task
+ * @param idProject: string - Project id of the task
+ * @param employeeId: string - Employee id of the task
+ */
 export interface BareboneTask {
   title: string;
   description: string;
   status: TaskStatus;
-  waitingFor: string;
   startDate: Date;
   dueDate: Date | null;
   workedHours: number | null;
   idProject: string;
+  idEmployee: string;
 }
