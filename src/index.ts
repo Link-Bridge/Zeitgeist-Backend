@@ -2,11 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { Express } from 'express';
-import swaggerJSDoc, { OAS3Options } from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 import { baseRouter } from './api/routes/index.routes';
-import { swaggerOptions } from './config/swagger-api.config';
 import { EnvConfigKeys } from './utils/constants';
+import { logger } from './utils/logger';
 
 export const Prisma: PrismaClient = new PrismaClient();
 const app: Express = express();
@@ -24,14 +22,11 @@ app.use(
     allowedHeaders: 'Content-Type, Authorization',
   })
 );
-
 app.use(express.json());
-app.use(baseRouter);
 
-const swaggerSpec = swaggerJSDoc(swaggerOptions as OAS3Options);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(logger);
+app.use(baseRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://${HOST}:${PORT}`);
-  console.log(`Swagger Docs available on http://${HOST}:${PORT}/docs`);
 });
