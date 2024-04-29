@@ -22,8 +22,8 @@ router.get(
 
 router.get(
   '/project/:idProject',
-  checkAuthToken,
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  // checkAuthToken,
+  // checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.getTasksFromProject
 );
 

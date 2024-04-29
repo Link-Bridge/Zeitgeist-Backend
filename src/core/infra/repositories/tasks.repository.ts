@@ -87,6 +87,9 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
       where: {
         id_project: idProject,
       },
+      orderBy: {
+        end_date: 'asc',
+      },
     });
 
     if (!data) {
