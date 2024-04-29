@@ -20,4 +20,11 @@ router.get(
   TaskController.findTaskById
 );
 
+router.put(
+  '/update/:id',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.updateTask
+);
+
 export { router as TaskRouter };

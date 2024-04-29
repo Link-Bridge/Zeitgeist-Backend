@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
-import { BareboneTask, Task } from '../../domain/entities/task.entity';
+import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -104,4 +104,26 @@ async function findUnique(id: string): Promise<TaskDetail> {
   }
 }
 
-export const TaskService = { createTask, findUnique };
+/**
+ * Updates a task using the repository.
+ *
+ * @param id: string - Task to be updated.
+ * @param task: UpdatedTask - Task to be updated.
+ *
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
+  try {
+    if ((await TaskRepository.findTaskById(id)) === null) {
+      throw new Error('Task ID is not valid');
+    }
+
+    return await TaskRepository.updateTask(id, task);
+  } catch (error) {
+    throw new Error('Failed to update task');
+  }
+}
+
+export const TaskService = { createTask, findUnique, updateTask };

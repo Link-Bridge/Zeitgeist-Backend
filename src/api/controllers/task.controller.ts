@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { TaskService } from '../../core/app/services/task.service';
-import { BareboneTask } from '../../core/domain/entities/task.entity';
+import { BareboneTask, UpdatedTask } from '../../core/domain/entities/task.entity';
 import { TaskStatus } from '../../utils/enums';
 
 const taskStatusSchema = z.enum([
@@ -110,4 +110,68 @@ async function findTaskById(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask, findTaskById };
+/**
+ * Validates the data using zod schema
+ *
+ * @brief This is a zod schema that validates the data of an updated task
+ */
+const updatedTaskSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1).max(70).optional(),
+  description: z.string().min(1).max(255).optional(),
+  status: taskStatusSchema.optional(),
+  waitingFor: z.string().min(1).max(70).optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
+  workedHours: z.string().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  idProject: z.string().uuid().optional(),
+});
+
+/**
+ * Validates the data received through the POST method
+ *
+ * @param data:
+ * @returns {id: string, ...bodyTask, status: TaskStatus, workedHours: number}
+ */
+function validateUpdatedTask(id: string, data: UpdatedTask) {
+  const bodyTask = updatedTaskSchema.parse(data);
+  const status = data.status as TaskStatus;
+
+  return {
+    id: id,
+    ...bodyTask,
+    status: status,
+    workedHours: Number(bodyTask.workedHours) || 0.0,
+  };
+}
+
+/**
+ * Sends a request to the service to update a task with the given data.
+ *
+ * @param req: Request - The request object.
+ * @param res: Response - The response object.
+ * @returns res.status(200).json("Task updated successfully") - The updated task.
+ *
+ * @throws 500 - If an error occurs.
+ */
+async function updateTask(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+
+    const validatedTaskData = validateUpdatedTask(id, req.body);
+    const data = await TaskService.updateTask(id, validatedTaskData);
+
+    if (!data) {
+      return res.status(500).json({ message: 'An error occured while updating Task' });
+    }
+
+    res.status(200).json('Task updated successfully');
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+    throw new Error("Error creating task: " + error);
+  }
+}
+
+export const TaskController = { createTask, findTaskById, updateTask };
