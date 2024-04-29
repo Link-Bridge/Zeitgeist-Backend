@@ -141,12 +141,10 @@ model form {
   applicant_name                 String?   @db.VarChar(70)
   phone_num                      String?   @unique @db.VarChar(15)
   landline_num                   String?   @unique @db.VarChar(15)
-  address                        String?   @unique @db.VarChar(256)
   passport                       String?   @unique @db.VarChar(70)
   company_names                  String?   @db.VarChar(256)
   company_type                   String?   @db.VarChar(256)
   corporate_purpose              String?   @db.VarChar(70)
-  mexican_address                String?   @unique @db.VarChar(256)
   fixed_capital_stock            Decimal?  @db.Decimal(18, 2)
   variable_capital_stock         Decimal?  @db.Decimal(18, 2)
   values_per_share               Decimal?  @db.Decimal(18, 2)
@@ -231,7 +229,6 @@ model task {
   title         String          @db.VarChar(70)
   description   String          @db.VarChar(256)
   status        String          @db.VarChar(256)
-  waiting_for   String?         @db.VarChar(70)
   start_date    DateTime        @db.Date
   end_date      DateTime?       @db.Date
   worked_hours  Decimal?        @db.Decimal(8, 2)

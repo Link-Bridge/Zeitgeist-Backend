@@ -15,7 +15,7 @@ const companySchema = z.object({
     .max(13, { message: 'Landlinephone number must be between 10 and 13 digits long' })
     .optional()
     .nullable(),
-  archived: z.boolean({ message: 'Archived must be a boolean value' }).optional().nullable(),
+  archived: z.boolean().optional().nullable(),
   constitutionDate: z.string().optional().nullable(),
   rfc: z
     .string()

@@ -4,6 +4,10 @@ import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema } from '../validation/companyValidation';
 
+const reportSchema = z.object({
+  id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
+});
+
 /**
  * Finds all companies
  *
@@ -12,6 +16,17 @@ import { companySchema } from '../validation/companyValidation';
  * @returns {Promise<void>}
  * @throws {Error}
  */
+
+async function getUnique(req: Request, res: Response) {
+  try {
+    const { id } = reportSchema.parse({ id: req.params.id });
+
+    const data = await CompanyService.findById(id);
+    res.status(200).json({ data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 async function getAll(req: Request, res: Response) {
   try {
@@ -47,4 +62,4 @@ async function create(req: Request, res: Response) {
   }
 }
 
-export const CompanyController = { getAll, create };
+export const CompanyController = { getUnique, getAll, create };
