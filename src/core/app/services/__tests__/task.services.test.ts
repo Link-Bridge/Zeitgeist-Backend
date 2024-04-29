@@ -248,7 +248,7 @@ describe('TaskService', () => {
 
   describe('updateTask', () => {
     it('Should update the task and send it to the repository', async () => {
-      taskFindByIdRepositoryStub.resolves({ id: taskToUpdate.id })
+      taskFindByIdRepositoryStub.resolves({ id: taskToUpdate.id });
       taskRepositoryStub.resolves(updatedTask);
       projectRepositoryStub.resolves({ id: taskToUpdate.idProject });
       employeeRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
