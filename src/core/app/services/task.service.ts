@@ -45,8 +45,6 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Task already exists');
     }
 
-    console.log(createdTask);
-
     const employee = await EmployeeRepository.findById(newTask.idEmployee);
 
     if (!employee) {
