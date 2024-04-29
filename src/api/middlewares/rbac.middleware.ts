@@ -13,7 +13,6 @@ async function checkRole(req: Request, res: Response, allowedRoles: SupportedRol
   try {
     const role = await EmployeeService.findRoleByEmail(req.body.auth.email);
     if (!allowedRoles.includes(role)) {
-      console.log(allowedRoles)
       throw new Error('User is not authorized');
     }
   } catch (error: any) {
