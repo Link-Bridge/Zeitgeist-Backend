@@ -20,6 +20,6 @@ router.get(
   TaskController.findTaskById
 );
 
-router.get('/:idProject', TaskController.getTasksFromProject);
+router.get('/project/:idProject', TaskController.getTasksFromProject);
 
 export { router as TaskRouter };
