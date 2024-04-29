@@ -24,4 +24,4 @@ async function getAllRoles(): Promise<RoleEntity[]> {
   }
 }
 
-export { getAllRoles, updateUserRole };
+export const AdminRoleService = { getAllRoles, updateUserRole };
