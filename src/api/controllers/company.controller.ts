@@ -35,19 +35,4 @@ async function getAll(req: Request, res: Response) {
   }
 }
 
-/**
- * A function that calls the company service to get a company given its id.
- * @param req an HTTP Request containing the id in its params
- * @param res an HTTP response
- */
-async function getById(req: Request, res: Response) {
-  try {
-    const id = z.string().uuid({ message: 'Invalid UUID' }).parse(req.params.id);
-    const data = await CompanyService.findById(id);
-    res.json(data);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-export const CompanyController = { getAll, getById, getUnique };
+export const CompanyController = { getUnique, getAll };

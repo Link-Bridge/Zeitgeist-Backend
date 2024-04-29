@@ -101,6 +101,13 @@ describe('ProjectService', () => {
     });
   });
   describe('getAllProjects', () => {
+    let findAllStub: sinon.SinonStub;
+    beforeEach(() => {
+      findAllStub = sinon.stub(ProjectRepository, 'findAll');
+    });
+    afterEach(() => {
+      sinon.restore();
+    });
     it('should return all projects', async () => {
       const projects = [
         {
@@ -137,9 +144,9 @@ describe('ProjectService', () => {
         },
       ];
 
-      projectRepository.findAll.resolves(projects);
+      findAllStub.resolves(projects);
 
-      const getProjects = await projectService.getAllProjects();
+      const getProjects = await ProjectService.getAllProjects();
 
       expect(getProjects).eql(projects);
     });

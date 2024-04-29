@@ -27,7 +27,7 @@ router.post(
 router.get(
   '/',
   checkAuthToken,
-  checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getAllProjects
 );
 
