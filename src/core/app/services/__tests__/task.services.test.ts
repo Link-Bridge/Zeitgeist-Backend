@@ -206,13 +206,11 @@ describe('TaskService', () => {
 });
 
 describe('TaskService', () => {
-  let taskIdRepositoryStub: sinon.SinonStub;
   let taskRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
 
   beforeEach(() => {
-    taskIdRepositoryStub = sinon.stub(TaskRepository, 'findTaskById');
     taskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
     projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
     employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
