@@ -207,11 +207,13 @@ describe('TaskService', () => {
 
 describe('TaskService', () => {
   let taskRepositoryStub: sinon.SinonStub;
+  let taskFindByIdRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
 
   beforeEach(() => {
     taskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
+    taskFindByIdRepositoryStub = sinon.stub(TaskRepository, 'findTaskById');
     projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
     employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
   });
@@ -221,7 +223,7 @@ describe('TaskService', () => {
   });
 
   const taskToUpdate: UpdatedTask = {
-    id: '1ac384ff-5fb6-4d84-bf3c-dd9613a8d5fc',
+    id: randomUUID(),
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
@@ -246,6 +248,7 @@ describe('TaskService', () => {
 
   describe('updateTask', () => {
     it('Should update the task and send it to the repository', async () => {
+      taskFindByIdRepositoryStub.resolves({ id: taskToUpdate.id })
       taskRepositoryStub.resolves(updatedTask);
       projectRepositoryStub.resolves({ id: taskToUpdate.idProject });
       employeeRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
