@@ -15,11 +15,6 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectsClient
 );
-router.get(
-  '/report/:id',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getReportData
-);
 
 router.get(
   '/:clientId',

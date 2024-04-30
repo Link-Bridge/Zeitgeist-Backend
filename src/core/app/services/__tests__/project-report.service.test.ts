@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
@@ -50,6 +51,7 @@ describe('ProjectReportService', () => {
         matter: 'SAT',
         description: 'ITESM Project description',
         status: 'ACCEPTED',
+        totalHours: new Decimal(100),
         startDate: new Date(),
         createdAt: new Date(),
         idCompany: companyId,
