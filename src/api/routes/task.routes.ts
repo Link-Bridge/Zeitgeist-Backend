@@ -25,7 +25,6 @@ router.get(
 
 router.put(
   '/update/:id',
-  checkAuthToken,
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.updateTask
 );
