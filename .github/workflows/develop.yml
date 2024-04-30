@@ -28,7 +28,7 @@ jobs:
         uses: zricethezav/gitleaks-action@v1.6.0
 
       - name: Validate Migrations
-        run: pnpm prisma migrate dev --preview-feature
+        run: pnpm prisma migrate deploy --preview-feature
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
