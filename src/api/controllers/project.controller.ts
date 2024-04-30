@@ -93,6 +93,11 @@ async function getAllProjects(req: Request, res: Response) {
   }
 }
 
+/**
+ * A function that handles the request to obtain project details by its id
+ * @param req HTTP Request
+ * @param res Server response
+ */
 async function getProjectById(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });

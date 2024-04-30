@@ -38,8 +38,7 @@ router.get(
 );
 router.get(
   '/details/:id',
-  //checkAuthToken,
-  //checkAuthRole([SupportedRoles.CONTABLE, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectById
 );
 
