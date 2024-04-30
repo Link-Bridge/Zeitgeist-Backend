@@ -64,8 +64,8 @@ async function getReportData(req: Request, res: Response) {
     const { id } = idSchema.parse({ id: req.params.id });
     let data;
 
-    if (req.body.date) {
-      const { date } = reportRequestSchema.parse({ date: req.body.date });
+    if (req.query.date) {
+      const { date } = reportRequestSchema.parse({ date: req.query.date });
       data = await ProjectReportService.getReport(id, date);
     } else {
       data = await ProjectReportService.getReport(id);
