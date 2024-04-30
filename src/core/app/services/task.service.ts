@@ -155,6 +155,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     const taskIsAssigned = await EmployeeTaskRepository.validateEmployeeTask(employee.id, idTask);
     if (taskIsAssigned) {
       console.info('Task is already assigned to this employee.');
+      throw new Error('Task is already assigned to this employee');
     } else {
       const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
       if (!assignedTask) {
