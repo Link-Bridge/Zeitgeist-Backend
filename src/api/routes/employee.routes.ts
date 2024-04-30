@@ -1,19 +1,13 @@
 import { Router } from 'express';
 import { SupportedRoles } from '../../utils/enums';
 import { EmployeeController } from '../controllers/employee.controller';
-import { checkAuthToken } from '../middlewares/auth.middleware';
 import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.post('/signup', checkAuthToken, EmployeeController.userExists);
-router.get('/', checkAuthToken, checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
-router.delete('/delete/:id', checkAuthToken, checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.deleteEmployee);
-router.get(
-  '/getAllEmployees',
-  checkAuthToken,
-  checkAuthRole([SupportedRoles.ADMIN]),
-  EmployeeController.getAllEmployees
-);
+router.post('/signup', EmployeeController.userExists);
+router.get('/', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
+router.delete('/delete/:id', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.deleteEmployee);
+router.get('/getAllEmployees', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
 
 export { router as EmployeeRouter };
