@@ -22,6 +22,10 @@ const createProjectRequestSchema = z.object({
   area: z.nativeEnum(SupportedDepartments),
 });
 
+const reportRequestSchema = z.object({
+  date: z.coerce.date(),
+});
+
 /**
  * @description Create a new project
  * @param req
@@ -50,11 +54,23 @@ async function createProject(req: Request, res: Response) {
   }
 }
 
+/**
+ * @description get a project report
+ * @param req
+ * @param res
+ */
 async function getReportData(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
+    let data;
 
-    const data = await ProjectReportService.getReport(id);
+    if (req.query.date) {
+      const { date } = reportRequestSchema.parse({ date: req.query.date });
+      data = await ProjectReportService.getReport(id, date);
+    } else {
+      data = await ProjectReportService.getReport(id);
+    }
+
     res.status(200).json(data);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

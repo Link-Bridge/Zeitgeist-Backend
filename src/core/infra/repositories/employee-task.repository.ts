@@ -49,10 +49,10 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
 
 /**
  * Validates that a task is not already assigned to an employee.
- * 
+ *
  * @param employeeId: string - The employee ID.
  * @param taskId: string - The task ID.
- * 
+ *
  * @returns {Promise<boolean>} - True if the task is assigned to the employee, false otherwise.
  */
 async function validateEmployeeTask(employeeId: string, taskId: string): Promise<boolean> {
