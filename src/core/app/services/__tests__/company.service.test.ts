@@ -15,14 +15,12 @@ describe('CompanyService', () => {
   let findAllProjectsStub: sinon.SinonStub;
   let updateCompanyStub: sinon.SinonStub;
   let findCompanyByIdStub: sinon.SinonStub;
-  let findByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     updateCompanyStub = sinon.stub(CompanyRepository, 'update');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
-    findByIdStub = sinon.stub(CompanyRepository, 'findById');
   });
 
   afterEach(() => {
@@ -59,9 +57,9 @@ describe('CompanyService', () => {
     const res = await CompanyService.findAll();
 
     expect(res[0].legalHours).to.eql(new Decimal(10));
-    expect(res[0].accountingHours).to.eql(new Decimal(20));
-    expect(res[0].chargeableHours).to.eql(new Decimal(30));
-    expect(res[0].totalProjects).to.eql(4);
+    expect(res[0].accountingHours).to.eql(new Decimal(5));
+    expect(res[0].chargeableHours).to.eql(new Decimal(15));
+    expect(res[0].totalProjects).to.eql(2);
   });
 
   it('should update a company and return the updated entity', async () => {
@@ -89,10 +87,10 @@ describe('CompanyService', () => {
       idForm: null,
     };
 
-    findByIdStub.resolves(company);
+    findCompanyByIdStub.resolves(company);
     const aCompany = await CompanyService.findById(idCompany1);
 
-    expect(findByIdStub.calledWith(idCompany1)).to.be.true;
+    expect(findCompanyByIdStub.calledWith(idCompany1)).to.be.true;
     expect(aCompany).to.eql(company);
   });
 });
