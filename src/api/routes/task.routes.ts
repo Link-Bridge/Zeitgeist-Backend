@@ -20,6 +20,13 @@ router.get(
   TaskController.findTaskById
 );
 
+router.get(
+  '/project/:idProject',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.getTasksFromProject
+);
+
 router.put(
   '/update/:id',
   checkAuthToken,
