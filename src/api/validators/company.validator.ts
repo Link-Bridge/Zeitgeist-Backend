@@ -31,14 +31,8 @@ export const updateCompanySchema = z.object({
   email: zodValidEmail.optional(),
   phoneNumber: zodValidPhoneNumber.optional(),
   landlinePhone: zodValidPhoneNumber.optional(),
-  archived: z.boolean(),
-  constitutionDate: z
-    .string()
-    .refine(data => data === null || !isNaN(Date.parse(data)), {
-      message: 'Invalid date format, expected YYYY-MM-DD',
-    })
-    .transform(data => (data ? new Date(data) : null))
-    .optional(),
+  archived: z.boolean().optional(),
+  constitutionDate: z.coerce.date().nullable(),
   rfc: zodValidRfc.optional(),
   taxResidence: z.string().optional(),
 });

@@ -22,7 +22,7 @@ router.get(
 
 router.put(
   '/:id',
-  checkAuthRole,
+  checkAuthToken,
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.updateClient
 );
