@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { ProjectReportService } from '../../core/app/services/project-report.service';
 import { ProjectService } from '../../core/app/services/project.service';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../utils/enums';
+import { da } from '@faker-js/faker';
 
 const idSchema = z.object({
   id: z.string().uuid(),
@@ -21,6 +22,10 @@ const createProjectRequestSchema = z.object({
   chargable: z.boolean(),
   area: z.nativeEnum(SupportedDepartments),
 });
+
+const reportRequestSchema = z.object({
+  date: z.coerce.date(),
+})
 
 /**
  * @description Create a new project
@@ -53,8 +58,16 @@ async function createProject(req: Request, res: Response) {
 async function getReportData(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
+    let data;
 
-    const data = await ProjectReportService.getReport(id);
+    if (req.body.date){
+      const {date} = reportRequestSchema.parse({date: req.body.date});
+      data = await ProjectReportService.getReport(id, date);
+    }
+    else {
+      data = await ProjectReportService.getReport(id);
+    }
+    
     res.status(200).json(data);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

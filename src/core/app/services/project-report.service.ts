@@ -1,3 +1,4 @@
+import { TaskStatus } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -28,6 +29,18 @@ function initilizeStatistics(total: number): ProjectStatistics {
   };
 }
 
+
+function compareDate(task: Task, date: Date) {
+  if (!task.endDate) {
+    return false;
+  }
+
+  const taskDateArray = task.endDate.toISOString().split('-');
+  const dateArray = date.toISOString().split('-');
+
+  return (taskDateArray[0] == dateArray[0] && taskDateArray[1] == dateArray[1] && task.status == TaskStatus.DONE);
+}
+
 /**
  * @brief This function generates a report for a project
  *
@@ -41,7 +54,7 @@ function initilizeStatistics(total: number): ProjectStatistics {
  * associated tasks and their statistics.
  *
  */
-async function getReport(id: string): Promise<Report> {
+async function getReport(id: string, date?: Date): Promise<Report> {
   try {
     const rawProject = await ProjectRepository.findById(id);
     const company = await CompanyRepository.findById(rawProject.idCompany);
@@ -72,17 +85,28 @@ async function getReport(id: string): Promise<Report> {
           task = { ...task, employeeFirstName: employee.firstName, employeeLastName: employee.lastName };
         }
       }
-
       tasks.push(task);
+    }
 
-      const key: string = rawTasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
+    if (date) {
+
+      const monthly_tasks = tasks.filter(record => compareDate(record, date));
+      report.tasks = monthly_tasks;
+      projectStatistics.total = monthly_tasks.length;
+
+    } else { 
+      report.tasks = tasks;
+    }
+
+    for (let i = 0; i < report.tasks.length; i++){
+      const key: string = report.tasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
+
       if (projectStatistics.hasOwnProperty(key)) {
         projectStatistics[key as keyof ProjectStatistics] =
           Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
       }
     }
 
-    report.tasks = tasks;
     report.statistics = projectStatistics;
 
     return report;
