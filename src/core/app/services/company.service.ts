@@ -2,6 +2,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { randomUUID } from 'crypto';
 import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { UpdateCompanyBody } from '../interfaces/company.interface';
@@ -90,15 +91,18 @@ async function findAll(): Promise<CompanyEntity[]> {
 async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
   const company = await CompanyRepository.findById(body.id);
 
-  if (!company) throw new Error('Company not found');
+  if (!company) throw new NotFoundError('Company not found');
 
   return await CompanyRepository.update({
     id: company.id,
-    name: body.name,
-    email: body.email,
-    phoneNumber: body.phoneNumber,
-    landlinePhone: body.landlinePhone,
+    name: body.name ?? company.name,
+    email: body.email ?? company.email,
+    phoneNumber: body.phoneNumber ?? company.phoneNumber,
+    landlinePhone: body.landlinePhone ?? company.landlinePhone,
     archived: body.archived,
+    constitutionDate: body.constitutionDate ?? company.constitutionDate,
+    rfc: body.rfc ?? company.rfc,
+    taxResidence: body.taxResidence ?? company.taxResidence,
     idCompanyDirectContact: company.idCompanyDirectContact,
     idForm: company.idForm,
     createdAt: company.createdAt,

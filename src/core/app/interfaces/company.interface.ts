@@ -5,4 +5,7 @@ export interface UpdateCompanyBody {
   phoneNumber?: string | null;
   landlinePhone?: string | null;
   archived?: boolean;
+  constitutionDate?: Date | null;
+  rfc?: string | null;
+  taxResidence?: string | null;
 }

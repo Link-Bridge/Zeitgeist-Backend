@@ -6,7 +6,6 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-// Get Unique Client
 router.get(
   '/:id',
   checkAuthToken,
@@ -20,6 +19,7 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getAll
 );
+
 router.put(
   '/:id',
   checkAuthRole,
