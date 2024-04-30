@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
-import { companySchema } from '../validation/companyValidation';
-import { zodValidEmail, zodValidPhoneNumber, zodValidString, zodValidUuid } from '../validators/zod.validators';
+import { companySchema, updateCompanySchema } from '../validators/company.validator';
 
 const reportSchema = z.object({
   id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
@@ -37,15 +36,6 @@ async function getUnique(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-
-const updateCompanySchema = z.object({
-  id: zodValidUuid,
-  name: zodValidString,
-  email: zodValidEmail,
-  phoneNumber: zodValidPhoneNumber,
-  landlinePhone: zodValidPhoneNumber,
-  archived: z.boolean(),
-});
 
 /**
  * Receives a request to update a client and validates de data before sending it to the service
