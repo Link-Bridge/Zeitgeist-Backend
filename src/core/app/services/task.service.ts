@@ -9,6 +9,25 @@ import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
 
 /**
+ * Gets all tasks from a unique project using the repository.
+ *
+ * @param projectId: string - projectId to which the tasks are related.
+ * @returns {Promise<Task[]>} - Array of tasks from a unique project.
+ *
+ * @throws {Error} - If an error occurs when creating the task.
+ */
+
+async function getTasksFromProject(projectId: string): Promise<Task[]> {
+  try {
+    const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
+    return taskRecords;
+  } catch (error: unknown) {
+    throw new Error('Error fetching array of tasks from project');
+  }
+}
+
+/**
+ * Creates a new task using the repository.
  * Creates a new task using the payload from the client.
  * The task is created only if the project ID is valid and the relationship
  * between task and employee is created.
@@ -104,4 +123,4 @@ async function findUnique(id: string): Promise<TaskDetail> {
   }
 }
 
-export const TaskService = { createTask, findUnique };
+export const TaskService = { createTask, findUnique, getTasksFromProject };
