@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library';
 import { TaskStatus } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
@@ -107,15 +108,17 @@ async function getReport(id: string, date?: Date): Promise<Report> {
       report.tasks = tasks;
     }
 
+    let workedHours = 0;
     for (let i = 0; i < report.tasks.length; i++) {
       const key: string = report.tasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
+      workedHours += report.tasks[i].workedHours || 0;
 
       if (projectStatistics.hasOwnProperty(key)) {
         projectStatistics[key as keyof ProjectStatistics] =
           Number(projectStatistics[key as keyof ProjectStatistics]) + 1;
       }
     }
-
+    report.project.totalHours = new Decimal(workedHours);
     report.statistics = projectStatistics;
 
     return report;
