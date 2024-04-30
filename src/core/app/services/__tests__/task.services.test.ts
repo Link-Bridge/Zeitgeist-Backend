@@ -254,17 +254,17 @@ describe('TaskService', () => {
 });
 
 describe('TaskService', () => {
-  let taskRepositoryStub: sinon.SinonStub;
-  let taskFindByIdRepositoryStub: sinon.SinonStub;
-  let projectRepositoryStub: sinon.SinonStub;
-  let employeeRepositoryStub: sinon.SinonStub;
+  let updateTaskRepositoryStub: sinon.SinonStub;
+  let findTaskByIdRepositoryStub: sinon.SinonStub;
+  let projectFindByIdRepositoryStub: sinon.SinonStub;
+  let employeeFindByIdRepositoryStub: sinon.SinonStub;
   let employeeTaskRepositoryStub: sinon.SinonStub;
 
   beforeEach(() => {
-    taskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
-    taskFindByIdRepositoryStub = sinon.stub(TaskRepository, 'findTaskById');
-    projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
-    employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
+    updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
+    findTaskByIdRepositoryStub = sinon.stub(TaskRepository, 'findTaskById');
+    projectFindByIdRepositoryStub = sinon.stub(ProjectRepository, 'findById');
+    employeeFindByIdRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
     employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
   });
 
@@ -276,7 +276,7 @@ describe('TaskService', () => {
     id: randomUUID(),
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
-    status: faker.helpers.arrayElement(Object.values(TaskStatus)),
+    status: TaskStatus.CANCELLED,
     startDate: faker.date.recent(),
     endDate: faker.date.future(),
     workedHours: faker.number.int(),
@@ -304,16 +304,18 @@ describe('TaskService', () => {
 
   describe('updateTask', () => {
     it('Should update the task and send it to the repository', async () => {
-      taskRepositoryStub.resolves(updatedTask);
-      projectRepositoryStub.resolves({ id: taskToUpdate.idProject });
-      employeeRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
+      updateTaskRepositoryStub.resolves(updatedTask);
+      findTaskByIdRepositoryStub.resolves(taskToUpdate.id);
+      projectFindByIdRepositoryStub.resolves({ id: taskToUpdate.idProject });
+      employeeFindByIdRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
       employeeTaskRepositoryStub.resolves(updatedEmployeeTask);
-      const result = await TaskService.updateTask(taskToUpdate.id, updatedTask);
+
+      const result = await TaskService.updateTask(taskToUpdate.id, taskToUpdate);
       expect(result).to.deep.equal(updatedTask);
     });
 
     it('Should throw an error if the task could not be updated', async () => {
-      taskRepositoryStub.withArgs(taskToUpdate.id, updatedTask).throws(new Error('Failed to update task'));
+      updateTaskRepositoryStub.withArgs(taskToUpdate.id, updatedTask).throws(new Error('Failed to update task'));
       try {
         await TaskService.updateTask(taskToUpdate.id, updatedTask);
       } catch (error: any) {
@@ -323,9 +325,9 @@ describe('TaskService', () => {
     });
 
     it('Should throw an error if the task is already assigned to the updated employee', async () => {
-      taskRepositoryStub.resolves(updatedTask);
-      taskFindByIdRepositoryStub.resolves({ id: taskToUpdate.id });
-      employeeRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
+      updateTaskRepositoryStub.resolves(updatedTask);
+      findTaskByIdRepositoryStub.resolves({ id: taskToUpdate.id });
+      employeeFindByIdRepositoryStub.resolves({ id: taskToUpdate.idEmployee });
       employeeTaskRepositoryStub.resolves(updatedEmployeeTask);
 
       try {
