@@ -29,8 +29,19 @@ function initilizeStatistics(total: number): ProjectStatistics {
   };
 }
 
-
-function compareDate(task: Task, date: Date) {
+/**
+ * @brief This function compare the month and year of two dates
+ *
+ * @param task: Task - One task
+ *
+ * @param date: Date - Filter date
+ *
+ * @return boolean - True if the dates match
+ *
+ * @description Compares month and year of two dates and return true if those parameters match
+ *
+ */
+function compareDate(task: Task, date: Date): boolean {
   if (!task.endDate) {
     return false;
   }
@@ -38,7 +49,7 @@ function compareDate(task: Task, date: Date) {
   const taskDateArray = task.endDate.toISOString().split('-');
   const dateArray = date.toISOString().split('-');
 
-  return (taskDateArray[0] == dateArray[0] && taskDateArray[1] == dateArray[1] && task.status == TaskStatus.DONE);
+  return taskDateArray[0] == dateArray[0] && taskDateArray[1] == dateArray[1] && task.status == TaskStatus.DONE;
 }
 
 /**
@@ -89,16 +100,14 @@ async function getReport(id: string, date?: Date): Promise<Report> {
     }
 
     if (date) {
-
       const monthly_tasks = tasks.filter(record => compareDate(record, date));
       report.tasks = monthly_tasks;
       projectStatistics.total = monthly_tasks.length;
-
-    } else { 
+    } else {
       report.tasks = tasks;
     }
 
-    for (let i = 0; i < report.tasks.length; i++){
+    for (let i = 0; i < report.tasks.length; i++) {
       const key: string = report.tasks[i].status.replace(' ', '').toLocaleLowerCase().trim();
 
       if (projectStatistics.hasOwnProperty(key)) {
