@@ -124,6 +124,7 @@ async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
         end_date: task.endDate,
         worked_hours: Number(task.workedHours),
         updated_at: new Date(),
+        id_project: task.idProject,
       },
     });
 

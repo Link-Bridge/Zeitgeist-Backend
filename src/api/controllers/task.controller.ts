@@ -134,27 +134,27 @@ const updatedTaskSchema = z.object({
   title: z.string().min(1).max(70).optional(),
   description: z.string().min(1).max(255).optional(),
   status: taskStatusSchema.optional(),
-  waitingFor: z.string().min(1).max(70).optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   workedHours: z.string().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  idProject: z.string().uuid().optional(),
+  idProject: z.string().optional(),
+  idEmployee: z.string(),
 });
 
 /**
- * Validates the data received through the POST method
+ * Validates the data received through the PUT method
  *
  * @param data:
  * @returns {id: string, ...bodyTask, status: TaskStatus, workedHours: number}
  */
-function validateUpdatedTask(id: string, data: UpdatedTask) {
+function validateUpdatedTaskData(idTask: string, data: UpdatedTask) {
   const bodyTask = updatedTaskSchema.parse(data);
   const status = data.status as TaskStatus;
 
   return {
-    id: id,
+    id: idTask,
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
@@ -172,10 +172,10 @@ function validateUpdatedTask(id: string, data: UpdatedTask) {
  */
 async function updateTask(req: Request, res: Response) {
   try {
-    const id = req.params.id;
+    const idTask = req.params.id;
 
-    const validatedTaskData = validateUpdatedTask(id, req.body);
-    const data = await TaskService.updateTask(id, validatedTaskData);
+    const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
+    const data = await TaskService.updateTask(idTask, validatedTaskData);
 
     if (!data) {
       return res.status(500).json({ message: 'An error occured while updating Task' });

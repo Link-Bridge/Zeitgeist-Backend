@@ -47,4 +47,27 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
   });
 }
 
-export const EmployeeTaskRepository = { findAll, create };
+/**
+ * Validates that a task is not already assigned to an employee.
+ * 
+ * @param employeeId: string - The employee ID.
+ * @param taskId: string - The task ID.
+ * 
+ * @returns {Promise<boolean>} - True if the task is assigned to the employee, false otherwise.
+ */
+async function validateEmployeeTask(employeeId: string, taskId: string): Promise<boolean> {
+  try {
+    const data = await Prisma.employee_task.findFirst({
+      where: {
+        id_employee: employeeId,
+        id_task: taskId,
+      },
+    });
+
+    return !!data;
+  } catch (error: unknown) {
+    throw new Error(`Failed to validate employee task on ${RESOURCE_NAME}`);
+  }
+}
+
+export const EmployeeTaskRepository = { findAll, create, validateEmployeeTask };

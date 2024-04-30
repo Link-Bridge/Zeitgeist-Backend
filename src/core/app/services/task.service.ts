@@ -132,13 +132,37 @@ async function findUnique(id: string): Promise<TaskDetail> {
  *
  * @throws {Error} - If an error occurs when updating the task.
  */
-async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
+async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   try {
-    if ((await TaskRepository.findTaskById(id)) === null) {
+    if ((await TaskRepository.findTaskById(idTask)) === null) {
       throw new Error('Task ID is not valid');
     }
 
-    return await TaskRepository.updateTask(id, task);
+    const updatedTask = await TaskRepository.updateTask(idTask, task);
+
+    const employee = await EmployeeRepository.findById(task.idEmployee);
+    if (!employee) {
+      throw new NotFoundError('Employee');
+    }
+
+    const newEmployeeTask: EmployeeTask = {
+      id: randomUUID(),
+      createdAt: new Date(),
+      idEmployee: employee.id,
+      idTask: idTask,
+    };
+
+    const taskIsAssigned = await EmployeeTaskRepository.validateEmployeeTask(employee.id, idTask);
+    if (taskIsAssigned) {
+      console.info('Task is already assigned to this employee.');
+    } else {
+      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+      if (!assignedTask) {
+        throw new Error('Error assigning a task to an employee');
+      }
+    }
+
+    return updatedTask;
   } catch (error) {
     throw new Error('Failed to update task');
   }

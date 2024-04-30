@@ -109,6 +109,7 @@ export interface BareboneTask {
  * @param createdAt: Date
  * @param updatedAt: Date
  * @param idProject: string
+ * @param idEmployee: string
  *
  * @return void
  *
@@ -170,5 +171,5 @@ export interface UpdatedTask {
   /**
    * @param idEmployee: string - The employee associated with the task
    */
-  idEmployee?: string;
+  idEmployee: string;
 }
