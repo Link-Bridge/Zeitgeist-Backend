@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { TaskStatus } from '../../../../utils/enums';
+import { EmployeeTask } from '../../../domain/entities/employee-task.entity';
 import { BareboneTask, Task } from '../../../domain/entities/task.entity';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
@@ -14,8 +15,10 @@ describe('Task Service', () => {
   let taskRepositoryStub: sinon.SinonStub;
   let projectRepositoryStub: sinon.SinonStub;
   let taskFetchRepositoryStub: sinon.SinonStub;
+  let fetchMultipleTasksByIdsStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
   let employeeTaskRepositoryStub: sinon.SinonStub;
+  let employeeTaskFindByIdStub: sinon.SinonStub;
 
   const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
 
@@ -47,6 +50,8 @@ describe('Task Service', () => {
     taskFetchRepositoryStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
     employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
     employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
+    employeeTaskFindByIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
+    fetchMultipleTasksByIdsStub = sinon.stub(TaskRepository, 'findTasksById');
   });
 
   afterEach(() => {
@@ -154,6 +159,100 @@ describe('Task Service', () => {
       } catch (error: any) {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Could not get tasks');
+      }
+    });
+  });
+
+  describe('getTasksByEmployeeId', () => {
+    it('Should get an array of tasks from the repository', async () => {
+      const employeeId = randomUUID();
+      const employeeTasks: EmployeeTask[] = [
+        {
+          id: randomUUID(),
+          createdAt: faker.date.recent(),
+          idEmployee: employeeId,
+          idTask: randomUUID(),
+        },
+        {
+          id: randomUUID(),
+          createdAt: faker.date.recent(),
+          idEmployee: employeeId,
+          idTask: randomUUID(),
+        },
+      ];
+
+      const assignedTasks = Array.from({ length: 5 }, () => ({
+        id: randomUUID(),
+        title: faker.lorem.words(3),
+        description: faker.lorem.words(10),
+        status: faker.helpers.arrayElement(Object.values(TaskStatus)),
+        startDate: faker.date.recent(),
+        endDate: faker.date.future(),
+        workedHours: faker.number.int(),
+        createdAt: new Date(),
+        idProject: projectID,
+      }));
+
+      employeeRepositoryStub.resolves({ id: employeeId });
+      employeeTaskFindByIdStub.resolves(employeeTasks);
+      fetchMultipleTasksByIdsStub.resolves(assignedTasks);
+
+      const result = await TaskService.getTasksAssignedToEmployee(employeeId);
+
+      expect(result).to.deep.equal(assignedTasks);
+      expect(employeeTaskFindByIdStub.calledOnce).to.be.true;
+      expect(fetchMultipleTasksByIdsStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw an error if the employee is not found', async () => {
+      const employeeId = randomUUID();
+      employeeRepositoryStub.withArgs(employeeId).resolves(null);
+
+      try {
+        await TaskService.getTasksAssignedToEmployee(employeeId);
+      } catch (error: any) {
+        expect(error.message).to.equal('Error: Requested Employee was not found');
+      }
+    });
+
+    it('Should throw an error if the employee has no assigned tasks', async () => {
+      const employeeId = randomUUID();
+      employeeRepositoryStub.resolves({ id: employeeId });
+      employeeTaskFindByIdStub.withArgs(employeeId).resolves(null);
+
+      try {
+        await TaskService.getTasksAssignedToEmployee(employeeId);
+      } catch (error: any) {
+        expect(error.message).to.equal('Error: Requested Task assigned to employee was not found');
+      }
+    });
+
+    it('Should throw an error if the tasks could not be fetched', async () => {
+      const employeeId = randomUUID();
+      const employeeTasks: EmployeeTask[] = [
+        {
+          id: randomUUID(),
+          createdAt: faker.date.recent(),
+          idEmployee: employeeId,
+          idTask: randomUUID(),
+        },
+        {
+          id: randomUUID(),
+          createdAt: faker.date.recent(),
+          idEmployee: employeeId,
+          idTask: randomUUID(),
+        },
+      ];
+
+      employeeRepositoryStub.resolves({ id: employeeId });
+      employeeTaskFindByIdStub.resolves(employeeTasks);
+      fetchMultipleTasksByIdsStub.rejects(new Error('Could not fetch tasks'));
+
+      try {
+        await TaskService.getTasksAssignedToEmployee(employeeId);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Could not fetch tasks');
       }
     });
   });

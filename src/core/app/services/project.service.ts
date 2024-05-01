@@ -1,6 +1,8 @@
 import { randomUUID } from 'crypto';
 import { ProjectEntity } from '../../domain/entities/project.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { UpdateProjectBody } from '../interfaces/project.interface';
 
 export interface CreateProjectData {
   name: string;
@@ -40,6 +42,11 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
   return newProject;
 }
 
+/**
+ * Gets all projects from the database
+ *
+ * @returns {Promise<ProjectEntity[]>} - An array of project entities
+ */
 async function getAllProjects(): Promise<ProjectEntity[]> {
   return await ProjectRepository.findAll();
 }
@@ -80,31 +87,33 @@ async function getProjectById(projectId: string): Promise<ProjectEntity> {
   }
 }
 
-async function update(projectId: string, projectNewData: CreateProjectData): Promise<ProjectEntity> {
-  try {
-    const actualProject = await ProjectRepository.findById(projectId);
-    if (!actualProject) {
-      throw new Error('Project not found');
-    }
+/**
+ * Update project entity based on id
+ * @param {ProjectEntity} project
+ * @returns {Promise<ProjectEntity>} a promise that resolves to the updated project entity
+ */
+async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
+  const project = await ProjectRepository.findById(body.id);
 
-    const updatedProjectData: CreateProjectData = {
-      name: projectNewData.name || actualProject.name,
-      matter: projectNewData.matter,
-      description: projectNewData.description,
-      area: projectNewData.area,
-      category: projectNewData.category,
-      isChargeable: projectNewData.isChargeable,
-      periodicity: projectNewData.periodicity,
-      endDate: projectNewData.endDate,
-      startDate: projectNewData.startDate,
-      idCompany: projectNewData.idCompany,
-    };
-
-    const updatedProject = await ProjectRepository.update(projectId, updatedProjectData);
-    return updatedProject;
-  } catch (error) {
-    throw new Error('An unexpected error ocurred');
+  if (!project) {
+    throw new NotFoundError('Project not found');
   }
+
+  return await ProjectRepository.updateProject({
+    id: project.id,
+    name: body.name ?? project.name,
+    idCompany: body.idCompany ?? project.idCompany,
+    category: body.category ?? project.category,
+    matter: body.matter ?? project.matter,
+    description: body.description ?? project.description,
+    startDate: body.startDate ?? project.startDate,
+    endDate: body.endDate ?? project.endDate,
+    periodicity: body.periodicity ?? project.periodicity,
+    area: body.area ?? project.area,
+    isChargeable: body.isChargeable ?? project.isChargeable,
+    status: body.status ?? project.status,
+    createdAt: project.createdAt,
+  });
 }
 
-export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById, update };
+export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById, updateProject };

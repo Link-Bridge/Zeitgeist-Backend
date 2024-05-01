@@ -126,12 +126,16 @@ async function getProjectById(req: Request, res: Response) {
   }
 }
 
-async function update(req: Request, res: Response) {
+/**
+ * Recives a request to update a project data
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateProject(req: Request, res: Response) {
   try {
-    const { id } = idSchema.parse({ id: req.params.id });
-    const newData = createProjectRequestSchema.parse(req.body);
-    const updatedProject = await ProjectService.update(id, newData);
-    res.status(200).json(updatedProject);
+    const projectData = req.body;
+    const updatedProject = await ProjectService.updateProject(projectData);
+    res.status(200).json({ data: updatedProject });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -143,5 +147,5 @@ export const ProjectController = {
   getAllProjects,
   getProjectsClient,
   getProjectById,
-  update,
+  updateProject,
 };

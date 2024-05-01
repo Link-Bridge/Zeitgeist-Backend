@@ -124,4 +124,25 @@ async function findTaskById(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask, getTasksFromProject, findTaskById };
+/**
+ * Get all tasks from a unique project from the db.
+ *
+ * @param req: Request - The request object.
+ * @param res: Response - The response object.
+ *
+ * @returns {res.status(200).json(data)} - Array of tasks.
+ * @throws {res.status(500).json({ message })} - If an error occurs when
+ *                                               getting array of tasks.
+ */
+async function findTasksByEmployeeId(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.idEmployee });
+    const data = await TaskService.getTasksAssignedToEmployee(id);
+
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, getTasksFromProject, findTaskById, findTasksByEmployeeId };

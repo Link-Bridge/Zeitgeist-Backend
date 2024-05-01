@@ -10,6 +10,7 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getReportData
 );
+
 router.get(
   '/:clientId',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
@@ -36,10 +37,11 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectById
 );
+
 router.put(
-  '/details/:id',
+  '/edit/:id',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.update
+  ProjectController.updateProject
 );
 
 export { router as ProjectRouter };
