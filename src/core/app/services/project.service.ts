@@ -80,4 +80,31 @@ async function getProjectById(projectId: string): Promise<ProjectEntity> {
   }
 }
 
-export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById };
+async function update(projectId: string, projectNewData: CreateProjectData): Promise<ProjectEntity> {
+  try {
+    const actualProject = await ProjectRepository.findById(projectId);
+    if (!actualProject) {
+      throw new Error('Project not found');
+    }
+
+    const updatedProjectData: CreateProjectData = {
+      name: projectNewData.name || actualProject.name,
+      matter: projectNewData.matter,
+      description: projectNewData.description,
+      area: projectNewData.area,
+      category: projectNewData.category,
+      isChargeable: projectNewData.isChargeable,
+      periodicity: projectNewData.periodicity,
+      endDate: projectNewData.endDate,
+      startDate: projectNewData.startDate,
+      idCompany: projectNewData.idCompany,
+    };
+
+    const updatedProject = await ProjectRepository.update(projectId, updatedProjectData);
+    return updatedProject;
+  } catch (error) {
+    throw new Error('An unexpected error ocurred');
+  }
+}
+
+export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById, update };
