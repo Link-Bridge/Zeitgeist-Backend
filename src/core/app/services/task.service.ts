@@ -150,8 +150,8 @@ async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
     const tasks = await TaskRepository.findTasksById(tasksId);
 
     return tasks;
-  } catch (error: unknown) {
-    throw new Error('An error occurred when fetching the tasks assigned to the employee');
+  } catch (error: any) {
+    throw new Error(error);
   }
 }
 

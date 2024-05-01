@@ -27,6 +27,6 @@ router.get(
   '/employee/:idEmployee',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   TaskController.findTasksByEmployeeId
-)
+);
 
 export { router as TaskRouter };
