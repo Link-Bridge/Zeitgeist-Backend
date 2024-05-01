@@ -47,4 +47,30 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
   });
 }
 
-export const EmployeeTaskRepository = { findAll, create };
+/**
+ * Finds an employee task object by the employee ID.
+ *
+ * @param employeeId: string - Unique identifier of the employee.
+ * @return {Promise<EmployeeTask[]>} - List of employee tasks.
+ *
+ * @throws {Error} - If an error occurs when finding the employee task.
+ */
+async function findByEmployeeId(employeeId: string): Promise<EmployeeTask[]> {
+  try {
+    const data = await Prisma.employee_task.findMany({
+      where: {
+        id_employee: employeeId,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapEmployeeTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const EmployeeTaskRepository = { findAll, create, findByEmployeeId };

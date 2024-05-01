@@ -123,4 +123,36 @@ async function findUnique(id: string): Promise<TaskDetail> {
   }
 }
 
-export const TaskService = { createTask, findUnique, getTasksFromProject };
+/**
+ * Finds all the assigned tasks to an employee
+ *
+ * @param employeeId: string - Employee id.
+ * @returns {Promise<TaskDetail[]>} - Array of tasks assigned to the employee.
+ *
+ * @throws {Error} - If an error occurs when finding the tasks.
+ * @throws {NotFoundError} - If the employee is not found.
+ * @throws {NotFoundError} - If the task is not found.
+ * @throws {Error} - If an error occurs when looking for the task.
+ */
+async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
+  try {
+    if ((await EmployeeRepository.findById(employeeId)) === null) {
+      throw new NotFoundError('Employee');
+    }
+
+    const employeeTasks = await EmployeeTaskRepository.findByEmployeeId(employeeId);
+
+    if (!employeeTasks) {
+      throw new NotFoundError('Task assigned to employee');
+    }
+
+    const tasksId = employeeTasks.map(task => task.idTask);
+    const tasks = await TaskRepository.findTasksById(tasksId);
+
+    return tasks;
+  } catch (error: unknown) {
+    throw new Error('An error occurred when fetching the tasks assigned to the employee');
+  }
+}
+
+export const TaskService = { createTask, findUnique, getTasksFromProject, getTasksAssignedToEmployee };
