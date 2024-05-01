@@ -126,4 +126,26 @@ async function getProjectById(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient, getProjectById };
+/**
+ * Recives a request to update a project data
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateProject(req: Request, res: Response) {
+  try {
+    const projectData = req.body;
+    const updatedProject = await ProjectService.updateProject(projectData);
+    res.status(200).json({ data: updatedProject });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const ProjectController = {
+  getReportData,
+  createProject,
+  getAllProjects,
+  getProjectsClient,
+  getProjectById,
+  updateProject,
+};
