@@ -21,6 +21,7 @@ describe('Task Service', () => {
   let employeeTaskRepositoryStub: sinon.SinonStub;
   let employeeTaskFindByIdStub: sinon.SinonStub;
   let findTaskByIdStub: sinon.SinonStub;
+  let deleteEmployeeTaskStub: sinon.SinonStub;
 
   const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
 
@@ -56,6 +57,7 @@ describe('Task Service', () => {
     fetchMultipleTasksByIdsStub = sinon.stub(TaskRepository, 'findTasksById');
     deleteTaskStub = sinon.stub(TaskRepository, 'deleteTaskById');
     findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
+    deleteEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'deleteByTaskId');
   });
 
   afterEach(() => {
@@ -263,6 +265,7 @@ describe('Task Service', () => {
 
   describe('deleteTaskById', () => {
     it('Should delete a task from the repository', async () => {
+      deleteEmployeeTaskStub.resolves();
       deleteTaskStub.resolves();
 
       await TaskService.deleteTask(randomUUID());
@@ -271,6 +274,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw a NotFoundError if the task could not be found', async () => {
+      deleteEmployeeTaskStub.resolves();
       findTaskByIdStub.withArgs(randomUUID()).resolves(null);
 
       try {
@@ -283,6 +287,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if the task could not be deleted', async () => {
+      deleteEmployeeTaskStub.resolves();
       deleteTaskStub.rejects(new Error('Could not delete task'));
 
       try {
