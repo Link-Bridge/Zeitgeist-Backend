@@ -160,6 +160,8 @@ async function deleteTask(req: Request, res: Response) {
     const { id } = idSchema.parse({ id: req.params.id });
     await TaskService.deleteTask(id);
 
+    console.log(id);
+
     res.status(204).end();
   } catch (error: any) {
     res.status(500).json({ message: error.message });

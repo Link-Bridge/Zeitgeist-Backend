@@ -170,6 +170,7 @@ async function deleteTask(id: string): Promise<void> {
       throw new NotFoundError('Task');
     }
 
+    await EmployeeTaskRepository.deleteByTaskId(id);
     await TaskRepository.deleteTaskById(id);
   } catch (error: any) {
     throw new Error(error);

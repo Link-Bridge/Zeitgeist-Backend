@@ -73,4 +73,24 @@ async function findByEmployeeId(employeeId: string): Promise<EmployeeTask[]> {
   }
 }
 
-export const EmployeeTaskRepository = { findAll, create, findByEmployeeId };
+/**
+ * Deletes an employee task object by the task ID
+ *
+ * @param taskId: string - Unique identifier of the task.
+ * @return {Promise<void>} - If the employee task is deleted.
+ *
+ * @throws {Error} - If an error occurs when deleting the employee task.
+ */
+async function deleteByTaskId(taskId: string): Promise<void> {
+  try {
+    await Prisma.employee_task.deleteMany({
+      where: {
+        id_task: taskId,
+      },
+    });
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const EmployeeTaskRepository = { findAll, create, findByEmployeeId, deleteByTaskId };
