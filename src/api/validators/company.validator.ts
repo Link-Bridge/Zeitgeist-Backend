@@ -29,12 +29,12 @@ export const updateCompanySchema = z.object({
   id: zodValidUuid,
   name: zodValidString,
   email: zodValidEmail.optional(),
-  phoneNumber: zodValidPhoneNumber.optional(),
-  landlinePhone: zodValidPhoneNumber.optional(),
+  phoneNumber: zodValidPhoneNumber.optional().nullable(),
+  landlinePhone: zodValidPhoneNumber.optional().nullable(),
   archived: z.boolean().optional(),
   constitutionDate: z.coerce.date().nullable(),
-  rfc: zodValidRfc.optional(),
-  taxResidence: z.string().optional(),
+  rfc: zodValidRfc.optional().nullable(),
+  taxResidence: z.string().optional().nullable(),
 });
 
 export { companySchema };
