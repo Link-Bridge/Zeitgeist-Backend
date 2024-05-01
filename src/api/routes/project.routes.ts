@@ -31,5 +31,10 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getAllProjects
 );
+router.get(
+  '/details/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.getProjectById
+);
 
 export { router as ProjectRouter };
