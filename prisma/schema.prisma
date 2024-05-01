@@ -22,14 +22,17 @@ model company {
   email                     String?                 @unique @db.VarChar(180)
   phone_number              String?                 @db.VarChar(15)
   landline_phone            String?                 @db.VarChar(15)
-  archived                  Boolean                 @default(false)   
-  created_at                DateTime                @default(now()) @db.Timestamp(6)
-  updated_at                DateTime?               @db.Timestamp(6)
+  archived                  Boolean                 @default(false)
+  constitution_date         DateTime?               @db.Timestamp(6)
+  rfc                       String?                 @db.VarChar(13)
+  tax_residence             String?                 @db.VarChar(255)
   id_company_direct_contact String?                 @db.Uuid
   id_form                   String?                 @db.Uuid
+  created_at                DateTime                @default(now()) @db.Timestamp(6)
+  updated_at                DateTime?               @db.Timestamp(6)
   company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
   form                      form?                   @relation(fields: [id_form], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  project                   project[]            
+  project                   project[]
 }
 
 model company_direct_contact {
@@ -45,7 +48,7 @@ model company_direct_contact {
 
 model department {
   id         String     @id @db.Uuid
-  title      String     @db.VarChar(256)
+  title      String     @unique @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime?  @db.Timestamp(6)
   employee   employee[]
@@ -56,12 +59,12 @@ model employee {
   first_name            String                  @db.VarChar(70)
   last_name             String                  @db.VarChar(70)
   email                 String                  @unique @db.VarChar(180)
-  phone_number          String?                 @unique @db.VarChar(15)
   image_url             String?                 @db.VarChar(255)
   created_at            DateTime                @default(now()) @db.Timestamp(6)
   updated_at            DateTime?               @db.Timestamp(6)
   id_department         String?                 @db.Uuid
   id_role               String                  @db.Uuid
+  device_token          String?                 @unique @db.VarChar(255)
   comment               comment[]
   department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -138,12 +141,10 @@ model form {
   applicant_name                 String?   @db.VarChar(70)
   phone_num                      String?   @unique @db.VarChar(15)
   landline_num                   String?   @unique @db.VarChar(15)
-  address                        String?   @unique @db.VarChar(256)
   passport                       String?   @unique @db.VarChar(70)
   company_names                  String?   @db.VarChar(256)
   company_type                   String?   @db.VarChar(256)
   corporate_purpose              String?   @db.VarChar(70)
-  mexican_address                String?   @unique @db.VarChar(256)
   fixed_capital_stock            Decimal?  @db.Decimal(18, 2)
   variable_capital_stock         Decimal?  @db.Decimal(18, 2)
   values_per_share               Decimal?  @db.Decimal(18, 2)
@@ -207,17 +208,17 @@ model project {
   total_hours   Decimal?  @db.Decimal(8, 2)
   periodicity   String?   @db.VarChar(256)
   is_chargeable Boolean?
-  area          String?    @db.VarChar(256)
   created_at    DateTime  @default(now()) @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
   id_company    String    @db.Uuid
+  area          String?   @db.VarChar(256)
   company       company   @relation(fields: [id_company], references: [id], onDelete: NoAction, onUpdate: NoAction)
   task          task[]
 }
 
 model role {
   id         String     @id @db.Uuid
-  title      String     @default("Sin rol") @db.VarChar(256)
+  title      String     @unique @default("No Role") @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
   updated_at DateTime?  @db.Timestamp(6)
   employee   employee[]
@@ -228,7 +229,6 @@ model task {
   title         String          @db.VarChar(70)
   description   String          @db.VarChar(256)
   status        String          @db.VarChar(256)
-  waiting_for   String?         @db.VarChar(70)
   start_date    DateTime        @db.Date
   end_date      DateTime?       @db.Date
   worked_hours  Decimal?        @db.Decimal(8, 2)
