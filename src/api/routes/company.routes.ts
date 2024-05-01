@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { SupportedRoles } from '../../utils/enums';
 import { CompanyController } from '../controllers/company.controller';
+import { checkAuthToken } from '../middlewares/auth.middleware';
 import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-// Get Unique Client
 router.get(
   '/:id',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
@@ -16,6 +16,13 @@ router.get(
   '/',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getAll
+);
+
+router.put(
+  '/:id',
+  checkAuthToken,
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  CompanyController.updateClient
 );
 
 router.post(

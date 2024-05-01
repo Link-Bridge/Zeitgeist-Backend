@@ -10,7 +10,6 @@ const RESOURCE_NAME = 'Company';
  * @version 1.0.0
  * @returns {Promise<CompanyEntity[]>} a promise taht resolves to an array of company entities
  */
-
 async function findAll(): Promise<CompanyEntity[]> {
   try {
     const data = await Prisma.company.findMany({
@@ -83,4 +82,31 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { create, findAll, findById };
+async function update(company: CompanyEntity): Promise<CompanyEntity> {
+  try {
+    const updatedCompany = await Prisma.company.update({
+      where: {
+        id: company.id,
+      },
+      data: {
+        name: company.name,
+        email: company.email,
+        phone_number: company.phoneNumber,
+        landline_phone: company.landlinePhone,
+        archived: company.archived,
+        constitution_date: company.constitutionDate ? new Date(company.constitutionDate) : null,
+        rfc: company.rfc,
+        tax_residence: company.taxResidence,
+        id_company_direct_contact: company.idCompanyDirectContact,
+        id_form: company.idForm,
+        updated_at: company.updatedAt,
+      },
+    });
+
+    return mapCompanyEntityFromDbModel(updatedCompany);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+export const CompanyRepository = { findAll, findById, update, create };
