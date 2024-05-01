@@ -29,4 +29,10 @@ router.get(
   TaskController.findTasksByEmployeeId
 );
 
+router.delete(
+  '/delete/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.deleteTask
+);
+
 export { router as TaskRouter };

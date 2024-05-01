@@ -16,9 +16,11 @@ describe('Task Service', () => {
   let projectRepositoryStub: sinon.SinonStub;
   let taskFetchRepositoryStub: sinon.SinonStub;
   let fetchMultipleTasksByIdsStub: sinon.SinonStub;
+  let deleteTaskStub: sinon.SinonStub;
   let employeeRepositoryStub: sinon.SinonStub;
   let employeeTaskRepositoryStub: sinon.SinonStub;
   let employeeTaskFindByIdStub: sinon.SinonStub;
+  let findTaskByIdStub: sinon.SinonStub;
 
   const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
 
@@ -52,6 +54,8 @@ describe('Task Service', () => {
     employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
     employeeTaskFindByIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
     fetchMultipleTasksByIdsStub = sinon.stub(TaskRepository, 'findTasksById');
+    deleteTaskStub = sinon.stub(TaskRepository, 'deleteTaskById');
+    findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
   });
 
   afterEach(() => {
@@ -254,6 +258,41 @@ describe('Task Service', () => {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Error: Could not fetch tasks');
       }
+    });
+  });
+
+  describe('deleteTaskById', () => {
+    it('Should delete a task from the repository', async () => {
+      deleteTaskStub.resolves();
+
+      await TaskService.deleteTask(randomUUID());
+
+      expect(deleteTaskStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw a NotFoundError if the task could not be found', async () => {
+      findTaskByIdStub.withArgs(randomUUID()).resolves(null);
+
+      try {
+        await TaskService.deleteTask(randomUUID());
+      } catch (error: any) {
+        expect(error.message).to.equal('Error: Requested Task was not found');
+      }
+
+      expect(findTaskByIdStub.calledOnce).to.be.true;
+    });
+
+    it('Should throw an error if the task could not be deleted', async () => {
+      deleteTaskStub.rejects(new Error('Could not delete task'));
+
+      try {
+        await TaskService.deleteTask(randomUUID());
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Could not delete task');
+      }
+
+      expect(deleteTaskStub.calledOnce).to.be.true;
     });
   });
 });
