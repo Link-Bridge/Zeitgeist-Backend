@@ -130,4 +130,24 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId, findTaskById, findTasksById };
+/**
+ * Deletes a task from the database.
+ *
+ * @param id: string - Task id.
+ * @returns {Promise<void>} - If the task is deleted.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ */
+async function deleteTaskById(id: string): Promise<void> {
+  try {
+    await Prisma.task.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const TaskRepository = { createTask, findTasksByProjectId, findTaskById, findTasksById, deleteTaskById };

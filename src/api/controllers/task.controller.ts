@@ -145,4 +145,25 @@ async function findTasksByEmployeeId(req: Request, res: Response) {
   }
 }
 
-export const TaskController = { createTask, getTasksFromProject, findTaskById, findTasksByEmployeeId };
+/**
+ * Deletes a task using the repository.
+ *
+ * @param req: Request - The request object.
+ * @param res: Response - The response object.
+ *
+ * @returns {res.status(204)} - If the task is deleted.
+ * @throws {res.status(500).json({ message })} - If an error occurs when
+ *                                               deleting the task.
+ */
+async function deleteTask(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    await TaskService.deleteTask(id);
+
+    res.status(204).end();
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const TaskController = { createTask, getTasksFromProject, findTaskById, findTasksByEmployeeId, deleteTask };

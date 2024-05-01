@@ -155,4 +155,25 @@ async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
   }
 }
 
-export const TaskService = { createTask, findUnique, getTasksFromProject, getTasksAssignedToEmployee };
+/**
+ * Deletes a task using the repository.
+ *
+ * @param id: string - Task id.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ * @throws {NotFoundError} - If the task is not found.
+ */
+
+async function deleteTask(id: string): Promise<void> {
+  try {
+    if ((await TaskRepository.findTaskById(id)) === null) {
+      throw new NotFoundError('Task');
+    }
+
+    await TaskRepository.deleteTaskById(id);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export const TaskService = { createTask, findUnique, getTasksFromProject, getTasksAssignedToEmployee, deleteTask };
