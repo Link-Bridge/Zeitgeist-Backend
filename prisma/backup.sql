@@ -17,16 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
-0cf23178-5124-4c14-8fe9-0d97b8f49beb	5b5c4069d7262cb4bc72c2395140163fef26f066c5c46b14ea28c82f6f6d8df8	2024-05-02 04:08:36.257846+00	0_init		\N	2024-05-02 04:08:36.257846+00	0
-b3856a1a-e149-4566-a3a2-cd916b77366d	62dd0f2d685b6ea8219dd9002201a68d36b8b66ac7f615cf55689da87411924a	2024-05-02 04:58:56.194206+00	20240502045819_employee_im_url_to_text	\N	\N	2024-05-02 04:58:52.782237+00	1
-\.
-
-
---
 -- Data for Name: department; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
