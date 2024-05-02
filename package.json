@@ -12,6 +12,7 @@
     "prepare": "husky install",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
+    "prisma:reset": "prisma migrate reset; psql zg_staging_db < prisma/backup.sql",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
