@@ -16,11 +16,14 @@ CREATE TABLE "company" (
     "email" VARCHAR(180),
     "phone_number" VARCHAR(15),
     "landline_phone" VARCHAR(15),
-    "archived" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6),
     "id_company_direct_contact" UUID,
     "id_form" UUID,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
+    "constitution_date" TIMESTAMP(6),
+    "rfc" VARCHAR(13),
+    "tax_residence" VARCHAR(255),
 
     CONSTRAINT "company_pkey" PRIMARY KEY ("id")
 );
@@ -54,12 +57,12 @@ CREATE TABLE "employee" (
     "first_name" VARCHAR(70) NOT NULL,
     "last_name" VARCHAR(70) NOT NULL,
     "email" VARCHAR(180) NOT NULL,
-    "phone_number" VARCHAR(15),
-    "image_url" VARCHAR(255),
+    "image_url" TEXT,
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6),
     "id_department" UUID,
     "id_role" UUID NOT NULL,
+    "device_token" VARCHAR(255),
 
     CONSTRAINT "employee_pkey" PRIMARY KEY ("id")
 );
@@ -212,10 +215,10 @@ CREATE TABLE "project" (
     "total_hours" DECIMAL(8,2),
     "periodicity" VARCHAR(256),
     "is_chargeable" BOOLEAN,
-    "area" VARCHAR(256),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6),
     "id_company" UUID NOT NULL,
+    "area" VARCHAR(256),
 
     CONSTRAINT "project_pkey" PRIMARY KEY ("id")
 );
@@ -223,7 +226,7 @@ CREATE TABLE "project" (
 -- CreateTable
 CREATE TABLE "role" (
     "id" UUID NOT NULL,
-    "title" VARCHAR(256) NOT NULL DEFAULT 'Sin rol',
+    "title" VARCHAR(256) NOT NULL DEFAULT 'No Role',
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6),
 
@@ -254,10 +257,10 @@ CREATE UNIQUE INDEX "company_email_key" ON "company"("email");
 CREATE UNIQUE INDEX "company_direct_contact_email_key" ON "company_direct_contact"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "employee_email_key" ON "employee"("email");
+CREATE UNIQUE INDEX "department_title_key" ON "department"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "employee_phone_number_key" ON "employee"("phone_number");
+CREATE UNIQUE INDEX "employee_email_key" ON "employee"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "file_url_key" ON "file"("url");
@@ -279,6 +282,9 @@ CREATE UNIQUE INDEX "form_passport_key" ON "form"("passport");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "form_mexican_address_key" ON "form"("mexican_address");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "role_title_key" ON "role"("title");
 
 -- AddForeignKey
 ALTER TABLE "comment" ADD CONSTRAINT "comment_id_employee_fkey" FOREIGN KEY ("id_employee") REFERENCES "employee"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -321,3 +327,4 @@ ALTER TABLE "project" ADD CONSTRAINT "project_id_company_fkey" FOREIGN KEY ("id_
 
 -- AddForeignKey
 ALTER TABLE "task" ADD CONSTRAINT "task_id_project_fkey" FOREIGN KEY ("id_project") REFERENCES "project"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
