@@ -9,16 +9,16 @@ const idSchema = z.object({
 });
 
 const createProjectRequestSchema = z.object({
-  projectName: z.string(),
-  client: z.string().uuid({ message: 'Please provide valid UUID' }),
+  name: z.string(),
+  idCompany: z.string().uuid({ message: 'Please provide valid UUID' }),
   category: z.nativeEnum(ProjectCategory),
   matter: z.string().optional(),
   description: z.string().optional(),
   status: z.nativeEnum(ProjectStatus),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable(),
-  periodic: z.nativeEnum(ProjectPeriodicity),
-  chargable: z.boolean(),
+  periodicity: z.nativeEnum(ProjectPeriodicity),
+  isChargeable: z.boolean(),
   area: z.nativeEnum(SupportedDepartments),
 });
 
@@ -35,16 +35,16 @@ async function createProject(req: Request, res: Response) {
   try {
     const data = createProjectRequestSchema.parse(req.body);
     const newProject = await ProjectService.createProject({
-      name: data.projectName,
+      name: data.name,
       matter: data.matter || null,
       description: data.description || null,
       area: data.area,
       status: data.status,
       category: data.category,
       endDate: data.endDate || null,
-      idCompany: data.client,
-      isChargeable: data.chargable,
-      periodicity: data.periodic,
+      idCompany: data.idCompany,
+      isChargeable: data.isChargeable,
+      periodicity: data.periodicity,
       startDate: data.startDate,
     });
     res.status(201).json(newProject);
