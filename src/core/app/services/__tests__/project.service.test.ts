@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
-import { default as Sinon, SinonStubbedInstance, default as sinon } from 'sinon';
+import { default as Sinon, default as sinon } from 'sinon';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../../../utils/enums';
 import { ProjectEntity } from '../../../domain/entities/project.entity';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
@@ -10,25 +10,25 @@ import { ProjectService } from '../project.service';
 
 describe('ProjectService', () => {
   let findProjectByIdStub: Sinon.SinonStub;
-  //let updateProjectStub: Sinon.SinonStub;
+  let createProject: sinon.SinonStub;
+  let findAllStub: sinon.SinonStub;
+  let findCompanyByIdStub: Sinon.SinonStub;
+  let findProjectsByClientId: Sinon.SinonStub;
+  let updateProjectStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    createProject = sinon.stub(ProjectRepository, 'createProject');
+    findAllStub = sinon.stub(ProjectRepository, 'findAll');
+    findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
+    findProjectsByClientId = sinon.stub(ProjectRepository, 'findProjetsByClientId');
+    findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
 
   describe('findProjectsByClientId', () => {
-    let projectService: typeof ProjectService;
-    let projectRepository: SinonStubbedInstance<typeof ProjectRepository>;
-
-    beforeEach(() => {
-      projectRepository = sinon.stub(ProjectRepository);
-      projectService = {
-        ...ProjectService,
-        findProjectsClient: projectRepository.findProjetsByClientId,
-        getAllProjects: projectRepository.findAll,
-      };
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('Should get the projects of a client with the given id', async () => {
       const clientId = '3ea24e0c-519e-46d8-a45e-62bc5fcbada0';
       const projects: ProjectEntity[] = [
@@ -49,38 +49,25 @@ describe('ProjectService', () => {
           idCompany: clientId,
         },
       ];
-
-      projectRepository.findProjetsByClientId.withArgs(clientId).returns(Promise.resolve(projects));
-
-      const result = await projectService.findProjectsClient(clientId);
-
+      findProjectsByClientId.withArgs(clientId).returns(Promise.resolve(projects));
+      const result = await ProjectService.findProjectsClient(clientId);
       expect(result).to.deep.equal(projects);
-      expect(projectRepository.findProjetsByClientId.calledOnceWithExactly(clientId)).to.be.true;
+      expect(findProjectsByClientId.calledOnceWithExactly(clientId)).to.be.true;
     });
 
     it("Should throw an error if the projects couldn't be found", async () => {
       const clientId = '3ea24e0c-519e-46d8-a45e-62bc5fcbada0';
-
-      projectRepository.findProjetsByClientId.withArgs(clientId).throws(new Error('Error getting projects'));
-
+      findProjectsByClientId.withArgs(clientId).throws(new Error('An unexpected error occured'));
       try {
-        await projectService.findProjectsClient(clientId);
+        await ProjectService.findProjectsClient(clientId);
       } catch (error: any) {
         expect(error).to.be.instanceOf(Error);
-        expect(error.message).to.be.equal('Error getting projects');
+        expect(error.message).to.be.equal('An unexpected error occured');
       }
     });
   });
+
   describe('createProject', () => {
-    let createProject: sinon.SinonStub;
-    beforeEach(() => {
-      createProject = sinon.stub(ProjectRepository, 'createProject');
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('should create a project', async () => {
       const uuid = randomUUID();
       const clientUuid = randomUUID();
@@ -105,14 +92,8 @@ describe('ProjectService', () => {
       expect(newProject).to.equal(projectData);
     });
   });
+
   describe('getAllProjects', () => {
-    let findAllStub: sinon.SinonStub;
-    beforeEach(() => {
-      findAllStub = sinon.stub(ProjectRepository, 'findAll');
-    });
-    afterEach(() => {
-      sinon.restore();
-    });
     it('should return all projects', async () => {
       const projects = [
         {
@@ -158,15 +139,6 @@ describe('ProjectService', () => {
   });
 
   describe('getProjectById', () => {
-    let findProjectByIdStub: Sinon.SinonStub;
-
-    beforeEach(() => {
-      findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
-    });
-    afterEach(() => {
-      sinon.restore();
-    });
-
     it('Should return the project information and client name acording its id', async () => {
       const projectId = randomUUID();
       const existingProject = {
@@ -192,16 +164,6 @@ describe('ProjectService', () => {
   });
 
   describe('getProjectAndClientById', () => {
-    let findProjectByIdStub: Sinon.SinonStub;
-    let findCompanyByIdStub: Sinon.SinonStub;
-
-    beforeEach(() => {
-      findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
-      findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
-    });
-    afterEach(() => {
-      sinon.restore();
-    });
     it('Should return the project information acording its id', async () => {
       const companyId = randomUUID();
 
@@ -239,11 +201,10 @@ describe('ProjectService', () => {
   });
 
   describe('updateProject', () => {
-    let updatedProjectStub: sinon.SinonStub;
     const mockProject = prepareMockProject();
 
     beforeEach(() => {
-      updatedProjectStub = sinon.stub(ProjectRepository, 'updateProject');
+      updateProjectStub = sinon.stub(ProjectRepository, 'updateProject');
     });
 
     afterEach(() => {
@@ -252,7 +213,7 @@ describe('ProjectService', () => {
 
     it('Should update a project', async () => {
       findProjectByIdStub.resolves(mockProject.original);
-      updatedProjectStub.resolves(mockProject.updatedProject);
+      updateProjectStub.resolves(mockProject.updatedProject);
       const res = await ProjectService.updateProject(mockProject.updatePayload);
 
       expect(res).to.deep.equal(mockProject.updatedProject);
