@@ -9,6 +9,9 @@ import { CompanyService } from '../company.service';
 import { ProjectService } from '../project.service';
 
 describe('ProjectService', () => {
+  let findProjectByIdStub: Sinon.SinonStub;
+  //let updateProjectStub: Sinon.SinonStub;
+
   describe('findProjectsByClientId', () => {
     let projectService: typeof ProjectService;
     let projectRepository: SinonStubbedInstance<typeof ProjectRepository>;
@@ -234,4 +237,63 @@ describe('ProjectService', () => {
       expect(res2.name).to.equal(existingCompany.name);
     });
   });
+
+  describe('updateProject', () => {
+    let updatedProjectStub: sinon.SinonStub;
+    const mockProject = prepareMockProject();
+
+    beforeEach(() => {
+      updatedProjectStub = sinon.stub(ProjectRepository, 'updateProject');
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should update a project', async () => {
+      findProjectByIdStub.resolves(mockProject.original);
+      updatedProjectStub.resolves(mockProject.updatedProject);
+      const res = await ProjectService.updateProject(mockProject.updatePayload);
+
+      expect(res).to.deep.equal(mockProject.updatedProject);
+    });
+  });
 });
+
+function prepareMockProject() {
+  const projectId = randomUUID();
+  const companyId = randomUUID();
+  const original = {
+    id: projectId,
+    name: 'Old Project name',
+    description: 'Old description',
+    matter: 'Old matter',
+    periodicity: '2 weeks',
+    area: 'Legal',
+    category: 'SAT',
+    status: 'In process',
+    startDate: new Date(),
+    createdAt: new Date(),
+    idCompany: companyId,
+  };
+  const updatedProject = {
+    ...original,
+    name: 'New Project name',
+    description: 'New description',
+    matter: 'New matter',
+  };
+  const updatePayload = {
+    id: projectId,
+    name: 'New Project name',
+    description: 'New description',
+    matter: 'New matter',
+    periodicity: '2 weeks',
+    area: 'Legal',
+    category: 'SAT',
+    status: 'In process',
+    idCompany: companyId,
+    startDate: new Date(),
+    createdAt: new Date(),
+  };
+  return { original, updatedProject, updatePayload };
+}
