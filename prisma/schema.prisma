@@ -11,7 +11,7 @@ model comment {
   id          String    @id @db.Uuid
   message     String    @db.VarChar(255)
   created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
   id_employee String    @db.Uuid
   employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -22,14 +22,14 @@ model company {
   email                     String?                 @unique @db.VarChar(180)
   phone_number              String?                 @db.VarChar(15)
   landline_phone            String?                 @db.VarChar(15)
+  created_at                DateTime                @default(now()) @db.Timestamp(6)
+  updated_at                DateTime?               @updatedAt @db.Timestamp(6)
+  id_company_direct_contact String?                 @db.Uuid
+  id_form                   String?                 @db.Uuid
   archived                  Boolean                 @default(false)
   constitution_date         DateTime?               @db.Timestamp(6)
   rfc                       String?                 @db.VarChar(13)
   tax_residence             String?                 @db.VarChar(255)
-  id_company_direct_contact String?                 @db.Uuid
-  id_form                   String?                 @db.Uuid
-  created_at                DateTime                @default(now()) @db.Timestamp(6)
-  updated_at                DateTime?               @db.Timestamp(6)
   company_direct_contact    company_direct_contact? @relation(fields: [id_company_direct_contact], references: [id], onDelete: NoAction, onUpdate: NoAction)
   form                      form?                   @relation(fields: [id_form], references: [id], onDelete: NoAction, onUpdate: NoAction)
   project                   project[]
@@ -42,7 +42,7 @@ model company_direct_contact {
   email        String    @unique @db.VarChar(180)
   phone_number String?   @db.VarChar(15)
   created_at   DateTime  @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @db.Timestamp(6)
+  updated_at   DateTime? @updatedAt @db.Timestamp(6)
   company      company[]
 }
 
@@ -50,7 +50,7 @@ model department {
   id         String     @id @db.Uuid
   title      String     @unique @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
-  updated_at DateTime?  @db.Timestamp(6)
+  updated_at DateTime?  @updatedAt @db.Timestamp(6)
   employee   employee[]
 }
 
@@ -59,12 +59,12 @@ model employee {
   first_name            String                  @db.VarChar(70)
   last_name             String                  @db.VarChar(70)
   email                 String                  @unique @db.VarChar(180)
-  image_url             String?                 @db.VarChar(255)
+  image_url             String?
   created_at            DateTime                @default(now()) @db.Timestamp(6)
-  updated_at            DateTime?               @db.Timestamp(6)
+  updated_at            DateTime?               @updatedAt @db.Timestamp(6)
   id_department         String?                 @db.Uuid
   id_role               String                  @db.Uuid
-  device_token          String?                 @unique @db.VarChar(255)
+  device_token          String?                 @db.VarChar(255)
   comment               comment[]
   department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -76,7 +76,7 @@ model employee {
 model employee_notification {
   id              String       @id @db.Uuid
   created_at      DateTime     @default(now()) @db.Timestamp(6)
-  updated_at      DateTime?    @db.Timestamp(6)
+  updated_at      DateTime?    @updatedAt @db.Timestamp(6)
   id_employee     String       @db.Uuid
   id_notification String       @db.Uuid
   employee        employee     @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -86,7 +86,7 @@ model employee_notification {
 model employee_task {
   id          String    @id @db.Uuid
   created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
   id_employee String    @db.Uuid
   id_task     String    @db.Uuid
   employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -102,7 +102,7 @@ model expense {
   category       String?        @db.VarChar(70)
   date           DateTime       @db.Date
   created_at     DateTime       @default(now()) @db.Timestamp(6)
-  updated_at     DateTime?      @db.Timestamp(6)
+  updated_at     DateTime?      @updatedAt @db.Timestamp(6)
   id_report      String         @db.Uuid
   id_file        String?        @db.Uuid
   file           file?          @relation(fields: [id_file], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -117,7 +117,7 @@ model expense_report {
   status       String?   @db.VarChar(256)
   total_amount Decimal?  @db.Decimal(8, 2)
   created_at   DateTime  @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @db.Timestamp(6)
+  updated_at   DateTime? @updatedAt @db.Timestamp(6)
   id_employee  String    @db.Uuid
   expense      expense[]
   employee     employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -129,7 +129,7 @@ model file {
   format      String    @default(".zip") @db.VarChar(256)
   url         String    @unique @db.VarChar(256)
   created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
   expense     expense[]
 }
 
@@ -141,10 +141,12 @@ model form {
   applicant_name                 String?   @db.VarChar(70)
   phone_num                      String?   @unique @db.VarChar(15)
   landline_num                   String?   @unique @db.VarChar(15)
+  address                        String?   @unique @db.VarChar(256)
   passport                       String?   @unique @db.VarChar(70)
   company_names                  String?   @db.VarChar(256)
   company_type                   String?   @db.VarChar(256)
   corporate_purpose              String?   @db.VarChar(70)
+  mexican_address                String?   @unique @db.VarChar(256)
   fixed_capital_stock            Decimal?  @db.Decimal(18, 2)
   variable_capital_stock         Decimal?  @db.Decimal(18, 2)
   values_per_share               Decimal?  @db.Decimal(18, 2)
@@ -183,7 +185,7 @@ model form {
   questionnaire_questions        String?   @db.VarChar(256)
   additional_questions           String?   @db.VarChar(256)
   created_at                     DateTime  @default(now()) @db.Timestamp(6)
-  updated_at                     DateTime? @db.Timestamp(6)
+  updated_at                     DateTime? @updatedAt @db.Timestamp(6)
   company                        company[]
 }
 
@@ -192,7 +194,7 @@ model notification {
   title                 String                  @db.VarChar(70)
   body                  String                  @db.VarChar(256)
   created_at            DateTime                @default(now()) @db.Timestamp(6)
-  updated_at            DateTime?               @db.Timestamp(6)
+  updated_at            DateTime?               @updatedAt @db.Timestamp(6)
   employee_notification employee_notification[]
 }
 
@@ -209,7 +211,7 @@ model project {
   periodicity   String?   @db.VarChar(256)
   is_chargeable Boolean?
   created_at    DateTime  @default(now()) @db.Timestamp(6)
-  updated_at    DateTime? @db.Timestamp(6)
+  updated_at    DateTime? @updatedAt @db.Timestamp(6)
   id_company    String    @db.Uuid
   area          String?   @db.VarChar(256)
   company       company   @relation(fields: [id_company], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -220,7 +222,7 @@ model role {
   id         String     @id @db.Uuid
   title      String     @unique @default("No Role") @db.VarChar(256)
   created_at DateTime   @default(now()) @db.Timestamp(6)
-  updated_at DateTime?  @db.Timestamp(6)
+  updated_at DateTime?  @updatedAt @db.Timestamp(6)
   employee   employee[]
 }
 
@@ -229,11 +231,12 @@ model task {
   title         String          @db.VarChar(70)
   description   String          @db.VarChar(256)
   status        String          @db.VarChar(256)
+  waiting_for   String?         @db.VarChar(70)
   start_date    DateTime        @db.Date
   end_date      DateTime?       @db.Date
   worked_hours  Decimal?        @db.Decimal(8, 2)
   created_at    DateTime        @default(now()) @db.Timestamp(6)
-  updated_at    DateTime?       @db.Timestamp(6)
+  updated_at    DateTime?       @updatedAt @db.Timestamp(6)
   id_project    String          @db.Uuid
   employee_task employee_task[]
   project       project         @relation(fields: [id_project], references: [id], onDelete: NoAction, onUpdate: NoAction)
