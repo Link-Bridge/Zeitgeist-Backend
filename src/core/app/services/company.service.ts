@@ -110,6 +110,11 @@ async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
   });
 }
 
+/**
+ * @description Archive a client
+ * @param id
+ * @returns {Promise<CompanyEntity>}
+ */
 async function archiveClient(id: string): Promise<CompanyEntity> {
   try {
     const status = await CompanyRepository.getArchivedStatus(id);

@@ -13,7 +13,11 @@ const updateUserRoleSchema = z.object({
   roleId: z.string().min(1, { message: 'Role ID cannot be empty' }),
 });
 
-// Updates a user's role
+/**
+ * @description update employee role
+ * @param req
+ * @param res
+ */
 async function updateUserRole(req: Request, res: Response) {
   try {
     const { userId, roleId } = updateUserRoleSchema.parse(req.body);
@@ -41,6 +45,11 @@ async function getAllRoles(_: Request, res: Response) {
   }
 }
 
+/**
+ * @description archive a client
+ * @param req
+ * @param res
+ */
 async function archiveClient(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });

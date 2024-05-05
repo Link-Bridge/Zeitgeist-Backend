@@ -82,6 +82,12 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
+/**
+ * @description gets the status
+ * @param id
+ * @returns {boolean} from company
+ * @returns {undefined} because it can be
+ */
 async function getArchivedStatus(id: string): Promise<boolean | undefined> {
   try {
     const data = await Prisma.company.findUnique({
@@ -99,6 +105,12 @@ async function getArchivedStatus(id: string): Promise<boolean | undefined> {
   }
 }
 
+/**
+ * @description gets the status
+ * @param id
+ * @param archived
+ * @returns {Promise<CompanyEntity>}
+ */
 async function archiveClient(id: string, archived: boolean): Promise<CompanyEntity> {
   try {
     const data = await Prisma.company.update({
