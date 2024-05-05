@@ -82,6 +82,43 @@ async function findById(id: string): Promise<CompanyEntity> {
   }
 }
 
+async function getArchivedStatus(id: string): Promise<boolean | undefined> {
+  try {
+    const data = await Prisma.company.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapCompanyEntityFromDbModel(data).archived;
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+async function archiveClient(id: string, archived: boolean): Promise<CompanyEntity> {
+  try {
+    const data = await Prisma.company.update({
+      where: {
+        id: id,
+      },
+      data: {
+        archived: !archived,
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapCompanyEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
 async function update(company: CompanyEntity): Promise<CompanyEntity> {
   try {
     const updatedCompany = await Prisma.company.update({
@@ -109,4 +146,4 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById, update, create };
+export const CompanyRepository = { findAll, findById, update, create, archiveClient, getArchivedStatus };

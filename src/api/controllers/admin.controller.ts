@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { AdminRoleService } from '../../core/app/services/admin-role.service';
+import { CompanyService } from '../../core/app/services/company.service';
 
 // Defines a schema for validations
+const idSchema = z.object({
+  id: z.string().uuid(),
+});
+
 const updateUserRoleSchema = z.object({
   userId: z.string().min(1, { message: 'User ID cannot be empty' }),
   roleId: z.string().min(1, { message: 'Role ID cannot be empty' }),
@@ -36,4 +41,14 @@ async function getAllRoles(_: Request, res: Response) {
   }
 }
 
-export { getAllRoles, updateUserRole };
+async function archiveClient(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const company = await CompanyService.archiveClient(id);
+    res.status(200).json({ data: company });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export { archiveClient, getAllRoles, updateUserRole };
