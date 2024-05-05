@@ -37,5 +37,10 @@ router.get(
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getProjectById
 );
+router.put(
+  '/:id',
+  // checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.update
+);
 
 export { router as ProjectRouter };

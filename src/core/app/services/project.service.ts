@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { ProjectEntity } from '../../domain/entities/project.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 export interface CreateProjectData {
@@ -15,6 +16,33 @@ export interface CreateProjectData {
   periodicity: string | null;
   startDate: Date;
 }
+
+/**
+ * Update project entity based on id
+ * @param {CompanyEntity} project
+ * @returns {Promise<projectEntity>} a promise that resolves to the updated project entity
+ */
+
+async function update(body: ProjectEntity): Promise<ProjectEntity> {
+  const project = await ProjectRepository.findById(body.id);
+
+  if (!project) {
+    throw new NotFoundError('Project not found');
+  }
+
+  return await ProjectRepository.updateProject({
+    id: project.id,
+    name: project.name,
+    matter: project.matter,
+    description: project.description,
+    status: project.status,
+    category: project.category,
+    startDate: project.startDate,
+    createdAt: project.createdAt,
+    idCompany: project.idCompany,
+  });
+}
+
 /**
  * A function that calls the repository to create a project in the database
  * @param data The data required to create a project in the database
@@ -85,4 +113,4 @@ async function getProjectById(projectId: string): Promise<ProjectEntity> {
   }
 }
 
-export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById };
+export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById, update };

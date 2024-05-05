@@ -7,6 +7,34 @@ import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-m
 const RESOURCE_NAME = 'Project info';
 
 /**
+ * Updates project entry in the database
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity>} a promise that resolves an updated Project entity
+ */
+
+async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
+  try {
+    const data = await Prisma.project.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        name: project.name,
+        matter: project.matter,
+        description: project.description,
+        status: project.status,
+        category: project.category,
+        start_date: project.startDate,
+      },
+    });
+
+    return mapProjectEntityFromDbModel(data);
+  } catch (errore: any) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Finds all company entities in the database
  * @version 1.0.0
  * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities
@@ -113,4 +141,11 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
   return mapProjectEntityFromDbModel(createData);
 }
 
-export const ProjectRepository = { findAll, findProjectStatusById, findById, findProjetsByClientId, createProject };
+export const ProjectRepository = {
+  findAll,
+  findProjectStatusById,
+  findById,
+  findProjetsByClientId,
+  createProject,
+  updateProject,
+};
