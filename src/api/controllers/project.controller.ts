@@ -109,4 +109,21 @@ async function getAllProjects(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient };
+/**
+ * A function that handles the request to obtain project details by its id
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function getProjectById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const projectDetails = await ProjectService.getProjectById(id);
+    if (projectDetails) {
+      res.status(200).json(projectDetails);
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient, getProjectById };

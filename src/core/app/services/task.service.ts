@@ -123,6 +123,60 @@ async function findUnique(id: string): Promise<TaskDetail> {
 }
 
 /**
+ * Finds all the assigned tasks to an employee
+ *
+ * @param employeeId: string - Employee id.
+ * @returns {Promise<TaskDetail[]>} - Array of tasks assigned to the employee.
+ *
+ * @throws {Error} - If an error occurs when finding the tasks.
+ * @throws {NotFoundError} - If the employee is not found.
+ * @throws {NotFoundError} - If the task is not found.
+ * @throws {Error} - If an error occurs when looking for the task.
+ */
+async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
+  try {
+    if ((await EmployeeRepository.findById(employeeId)) === null) {
+      throw new NotFoundError('Employee');
+    }
+
+    const employeeTasks = await EmployeeTaskRepository.findByEmployeeId(employeeId);
+
+    if (!employeeTasks) {
+      throw new NotFoundError('Task assigned to employee');
+    }
+
+    const tasksId = employeeTasks.map(task => task.idTask);
+    const tasks = await TaskRepository.findTasksById(tasksId);
+
+    return tasks;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+/**
+ * Deletes a task using the repository.
+ *
+ * @param id: string - Task id.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ * @throws {NotFoundError} - If the task is not found.
+ */
+
+async function deleteTask(id: string): Promise<void> {
+  try {
+    if ((await TaskRepository.findTaskById(id)) === null) {
+      throw new NotFoundError('Task');
+    }
+
+    await EmployeeTaskRepository.deleteByTaskId(id);
+    await TaskRepository.deleteTaskById(id);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+/**
  * Updates a task using the repository.
  *
  * @param id: string - Task to be updated.
@@ -169,4 +223,11 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   }
 }
 
-export const TaskService = { createTask, findUnique, getTasksFromProject, updateTask };
+export const TaskService = {
+  createTask,
+  findUnique,
+  getTasksFromProject,
+  getTasksAssignedToEmployee,
+  deleteTask,
+  updateTask,
+};

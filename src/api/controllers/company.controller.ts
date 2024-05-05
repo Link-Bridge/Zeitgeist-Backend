@@ -2,11 +2,20 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
-import { companySchema } from '../validation/companyValidation';
+import { companySchema, updateCompanySchema } from '../validators/company.validator';
 
 const reportSchema = z.object({
   id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
 });
+
+/**
+ * Finds all companies
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<void>}
+ * @throws {Error}
+ */
 
 /**
  * Finds all companies
@@ -27,6 +36,28 @@ async function getUnique(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
+
+/**
+ * Receives a request to update a client and validates de data before sending it to the service
+ * @param req
+ * @param res
+ */
+async function updateClient(req: Request, res: Response) {
+  try {
+    const validSchema = updateCompanySchema.parse(req.body);
+    const updatedCompany = await CompanyService.update(validSchema);
+
+    res.status(200).json({ data: updatedCompany });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
+ * Receives a request to update a client and validates de data before sending it to the service
+ * @param req
+ * @param res
+ */
 
 async function getAll(req: Request, res: Response) {
   try {
@@ -61,5 +92,4 @@ async function create(req: Request, res: Response) {
     } else res.status(500).json({ error: error.message });
   }
 }
-
-export const CompanyController = { getUnique, getAll, create };
+export const CompanyController = { getUnique, getAll, create, updateClient };

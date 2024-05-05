@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { zodValidEmail, zodValidPhoneNumber, zodValidRfc, zodValidString, zodValidUuid } from './zod.validator';
 
 const companySchema = z.object({
   name: z.string().min(3, { message: 'Name cannot be empty' }),
-  email: z.string().email({ message: 'Invalid email' }).optional().nullable(),
+  email: zodValidEmail.optional().nullable(),
   phone_number: z
     .string()
     .min(10, { message: 'Phone number must be between 10 and 13 digits long' })
@@ -17,16 +18,23 @@ const companySchema = z.object({
     .nullable(),
   archived: z.boolean().optional().nullable(),
   constitutionDate: z.string().optional().nullable(),
-  rfc: z
-    .string()
-    .min(12, { message: 'RFC muste be at least 12 characters long' })
-    .max(13, { message: 'RFC muste be maximum 13 characters long' })
-    .optional()
-    .nullable(),
+  rfc: zodValidRfc.optional().nullable(),
   taxResidence: z.string().nullable().optional(),
-  id_company_direct_contact: z.string().uuid().optional().nullable(),
-  id_form: z.string().uuid().optional().nullable(),
+  id_company_direct_contact: zodValidUuid.optional().nullable(),
+  id_form: zodValidUuid.optional().nullable(),
   updated_at: z.string().datetime().optional().nullable(),
+});
+
+export const updateCompanySchema = z.object({
+  id: zodValidUuid,
+  name: zodValidString,
+  email: zodValidEmail.optional(),
+  phoneNumber: zodValidPhoneNumber.optional().nullable(),
+  landlinePhone: zodValidPhoneNumber.optional().nullable(),
+  archived: z.boolean().optional(),
+  constitutionDate: z.coerce.date().nullable(),
+  rfc: zodValidRfc.optional().nullable(),
+  taxResidence: z.string().optional().nullable(),
 });
 
 export { companySchema };

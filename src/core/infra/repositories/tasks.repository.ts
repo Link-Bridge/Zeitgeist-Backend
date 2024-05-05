@@ -30,6 +30,34 @@ async function findTaskById(id: string): Promise<Task> {
 }
 
 /**
+ * Finds an array of tasks based of an array of tasks id.
+ *
+ * @param tasksId: string[] - Array of tasks id.
+ * @returns {Promise<Task[]>} - Array of tasks found.
+ *
+ * @throws {Error} - If an error occurs when finding the tasks.
+ */
+async function findTasksById(tasksId: string[]): Promise<Task[]> {
+  try {
+    const data = await Prisma.task.findMany({
+      where: {
+        id: {
+          in: tasksId,
+        },
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Creates a new task in the database.
  *
  * @param new_task: Task - New task to be created.
@@ -103,6 +131,27 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
 }
 
 /**
+ * Deletes a task from the database.
+ *
+ * @param id: string - Task id.
+ * @returns {Promise<void>} - If the task is deleted.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ */
+async function deleteTaskById(id: string): Promise<void> {
+  try {
+    await Prisma.task.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Updates a task in the database.
  *
  * @param task: UpdatedTask - Updated task.
@@ -138,4 +187,11 @@ async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId, findTaskById, updateTask };
+export const TaskRepository = {
+  createTask,
+  findTasksByProjectId,
+  findTaskById,
+  findTasksById,
+  deleteTaskById,
+  updateTask,
+};

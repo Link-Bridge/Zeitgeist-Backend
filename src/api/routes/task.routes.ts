@@ -23,6 +23,18 @@ router.get(
   TaskController.getTasksFromProject
 );
 
+router.get(
+  '/employee/:idEmployee',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.findTasksByEmployeeId
+);
+
+router.delete(
+  '/delete/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.deleteTask
+);
+
 router.put(
   '/update/:id',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),

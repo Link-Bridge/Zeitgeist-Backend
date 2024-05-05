@@ -2,8 +2,10 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { randomUUID } from 'crypto';
 import { SupportedDepartments } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
+import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { UpdateCompanyBody } from '../interfaces/company.interface';
 
 /**
  * Gets all data from a unique company
@@ -81,4 +83,31 @@ async function findAll(): Promise<CompanyEntity[]> {
   }
 }
 
-export const CompanyService = { findById, findAll, create };
+/**
+ * Update company entity based on id
+ * @param {CompanyEntity} company
+ * @returns {Promise<CompanyEntity>} a promise that resolves to the updated company entity
+ */
+async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
+  const company = await CompanyRepository.findById(body.id);
+
+  if (!company) throw new NotFoundError('Company not found');
+
+  return await CompanyRepository.update({
+    id: company.id,
+    name: body.name ?? company.name,
+    email: body.email ?? company.email,
+    phoneNumber: body.phoneNumber ?? company.phoneNumber,
+    landlinePhone: body.landlinePhone ?? company.landlinePhone,
+    archived: body.archived,
+    constitutionDate: body.constitutionDate ?? company.constitutionDate,
+    rfc: body.rfc ?? company.rfc,
+    taxResidence: body.taxResidence ?? company.taxResidence,
+    idCompanyDirectContact: company.idCompanyDirectContact,
+    idForm: company.idForm,
+    createdAt: company.createdAt,
+    updatedAt: new Date(),
+  });
+}
+
+export const CompanyService = { findAll, findById, update, create };
