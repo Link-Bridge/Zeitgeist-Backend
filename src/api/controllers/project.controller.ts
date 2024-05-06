@@ -126,4 +126,27 @@ async function getProjectById(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient, getProjectById };
+/**
+ * A function that updates a project status
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateProjectStatus(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const { status } = req.body;
+    await ProjectService.updateProjectStatus(id, status);
+    res.status(200).json({ message: 'Project status updated' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const ProjectController = {
+  getReportData,
+  createProject,
+  getAllProjects,
+  getProjectsClient,
+  getProjectById,
+  updateProjectStatus,
+};

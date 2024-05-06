@@ -1,5 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '../../..';
+import { ProjectStatus } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -113,4 +114,29 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
   return mapProjectEntityFromDbModel(createData);
 }
 
-export const ProjectRepository = { findAll, findProjectStatusById, findById, findProjetsByClientId, createProject };
+/**
+ * A function that updates the project status into data base
+ * @param projectId ID of the project status to update
+ * @param newStatus New project status
+ * @returns {Promise<ProjectStatus>} the status updated
+ */
+async function updateProjectStatus(projectId: string, newStatus: ProjectStatus): Promise<ProjectStatus> {
+  try {
+    await Prisma.project.update({
+      where: { id: projectId },
+      data: { status: newStatus },
+    });
+    return newStatus;
+  } catch (error) {
+    throw new Error('Error updating project status');
+  }
+}
+
+export const ProjectRepository = {
+  findAll,
+  findProjectStatusById,
+  findById,
+  findProjetsByClientId,
+  createProject,
+  updateProjectStatus,
+};
