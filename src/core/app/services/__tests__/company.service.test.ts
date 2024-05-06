@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { Decimal } from '@prisma/client/runtime/library';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -80,10 +81,10 @@ describe('CompanyService', () => {
     const idCompany1 = randomUUID();
     const company = {
       id: idCompany1,
-      name: 'Zeitgeist',
-      email: 'info@zeitgeist.mx',
-      phoneNumber: '1234567890',
-      landlinePhone: '0987654321',
+      name: faker.company.name(), // Usar Faker para generar un nombre de empresa falso
+      email: faker.internet.email(), // Usar Faker para generar un correo electrónico falso
+      phoneNumber: faker.phone.number().toString(), // Usar Faker para generar un número de teléfono falso
+      landlinePhone: faker.phone.number().toString(),
       archived: false,
       createdAt: new Date(),
       updatedAt: null,
