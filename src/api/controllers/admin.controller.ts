@@ -3,7 +3,9 @@ import { z } from 'zod';
 import { AdminRoleService } from '../../core/app/services/admin-role.service';
 import { CompanyService } from '../../core/app/services/company.service';
 
-// Defines a schema for validations
+/**
+ * @brief variable para validar que el id sea un id valido
+ */
 const idSchema = z.object({
   id: z.string().uuid(),
 });
@@ -14,7 +16,7 @@ const updateUserRoleSchema = z.object({
 });
 
 /**
- * @dbriefupdate employee role
+ * @brief update employee role
  *
  * @param req
  * @param res
