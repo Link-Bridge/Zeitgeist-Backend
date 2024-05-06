@@ -83,8 +83,10 @@ async function findById(id: string): Promise<CompanyEntity> {
 }
 
 /**
- * @description gets the status
+ * @brief gets the status
+ *
  * @param id
+ *
  * @returns {boolean} from company
  * @returns {undefined} because it can be
  */
@@ -106,7 +108,8 @@ async function getArchivedStatus(id: string): Promise<boolean | undefined> {
 }
 
 /**
- * @description gets the status
+ * @brief gets the status
+ *
  * @param id
  * @param archived
  * @returns {Promise<CompanyEntity>}

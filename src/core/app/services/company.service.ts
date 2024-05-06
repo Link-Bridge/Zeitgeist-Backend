@@ -111,7 +111,8 @@ async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
 }
 
 /**
- * @description Archive a client
+ * @brief Archive a client
+ *
  * @param id
  * @returns {Promise<CompanyEntity>}
  */

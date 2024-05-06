@@ -14,7 +14,8 @@ const updateUserRoleSchema = z.object({
 });
 
 /**
- * @description update employee role
+ * @dbriefupdate employee role
+ *
  * @param req
  * @param res
  */
@@ -33,7 +34,8 @@ async function updateUserRole(req: Request, res: Response) {
 }
 
 /**
- * @description Get all roles
+ * @brief Get all roles
+ *
  * @param res
  */
 async function getAllRoles(_: Request, res: Response) {
@@ -46,7 +48,8 @@ async function getAllRoles(_: Request, res: Response) {
 }
 
 /**
- * @description archive a client
+ * @brief archive a client
+ *
  * @param req
  * @param res
  */
