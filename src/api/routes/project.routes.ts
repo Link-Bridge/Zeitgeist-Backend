@@ -11,11 +11,13 @@ router.get(
   ProjectController.getReportData
 );
 
-router.get(
-  '/:clientId',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getProjectsClient
-);
+router.get('/:id', ProjectController.getProjectById);
+
+// router.get(
+//   '/:clientId',
+//   // checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+//   ProjectController.getProjectsClient
+// );
 
 router.get(
   '/:clientId',
@@ -29,7 +31,7 @@ router.post(
 );
 router.get(
   '/',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  // checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getAllProjects
 );
 router.get(

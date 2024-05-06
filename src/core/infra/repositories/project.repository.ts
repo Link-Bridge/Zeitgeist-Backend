@@ -25,6 +25,8 @@ async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
         status: project.status,
         category: project.category,
         start_date: project.startDate,
+        created_at: project.createdAt,
+        id_company: project.idCompany,
       },
     });
 

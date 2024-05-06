@@ -8,7 +8,7 @@ const router = Router();
 
 router.get(
   '/:id',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  // checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   CompanyController.getUnique
 );
 

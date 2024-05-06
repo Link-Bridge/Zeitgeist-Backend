@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { UpdateProjectBody } from '../interfaces/project.interface';
 
 export interface CreateProjectData {
   name: string;
@@ -23,7 +24,7 @@ export interface CreateProjectData {
  * @returns {Promise<projectEntity>} a promise that resolves to the updated project entity
  */
 
-async function update(body: ProjectEntity): Promise<ProjectEntity> {
+async function update(body: UpdateProjectBody): Promise<ProjectEntity> {
   const project = await ProjectRepository.findById(body.id);
 
   if (!project) {
@@ -32,14 +33,15 @@ async function update(body: ProjectEntity): Promise<ProjectEntity> {
 
   return await ProjectRepository.updateProject({
     id: project.id,
-    name: project.name,
-    matter: project.matter,
-    description: project.description,
-    status: project.status,
-    category: project.category,
-    startDate: project.startDate,
-    createdAt: project.createdAt,
+    name: body.name,
+    matter: body.matter ?? project.matter,
+    description: body.description ?? project.description,
+    status: body.status,
+    category: body.category,
+    startDate: body.startDate,
     idCompany: project.idCompany,
+    createdAt: project.createdAt,
+    updatedAt: new Date() ?? project.updatedAt,
   });
 }
 

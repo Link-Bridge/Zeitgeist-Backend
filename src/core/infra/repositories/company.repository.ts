@@ -75,6 +75,7 @@ async function findById(id: string): Promise<CompanyEntity> {
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
+    ``;
 
     return mapCompanyEntityFromDbModel(data);
   } catch (error: unknown) {
