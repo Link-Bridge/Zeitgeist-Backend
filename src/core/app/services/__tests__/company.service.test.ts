@@ -15,12 +15,16 @@ describe('CompanyService', () => {
   let findAllProjectsStub: sinon.SinonStub;
   let updateCompanyStub: sinon.SinonStub;
   let findCompanyByIdStub: sinon.SinonStub;
+  let archiveClientdStub: sinon.SinonStub;
+  let getArchivedStatusStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     updateCompanyStub = sinon.stub(CompanyRepository, 'update');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
+    archiveClientdStub = sinon.stub(CompanyRepository, 'archiveClient');
+    getArchivedStatusStub = sinon.stub(CompanyRepository, 'getArchivedStatus');
   });
 
   afterEach(() => {
@@ -70,6 +74,34 @@ describe('CompanyService', () => {
     const result = await CompanyService.update(fakeCompany.updatePayload);
 
     expect(result).to.deep.equal(fakeCompany.updated);
+  });
+
+  it('should update the archived status of a company', async () => {
+    const idCompany1 = randomUUID();
+    const company = {
+      id: idCompany1,
+      name: 'Zeitgeist',
+      email: 'info@zeitgeist.mx',
+      phoneNumber: '1234567890',
+      landlinePhone: '0987654321',
+      archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    };
+
+    findCompanyByIdStub.resolves(company);
+    getArchivedStatusStub.resolves(company.archived);
+    archiveClientdStub.resolves({ ...company, archived: !company.archived });
+
+    const updatedCompany = await CompanyService.archiveClient(idCompany1);
+
+    expect(findCompanyByIdStub.calledOnceWith(idCompany1)).to.be.false;
+    expect(getArchivedStatusStub.calledOnceWith(idCompany1)).to.be.true;
+
+    expect(archiveClientdStub.calledOnceWith(idCompany1, company.archived)).to.be.false;
+    expect(updatedCompany.archived).to.be.true;
   });
 
   it('should get a single company', async () => {
