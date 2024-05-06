@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import { default as Sinon, default as sinon } from 'sinon';
@@ -224,37 +225,39 @@ describe('ProjectService', () => {
 function prepareMockProject() {
   const projectId = randomUUID();
   const companyId = randomUUID();
-  const original = {
+
+  const original: ProjectEntity = {
     id: projectId,
-    name: 'Old Project name',
-    description: 'Old description',
-    matter: 'Old matter',
-    periodicity: '2 weeks',
-    area: 'Legal',
-    category: 'SAT',
-    status: 'In process',
-    startDate: new Date(),
-    createdAt: new Date(),
+    name: faker.lorem.words(3),
+    description: faker.lorem.words(10),
+    matter: faker.lorem.word(),
+    periodicity: faker.helpers.arrayElement(Object.values(ProjectPeriodicity)),
+    area: faker.helpers.arrayElement(Object.values(SupportedDepartments)),
+    category: faker.helpers.arrayElement(Object.values(ProjectCategory)),
+    status: faker.helpers.arrayElement(Object.values(ProjectStatus)),
+    startDate: faker.date.recent(),
+    createdAt: faker.date.recent(),
     idCompany: companyId,
   };
+
   const updatedProject = {
     ...original,
-    name: 'New Project name',
-    description: 'New description',
-    matter: 'New matter',
+    name: faker.lorem.words(2),
+    description: faker.lorem.words(12),
+    matter: faker.lorem.word(),
   };
   const updatePayload = {
     id: projectId,
-    name: 'New Project name',
-    description: 'New description',
-    matter: 'New matter',
-    periodicity: '2 weeks',
-    area: 'Legal',
-    category: 'SAT',
-    status: 'In process',
+    name: faker.lorem.words(2),
+    description: faker.lorem.words(12),
+    matter: faker.lorem.word(),
+    periodicity: faker.helpers.arrayElement(Object.values(ProjectPeriodicity)),
+    area: faker.helpers.arrayElement(Object.values(SupportedDepartments)),
+    category: faker.helpers.arrayElement(Object.values(ProjectCategory)),
+    status: faker.helpers.arrayElement(Object.values(ProjectStatus)),
+    startDate: faker.date.recent(),
+    createdAt: faker.date.recent(),
     idCompany: companyId,
-    startDate: new Date(),
-    createdAt: new Date(),
   };
   return { original, updatedProject, updatePayload };
 }

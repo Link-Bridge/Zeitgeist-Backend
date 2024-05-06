@@ -4,7 +4,7 @@ import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { UpdateProjectBody } from '../interfaces/project.interface';
 
-export interface CreateProjectData {
+interface CreateProjectData {
   name: string;
   matter: string | null;
   description: string | null;
