@@ -36,6 +36,6 @@ Enumera cualquier dependencia o PR relacionado que deba fusionarse antes o despu
 - [ ] Se ha creado o actualizado la documentación necesaria relacionada con la tarea.
 - [ ] Se ha mapeado en las herramientas de trazabilidad [RTM](https://docs.google.com/spreadsheets/d/1Dqh-fTPP5tEfbQ_cVwz-jI74CmAe0DkSAw2a-vVrbVk/edit?usp=sharing), [PVG](https://docs.google.com/spreadsheets/d/1mFO9Bb7gJysk4sDaJ2z7ufl0epSR40XKp3J-r4IxFVc/edit#gid=1369995251)
 
-### Notas Adicionales
+### Screen de pruebas y/o notas
 
 Cualquier información adicional que el revisor o el autor del PR necesite saber. Aquí es donde se puede incluir imagenes, gifs, etc.
