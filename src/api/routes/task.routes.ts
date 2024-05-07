@@ -35,4 +35,10 @@ router.delete(
   TaskController.deleteTask
 );
 
+router.put(
+  '/update/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.updateTask
+);
+
 export { router as TaskRouter };
