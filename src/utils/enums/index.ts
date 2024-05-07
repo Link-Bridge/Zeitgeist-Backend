@@ -1,38 +1,37 @@
 export enum SupportedRoles {
-  WITHOUT_ROLE = 'NO ROLE',
-  ADMIN = 'ADMIN',
-  LEGAL = 'LEGAL',
-  ACCOUNTING = 'ACCOUNTING',
+  WITHOUT_ROLE = 'No role',
+  ADMIN = 'Admin',
+  LEGAL = 'Legal',
+  ACCOUNTING = 'Accounting',
 }
 
 export enum SupportedDepartments {
-  WITHOUT_DEPARTMENT = 'WITHOUT DEPARTMENT',
-  LEGAL = 'LEGAL',
-  ACCOUNTING = 'ACCOUNTING',
+  WITHOUT_DEPARTMENT = 'Without department',
+  LEGAL = 'Legal',
+  ACCOUNTING = 'Accounting',
 }
 
 export enum TaskStatus {
-  NOT_STARTED = 'NOT STARTED',
-  IN_PROGRESS = 'IN PROGRESS',
-  UNDER_REVISSION = 'UNDER REVISSION',
-  DELAYED = 'DELAYED',
-  POSTPONED = 'POSTPONED',
-  DONE = 'DONE',
-  CANCELLED = 'CANCELLED',
-  DEFAULT = '-',
-}
-
-export enum ProjectStatus {
-  IN_QUOTATION = 'In Quotation',
-  ACCEPTED = 'Accepted',
-  NOT_STARTED = 'Not Started',
-  IN_PROCESS = 'In Process',
-  UNDER_REVISION = 'Under Revision',
-  UNDER_REVISSION = 'Under Reviision',
+  NOT_STARTED = 'Not started',
+  IN_PROGRESS = 'In progress',
+  UNDER_REVISSION = 'Under revission',
   DELAYED = 'Delayed',
   POSTPONED = 'Postponed',
   DONE = 'Done',
   CANCELLED = 'Cancelled',
+  DEFAULT = '-',
+}
+
+export enum ProjectStatus {
+  CANCELLED = 'Cancelled',
+  NOT_STARTED = 'Not started',
+  DELAYED = 'Delayed',
+  IN_PROGRESS = 'In progress',
+  ACCEPTED = 'Accepted',
+  DONE = 'Done',
+  POSTPONED = 'Postponed',
+  IN_QUOTATION = 'In quotation',
+  UNDER_REVISION = 'Under revision',
   DEFAULT = '-',
 }
 
@@ -58,7 +57,3 @@ export enum ProjectPeriodicity {
   TWELVE_MONTHS = '12 months',
   WHEN_NEEDED = 'When needed',
 }
-
-export enum AllowedProjectStatus {}
-
-export enum AllowedProjectCategory {}

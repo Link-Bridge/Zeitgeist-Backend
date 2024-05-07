@@ -39,7 +39,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -78,7 +78,7 @@ describe('ProjectService', () => {
         matter: 'Desarrollo de un sistema de gestión interna',
         description:
           'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-        status: ProjectStatus.IN_PROCESS,
+        status: ProjectStatus.IN_PROGRESS,
         category: ProjectCategory.GOVERNMENT,
         startDate: new Date('2023-04-01T00:00:00.000Z'),
         endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -103,7 +103,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -119,7 +119,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna 2',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
