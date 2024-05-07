@@ -28,13 +28,12 @@ Enumera cualquier dependencia o PR relacionado que deba fusionarse antes o despu
 
 ### Definición de Done
 
-- [ ] La tarea ha sido completamente implementada, cumpliendo con todos los requisitos y funcionalidades definidos.
-- [ ] Todas las pruebas pasan, siguiendo el plan de pruebas.
+- [ ] El código ha sido revisado por al menos un miembro del equipo.
+- [ ] Todas las pruebas pasan localmente.
 - [ ] El código sigue los estándares de codificación y las mejores prácticas del proyecto.
 - [ ] La documentación ha sido actualizada (si corresponde).
-- [ ] Se han cerrado todos los issues (si aplicara) creados en el defect Log.
-- [ ] Se ha creado o actualizado la documentación necesaria relacionada con la tarea.
-- [ ] Se ha mapeado en las herramientas de trazabilidad [RTM](https://docs.google.com/spreadsheets/d/1Dqh-fTPP5tEfbQ_cVwz-jI74CmAe0DkSAw2a-vVrbVk/edit?usp=sharing), [PVG](https://docs.google.com/spreadsheets/d/1mFO9Bb7gJysk4sDaJ2z7ufl0epSR40XKp3J-r4IxFVc/edit#gid=1369995251)
+- [ ] Cualquier nueva dependencia está documentada y justificada.
+- [ ] Los cambios han sido probados en un entorno de preparación (si corresponde).
 
 ### Screen de pruebas y/o notas
 
