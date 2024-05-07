@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '../../..';
-import { ProjectStatus } from '../../../utils/enums';
+import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -24,6 +24,26 @@ async function findAll(): Promise<ProjectEntity[]> {
   }
 }
 
+/**
+ * Retrieves all projects from a certain role
+ * @param role The role from the requester
+ * @returns All the projects from the role's department
+ */
+async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
+  try {
+    let data: Awaited<ReturnType<typeof Prisma.project.findMany>>;
+    if (role == SupportedRoles.ADMIN) {
+      data = await Prisma.project.findMany();
+    } else {
+      data = await Prisma.project.findMany({ where: { area: role } });
+    }
+    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return data.map(mapProjectEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
 async function findProjectStatusById(id: string) {
   try {
     const data = await Prisma.project.findUnique({
@@ -173,4 +193,5 @@ export const ProjectRepository = {
   createProject,
   updateProject,
   updateProjectStatus,
+  findAllByRole,
 };

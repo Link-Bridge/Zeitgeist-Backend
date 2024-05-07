@@ -110,6 +110,20 @@ async function getAllProjects(req: Request, res: Response) {
 }
 
 /**
+ * Retrieves all projects from a certain department
+ * @param req An HTTP Request
+ * @param res An HTTP Response
+ */
+async function getDepartmentProjects(req: Request, res: Response) {
+  try {
+    const data = await ProjectService.getDepartmentProjects(req.body.auth.email);
+    res.status(200).json({ data: data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
  * A function that handles the request to obtain project details by its id
  * @param req HTTP Request
  * @param res Server response
@@ -165,4 +179,5 @@ export const ProjectController = {
   getProjectById,
   updateProject,
   updateProjectStatus,
+  getDepartmentProjects,
 };
