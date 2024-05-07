@@ -38,6 +38,11 @@ router.get(
   ProjectController.getProjectById
 );
 router.put(
+  '/edit/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.updateProject
+);
+router.put(
   '/details/:id',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.updateProjectStatus

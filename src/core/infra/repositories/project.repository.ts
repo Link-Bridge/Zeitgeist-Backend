@@ -115,6 +115,39 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
 }
 
 /**
+ * A function that calls the Prisma interface to update a project
+ * @param {ProjectEntity} project data to update
+ * @returns {Promise<ProjectEntity>} project updated
+ * @throws {Error}
+ */
+async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
+  try {
+    const updatedProject = await Prisma.project.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        name: project.name,
+        id_company: project.idCompany,
+        category: project.category,
+        matter: project.matter,
+        description: project.description,
+        start_date: project.startDate,
+        end_date: project.endDate,
+        periodicity: project.periodicity,
+        area: project.area,
+        is_chargeable: project.isChargeable,
+        status: project.status,
+        created_at: project.createdAt,
+      },
+    });
+    return mapProjectEntityFromDbModel(updatedProject);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+/**
  * A function that updates the project status into data base
  * @param projectId ID of the project status to update
  * @param newStatus New project status
@@ -138,5 +171,6 @@ export const ProjectRepository = {
   findById,
   findProjetsByClientId,
   createProject,
+  updateProject,
   updateProjectStatus,
 };
