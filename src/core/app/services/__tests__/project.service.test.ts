@@ -16,6 +16,7 @@ describe('ProjectService', () => {
   let findCompanyByIdStub: Sinon.SinonStub;
   let findProjectsByClientId: Sinon.SinonStub;
   let updateProjectStub: sinon.SinonStub;
+  let updateProjectStatusStub: sinon.SinonStub;
 
   beforeEach(() => {
     createProject = sinon.stub(ProjectRepository, 'createProject');
@@ -220,6 +221,29 @@ describe('ProjectService', () => {
       expect(res).to.deep.equal(mockProject.updatedProject);
     });
   });
+
+  describe('updateProjectStatus', () => {
+    const mockProject = prepareMockProject();
+
+    beforeEach(() => {
+      updateProjectStatusStub = sinon.stub(ProjectRepository, 'updateProjectStatus');
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should update a project status', async () => {
+      findProjectByIdStub.resolves(mockProject.original);
+      updateProjectStatusStub.resolves(mockProject.updateProjectStatus);
+      const res = await ProjectService.updateProjectStatus(
+        mockProject.updateProjectStatus.id,
+        mockProject.updateProjectStatus.status
+      );
+
+      expect(res).to.equal(mockProject.updateProjectStatus.status);
+    });
+  });
 });
 
 function prepareMockProject() {
@@ -246,6 +270,12 @@ function prepareMockProject() {
     description: faker.lorem.words(12),
     matter: faker.lorem.word(),
   };
+
+  const updateProjectStatus = {
+    ...original,
+    status: faker.helpers.arrayElement(Object.values(ProjectStatus)),
+  };
+
   const updatePayload = {
     id: projectId,
     name: faker.lorem.words(2),
@@ -259,5 +289,5 @@ function prepareMockProject() {
     createdAt: faker.date.recent(),
     idCompany: companyId,
   };
-  return { original, updatedProject, updatePayload };
+  return { original, updatedProject, updateProjectStatus, updatePayload };
 }
