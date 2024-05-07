@@ -1,5 +1,5 @@
 import { Prisma } from '../../..';
-import { Task } from '../../domain/entities/task.entity';
+import { Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-mapper';
 
@@ -151,4 +151,47 @@ async function deleteTaskById(id: string): Promise<void> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId, findTaskById, findTasksById, deleteTaskById };
+/**
+ * @brief Updates a task in the database.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
+  try {
+    const updatedTask = await Prisma.task.update({
+      where: {
+        id: id,
+      },
+      data: {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        start_date: task.startDate,
+        end_date: task.endDate,
+        worked_hours: Number(task.workedHours),
+        updated_at: new Date(),
+        id_project: task.idProject,
+      },
+    });
+
+    if (!updatedTask) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task on ${RESOURCE_NAME}`);
+  }
+}
+
+export const TaskRepository = {
+  createTask,
+  findTasksByProjectId,
+  findTaskById,
+  findTasksById,
+  deleteTaskById,
+  updateTask,
+};

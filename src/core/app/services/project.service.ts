@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { ProjectStatus } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
@@ -117,4 +118,27 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
   });
 }
 
-export const ProjectService = { createProject, getAllProjects, findProjectsClient, getProjectById, updateProject };
+/**
+ *
+ * @param projectId the id of the proyect to update its status
+ * @param newStatus the new status we are expecting
+ * @returns {Promise<ProjectStatus>} a promise that resolves the status update
+ * @throws {Error} if an unexpected error occurs
+ */
+async function updateProjectStatus(projectId: string, newStatus: ProjectStatus): Promise<ProjectStatus> {
+  try {
+    await ProjectRepository.updateProjectStatus(projectId, newStatus);
+    return newStatus;
+  } catch (error) {
+    throw new Error('An unexpected error occured');
+  }
+}
+
+export const ProjectService = {
+  createProject,
+  getAllProjects,
+  findProjectsClient,
+  getProjectById,
+  updateProject,
+  updateProjectStatus,
+};

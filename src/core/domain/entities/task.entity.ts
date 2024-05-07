@@ -95,3 +95,81 @@ export interface BareboneTask {
   idProject: string;
   idEmployee: string;
 }
+
+/**
+ * @brief This class defines the structure of a Task that will be updated
+ *
+ * @param id: string
+ * @param title: string
+ * @param description: string
+ * @param status: TaskStatus
+ * @param startDate: Date
+ * @param endDate: Date
+ * @param workedHours: Number
+ * @param createdAt: Date
+ * @param updatedAt: Date
+ * @param idProject: string
+ * @param idEmployee: string
+ *
+ * @return void
+ *
+ * @description The structure contains the schema data of an UpdatedtTask, with all attributes identified as optional, because the user can update any of them.
+ */
+
+export interface UpdatedTask {
+  /**
+   * @param id: string - The unique identifier of the task
+   */
+  id: string;
+
+  /**
+   * @param title: string - The title of the task
+   */
+  title?: string;
+
+  /**
+   * @param description: string - The description of the task
+   */
+  description?: string;
+
+  /**
+   * @param status: TaskStatus - The status of the task
+   */
+  status?: TaskStatus;
+
+  /**
+   * @param startDate: Date - Start date of the task
+   */
+  startDate?: Date;
+
+  /**
+   * @param endDate: Date - End date of the task
+   */
+  endDate?: Date;
+
+  /**
+   * @param workedHours: number - Number of hours worked on the task
+   */
+  workedHours?: number;
+
+  /**
+   * @param createdAt: Date - The creation date of the task
+   */
+  createdAt?: Date;
+
+  /**
+   * @param updatedAt: Date - The last modification date of the task
+   */
+
+  updatedAt?: Date;
+
+  /**
+   * @param idProject: string - The project associated with the task
+   */
+  idProject?: string;
+
+  /**
+   * @param idEmployee: string - The employee associated with the task
+   */
+  idEmployee: string;
+}
