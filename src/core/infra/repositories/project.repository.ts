@@ -137,6 +137,7 @@ async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
         periodicity: project.periodicity,
         area: project.area,
         is_chargeable: project.isChargeable,
+        is_archived: project.isArchived,
         status: project.status,
         created_at: project.createdAt,
       },
