@@ -101,6 +101,7 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
     throw new Error('An unexpected error occured');
   }
 }
+
 export const ProjectService = {
   createProject,
   getAllProjects,
