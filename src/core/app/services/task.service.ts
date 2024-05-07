@@ -177,7 +177,7 @@ async function deleteTask(id: string): Promise<void> {
 }
 
 /**
- * Updates a task using the repository.
+ * @brief Updates a task using the repository.
  *
  * @param id: string - Task to be updated.
  * @param task: UpdatedTask - Task to be updated.
