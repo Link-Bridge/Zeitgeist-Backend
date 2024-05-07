@@ -14,6 +14,7 @@ interface CreateProjectData {
   endDate: Date | null;
   idCompany: string;
   isChargeable: boolean;
+  isArchived: boolean;
   periodicity: string | null;
   startDate: Date;
 }
@@ -34,6 +35,7 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
     endDate: data.endDate,
     idCompany: data.idCompany,
     isChargeable: data.isChargeable ? data.isChargeable : undefined,
+    isArchived: data.isArchived ? data.isArchived : undefined,
     periodicity: data.periodicity,
     startDate: data.startDate,
     createdAt: new Date(),
@@ -111,6 +113,7 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     periodicity: body.periodicity ?? project.periodicity,
     area: body.area ?? project.area,
     isChargeable: body.isChargeable ?? project.isChargeable,
+    isArchived: body.isArchived ?? project.isArchived,
     status: body.status ?? project.status,
     createdAt: project.createdAt,
   });

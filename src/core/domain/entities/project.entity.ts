@@ -14,6 +14,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  * @param totalHours?: Decimal - Project total hours (optional)
  * @param periodicity?: string - Project periodicity (optional)
  * @param isChargeable?: boolean - Determines whether the project is chargeable or not (optional)
+ * @param isArchived?: boolean - Determines whether the project can be archived or not (optional)
  * @param area?: string - Project area (optional)
  * @param createdAt: Date - Project creation date
  * @param updatedAt?: Date - Project update date (optional)
@@ -69,6 +70,10 @@ export interface ProjectEntity {
    * @param isChargeable: boolean - Determines whether the project is chargeable or not
    */
   isChargeable?: boolean | null;
+  /**
+   * @param isArchived: boolean - Determines whether the project is chargeable or not
+   */
+  isArchived?: boolean | null;
   /**
    * @param area: string - Project area
    */

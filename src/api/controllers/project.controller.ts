@@ -19,6 +19,7 @@ const createProjectRequestSchema = z.object({
   endDate: z.coerce.date().nullable(),
   periodicity: z.nativeEnum(ProjectPeriodicity),
   isChargeable: z.boolean(),
+  isArchived: z.boolean(),
   area: z.nativeEnum(SupportedDepartments),
 });
 
@@ -44,6 +45,7 @@ async function createProject(req: Request, res: Response) {
       endDate: data.endDate || null,
       idCompany: data.idCompany,
       isChargeable: data.isChargeable,
+      isArchived: data.isArchived,
       periodicity: data.periodicity,
       startDate: data.startDate,
     });

@@ -15,6 +15,7 @@ export function mapProjectEntityFromDbModel(model: project): ProjectEntity {
     totalHours: model.total_hours ? model.total_hours : undefined,
     periodicity: model.periodicity,
     isChargeable: model.is_chargeable,
+    isArchived: model.is_archived,
     area: model.area ? model.area : undefined,
     createdAt: model.created_at,
     updatedAt: model.updated_at ? model.updated_at : undefined,
