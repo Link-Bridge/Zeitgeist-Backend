@@ -192,6 +192,11 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       throw new Error('Task ID is not valid');
     }
 
+    const status = task.status;
+    if (status === 'DONE') {
+      task.endDate = new Date();
+    }
+
     const updatedTask = await TaskRepository.updateTask(idTask, task);
 
     const employee = await EmployeeRepository.findById(task.idEmployee);
