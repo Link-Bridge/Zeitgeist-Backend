@@ -226,7 +226,7 @@ async function updateTask(req: Request, res: Response) {
     res.status(200).json('Task updated successfully');
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-    throw new Error('Error creating task: ' + error);
+    throw new Error(error);
   }
 }
 

@@ -197,35 +197,29 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       task.endDate = new Date();
     }
 
-    const updatedTask = await TaskRepository.updateTask(idTask, task);
-
-    const employee = await EmployeeRepository.findById(task.idEmployee);
-    if (!employee) {
-      throw new NotFoundError('Employee');
-    }
-
     const newEmployeeTask: EmployeeTask = {
       id: randomUUID(),
       createdAt: new Date(),
-      idEmployee: employee.id,
+      idEmployee: task.idEmployee,
       idTask: idTask,
     };
 
-    const taskIsAssigned = await EmployeeTaskRepository.validateEmployeeTask(employee.id, idTask);
+    const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(task.idEmployee, idTask);
 
-    if (!taskIsAssigned) {
+    if (!taskIsAssignedAlready) {
       const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
       if (!assignedTask) {
         throw new Error('Error assigning a task to an employee');
       }
-    } else if (taskIsAssigned) {
+    } else if (taskIsAssignedAlready) {
       await EmployeeTaskRepository.deleteByTaskId(idTask);
       await EmployeeTaskRepository.create(newEmployeeTask);
     }
 
+    const updatedTask = await TaskRepository.updateTask(idTask, task);
     return updatedTask;
-  } catch (error) {
-    throw new Error('Failed to update task');
+  } catch (error: any) {
+    throw new Error(error);
   }
 }
 
