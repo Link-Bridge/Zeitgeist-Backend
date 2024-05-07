@@ -16,6 +16,7 @@ describe('ProjectService', () => {
   let findCompanyByIdStub: Sinon.SinonStub;
   let findProjectsByClientId: Sinon.SinonStub;
   let updateProjectStub: sinon.SinonStub;
+  let updateProjectStatusStub: sinon.SinonStub;
 
   beforeEach(() => {
     createProject = sinon.stub(ProjectRepository, 'createProject');
@@ -39,7 +40,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -79,7 +80,7 @@ describe('ProjectService', () => {
         matter: 'Desarrollo de un sistema de gestión interna',
         description:
           'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-        status: ProjectStatus.IN_PROCESS,
+        status: ProjectStatus.IN_PROGRESS,
         category: ProjectCategory.GOVERNMENT,
         startDate: new Date('2023-04-01T00:00:00.000Z'),
         endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -105,7 +106,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -122,7 +123,7 @@ describe('ProjectService', () => {
           matter: 'Desarrollo de un sistema de gestión interna 2',
           description:
             'Este proyecto consiste en el desarrollo de un sistema de gestión interna para mejorar los procesos administrativos.',
-          status: ProjectStatus.IN_PROCESS,
+          status: ProjectStatus.IN_PROGRESS,
           category: 'Government',
           startDate: new Date('2023-04-01T00:00:00.000Z'),
           endDate: new Date('2023-12-01T00:00:00.000Z'),
@@ -224,6 +225,29 @@ describe('ProjectService', () => {
       expect(res).to.deep.equal(mockProject.updatedProject);
     });
   });
+
+  describe('updateProjectStatus', () => {
+    const mockProject = prepareMockProject();
+
+    beforeEach(() => {
+      updateProjectStatusStub = sinon.stub(ProjectRepository, 'updateProjectStatus');
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should update a project status', async () => {
+      findProjectByIdStub.resolves(mockProject.original);
+      updateProjectStatusStub.resolves(mockProject.updateProjectStatus);
+      const res = await ProjectService.updateProjectStatus(
+        mockProject.updateProjectStatus.id,
+        mockProject.updateProjectStatus.status
+      );
+
+      expect(res).to.equal(mockProject.updateProjectStatus.status);
+    });
+  });
 });
 
 function prepareMockProject() {
@@ -250,6 +274,12 @@ function prepareMockProject() {
     description: faker.lorem.words(12),
     matter: faker.lorem.word(),
   };
+
+  const updateProjectStatus = {
+    ...original,
+    status: faker.helpers.arrayElement(Object.values(ProjectStatus)),
+  };
+
   const updatePayload = {
     id: projectId,
     name: faker.lorem.words(2),
@@ -263,5 +293,5 @@ function prepareMockProject() {
     createdAt: faker.date.recent(),
     idCompany: companyId,
   };
-  return { original, updatedProject, updatePayload };
+  return { original, updatedProject, updateProjectStatus, updatePayload };
 }

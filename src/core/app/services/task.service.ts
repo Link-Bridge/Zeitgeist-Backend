@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
-import { BareboneTask, Task } from '../../domain/entities/task.entity';
+import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -28,7 +28,6 @@ async function getTasksFromProject(projectId: string): Promise<Task[]> {
 
 /**
  * Creates a new task using the repository.
- * Creates a new task using the payload from the client.
  * The task is created only if the project ID is valid and the relationship
  * between task and employee is created.
  *
@@ -177,4 +176,58 @@ async function deleteTask(id: string): Promise<void> {
   }
 }
 
-export const TaskService = { createTask, findUnique, getTasksFromProject, getTasksAssignedToEmployee, deleteTask };
+/**
+ * @brief Updates a task using the repository.
+ *
+ * @param id: string - Task to be updated.
+ * @param task: UpdatedTask - Task to be updated.
+ *
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
+  try {
+    if ((await TaskRepository.findTaskById(idTask)) === null) {
+      throw new Error('Task ID is not valid');
+    }
+
+    const status = task.status;
+    if (status === 'DONE') {
+      task.endDate = new Date();
+    }
+
+    const newEmployeeTask: EmployeeTask = {
+      id: randomUUID(),
+      createdAt: new Date(),
+      idEmployee: task.idEmployee,
+      idTask: idTask,
+    };
+
+    const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(task.idEmployee, idTask);
+
+    if (!taskIsAssignedAlready) {
+      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+      if (!assignedTask) {
+        throw new Error('Error assigning a task to an employee');
+      }
+    } else if (taskIsAssignedAlready) {
+      await EmployeeTaskRepository.deleteByTaskId(idTask);
+      await EmployeeTaskRepository.create(newEmployeeTask);
+    }
+
+    const updatedTask = await TaskRepository.updateTask(idTask, task);
+    return updatedTask;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export const TaskService = {
+  createTask,
+  findUnique,
+  getTasksFromProject,
+  getTasksAssignedToEmployee,
+  deleteTask,
+  updateTask,
+};
