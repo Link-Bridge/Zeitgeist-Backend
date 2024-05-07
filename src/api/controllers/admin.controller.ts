@@ -1,14 +1,26 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { AdminRoleService } from '../../core/app/services/admin-role.service';
+import { CompanyService } from '../../core/app/services/company.service';
 
-// Defines a schema for validations
+/**
+ * @brief variable para validar que el id sea un id valido
+ */
+const idSchema = z.object({
+  id: z.string().uuid(),
+});
+
 const updateUserRoleSchema = z.object({
   userId: z.string().min(1, { message: 'User ID cannot be empty' }),
   roleId: z.string().min(1, { message: 'Role ID cannot be empty' }),
 });
 
-// Updates a user's role
+/**
+ * @brief update employee role
+ *
+ * @param req
+ * @param res
+ */
 async function updateUserRole(req: Request, res: Response) {
   try {
     const { userId, roleId } = updateUserRoleSchema.parse(req.body);
@@ -24,7 +36,8 @@ async function updateUserRole(req: Request, res: Response) {
 }
 
 /**
- * @description Get all roles
+ * @brief Get all roles
+ *
  * @param res
  */
 async function getAllRoles(_: Request, res: Response) {
@@ -36,4 +49,20 @@ async function getAllRoles(_: Request, res: Response) {
   }
 }
 
-export { getAllRoles, updateUserRole };
+/**
+ * @brief archive a client
+ *
+ * @param req
+ * @param res
+ */
+async function archiveClient(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const company = await CompanyService.archiveClient(id);
+    res.status(200).json({ data: company });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred.' });
+  }
+}
+
+export { archiveClient, getAllRoles, updateUserRole };

@@ -110,4 +110,26 @@ async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
   });
 }
 
-export const CompanyService = { findAll, findById, update, create };
+/**
+ * @brief Archive a client
+ *
+ * @param id
+ * @returns {Promise<CompanyEntity>}
+ */
+async function archiveClient(id: string): Promise<CompanyEntity> {
+  try {
+    const status = await CompanyRepository.getArchivedStatus(id);
+    if (status === undefined) {
+      throw new Error('Status not found');
+    }
+    const company = await CompanyRepository.archiveClient(id, status);
+    if (!company) {
+      throw new Error('Company not found');
+    }
+    return await CompanyRepository.archiveClient(id, status);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const CompanyService = { findAll, findById, update, create, archiveClient };
