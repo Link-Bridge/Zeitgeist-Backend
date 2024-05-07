@@ -152,7 +152,7 @@ async function deleteTaskById(id: string): Promise<void> {
 }
 
 /**
- * Updates a task in the database.
+ * @brief Updates a task in the database.
  *
  * @param task: UpdatedTask - Updated task.
  * @returns {Promise<Boolean>} - True if the task was updated.

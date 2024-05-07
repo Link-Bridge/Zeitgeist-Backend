@@ -186,9 +186,11 @@ const updatedTaskSchema = z.object({
 });
 
 /**
- * Validates the data received through the PUT method
+ * @brief Validates the data received through the PUT method
  *
- * @param data:
+ * @param idTask: string - The task id.
+ * @param data: UpdatedTask - The data to be validated.
+ *
  * @returns {id: string, ...bodyTask, status: TaskStatus, workedHours: number}
  */
 function validateUpdatedTaskData(idTask: string, data: UpdatedTask) {
@@ -204,7 +206,7 @@ function validateUpdatedTaskData(idTask: string, data: UpdatedTask) {
 }
 
 /**
- * Sends a request to the service to update a task with the given data.
+ * @brief Sends a request to the service to update a task with the given data.
  *
  * @param req: Request - The request object.
  * @param res: Response - The response object.
