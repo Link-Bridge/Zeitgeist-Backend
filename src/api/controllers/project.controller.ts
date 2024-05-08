@@ -49,7 +49,6 @@ async function createProject(req: Request, res: Response) {
     });
     res.status(201).json(newProject);
   } catch (error: unknown) {
-    console.error(error);
     res.status(400).json({ message: error });
   }
 }
