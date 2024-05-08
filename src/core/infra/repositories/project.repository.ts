@@ -139,6 +139,7 @@ async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
         is_chargeable: project.isChargeable,
         status: project.status,
         created_at: project.createdAt,
+        payed: project.payed,
       },
     });
     return mapProjectEntityFromDbModel(updatedProject);
