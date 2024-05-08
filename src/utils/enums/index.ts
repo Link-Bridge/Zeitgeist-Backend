@@ -14,7 +14,7 @@ export enum SupportedDepartments {
 export enum TaskStatus {
   NOT_STARTED = 'Not started',
   IN_PROGRESS = 'In progress',
-  UNDER_REVISSION = 'Under revission',
+  UNDER_REVISSION = 'Under revision',
   DELAYED = 'Delayed',
   POSTPONED = 'Postponed',
   DONE = 'Done',
