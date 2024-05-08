@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { checkAuthToken } from '../middlewares/auth.middleware';
 import { AdminRouter } from './admin.routes';
 import { CompanyRouter } from './company.routes';
 import { EmployeeRouter } from './employee.routes';
+import { HomeRouter } from './home.routes';
 import { NotificationRouter } from './notification.routes';
 import { ProjectRouter } from './project.routes';
 import { TaskRouter } from './task.routes';
@@ -11,10 +11,13 @@ const baseRouter = Router();
 
 const V1_PATH = '/api/v1';
 
-baseRouter.use(checkAuthToken);
+//baseRouter.use(checkAuthToken);
 
 //Auth
 baseRouter.use(`${V1_PATH}/admin`, AdminRouter);
+
+//Homepage
+baseRouter.use(`${V1_PATH}/home`, HomeRouter);
 
 // Employee
 baseRouter.use(`${V1_PATH}/employee`, EmployeeRouter);
