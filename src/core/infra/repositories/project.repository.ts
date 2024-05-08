@@ -41,21 +41,28 @@ async function findAll(): Promise<ProjectEntity[]> {
 }
 
 /**
- * Retrieves all projects from a certain role
+ * Retrieves all projects from a certain role, done projects appear last
  * @param role The role from the requester
  * @returns All the projects from the role's department
  */
 async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
   try {
-    let data: Awaited<ReturnType<typeof Prisma.project.findMany>>;
+    type PrismaProjectsRes = ReturnType<typeof Prisma.project.findMany>;
+    let projects: PrismaProjectsRes;
+    let doneProjects: PrismaProjectsRes;
+    let res: Awaited<PrismaProjectsRes>;
     if (role === SupportedRoles.ADMIN) {
-      data = await Prisma.project.findMany();
+      projects = Prisma.project.findMany({ where: { NOT: { status: ProjectStatus.DONE } } });
+      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
+      res = (await Promise.all([projects, doneProjects])).flat();
     } else {
-      data = await Prisma.project.findMany({ where: { area: role } });
+      projects = Prisma.project.findMany({ where: { area: role, NOT: { status: ProjectStatus.DONE } } });
+      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE, area: role } });
+      res = (await Promise.all([projects, doneProjects])).flat();
     }
-    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+    if (!res) throw new NotFoundError(`${RESOURCE_NAME} error`);
 
-    return data.map(mapProjectEntityFromDbModel);
+    return res.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
