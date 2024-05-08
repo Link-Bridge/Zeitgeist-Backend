@@ -1,7 +1,8 @@
-import { ProjectStatus } from '../../../utils/enums';
+import { ProjectStatus, SupportedDepartments } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { Decimal } from '@prisma/client/runtime/library';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { Home } from '../interfaces/home.interface';
 
@@ -59,6 +60,17 @@ async function getMyInfo(idEmployee: string): Promise<Home> {
         homeInfo.companies.push(companies[i]);
       }
     }
+
+    homeInfo.companies.map(company => {
+      company.chargeableHours = new Decimal(0);
+
+      homeInfo.projects.forEach(project => {
+        if (project.idCompany == company.id && project.isChargeable && project.totalHours) {
+          company.chargeableHours = company.chargeableHours!.add(new Decimal(project.totalHours.toString()));
+        }
+      });
+    });
+  
 
     homeInfo.projects.sort((a, b) =>
       (statusValue.get(a.status) || 10) < (statusValue.get(b.status) || 10)
