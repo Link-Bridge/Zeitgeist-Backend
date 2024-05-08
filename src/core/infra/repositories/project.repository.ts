@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '../../..';
-import { ProjectStatus } from '../../../utils/enums';
+import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -40,6 +40,33 @@ async function findAll(): Promise<ProjectEntity[]> {
   }
 }
 
+/**
+ * Retrieves all projects from a certain role, done projects appear last
+ * @param role The role from the requester
+ * @returns All the projects from the role's department
+ */
+async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
+  try {
+    type PrismaProjectsRes = ReturnType<typeof Prisma.project.findMany>;
+    let projects: PrismaProjectsRes;
+    let doneProjects: PrismaProjectsRes;
+    let res: Awaited<PrismaProjectsRes>;
+    if (role === SupportedRoles.ADMIN) {
+      projects = Prisma.project.findMany({ where: { NOT: { status: ProjectStatus.DONE } } });
+      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
+      res = (await Promise.all([projects, doneProjects])).flat();
+    } else {
+      projects = Prisma.project.findMany({ where: { area: role, NOT: { status: ProjectStatus.DONE } } });
+      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE, area: role } });
+      res = (await Promise.all([projects, doneProjects])).flat();
+    }
+    if (!res) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return res.map(mapProjectEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
 /**
  * Finds a project status by id
  * @version 1.0.0
@@ -200,4 +227,5 @@ export const ProjectRepository = {
   createProject,
   updateProject,
   updateProjectStatus,
+  findAllByRole,
 };
