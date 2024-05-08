@@ -20,5 +20,6 @@ export function mapProjectEntityFromDbModel(model: project): ProjectEntity {
     createdAt: model.created_at,
     updatedAt: model.updated_at ? model.updated_at : undefined,
     idCompany: model.id_company,
+    payed: model.payed,
   };
 }

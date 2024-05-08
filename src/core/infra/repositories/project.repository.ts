@@ -141,6 +141,7 @@ async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
         is_archived: project.isArchived,
         status: project.status,
         created_at: project.createdAt,
+        payed: project.payed,
       },
     });
     return mapProjectEntityFromDbModel(updatedProject);

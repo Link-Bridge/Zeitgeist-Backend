@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { TaskStatus } from '../../../utils/enums';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
 import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
@@ -193,7 +194,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     }
 
     const status = task.status;
-    if (status === 'DONE') {
+    if (status === TaskStatus.DONE) {
       task.endDate = new Date();
     }
 

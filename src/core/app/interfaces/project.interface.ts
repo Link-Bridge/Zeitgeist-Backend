@@ -2,9 +2,9 @@ import { Decimal } from '@prisma/client/runtime/library';
 
 export interface UpdateProjectBody {
   id: string;
-  name: string;
-  idCompany: string;
-  category: string;
+  name?: string;
+  idCompany?: string;
+  category?: string;
   matter?: string | null;
   description?: string | null;
   startDate: Date;
@@ -15,6 +15,7 @@ export interface UpdateProjectBody {
   isArchived?: boolean | null;
   status: string;
   totalHours?: Decimal | null;
+  payed?: boolean;
   createdAt: Date;
   updatedAt?: Date | null;
 }

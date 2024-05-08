@@ -90,4 +90,8 @@ export interface ProjectEntity {
    * @param idCompany: string - Id for project company
    */
   idCompany: string;
+  /**
+   * @param payed: boolean - indicates if the project has been paid
+   */
+  payed?: boolean;
 }

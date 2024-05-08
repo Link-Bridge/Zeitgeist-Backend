@@ -113,6 +113,7 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     endDate: body.endDate ?? project.endDate,
     periodicity: body.periodicity ?? project.periodicity,
     area: body.area ?? project.area,
+    payed: body.payed,
     isChargeable: body.isChargeable ?? project.isChargeable,
     isArchived: body.isArchived ?? project.isArchived,
     status: body.status ?? project.status,
