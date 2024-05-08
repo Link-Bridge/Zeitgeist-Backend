@@ -6,6 +6,23 @@ import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-m
 const RESOURCE_NAME = 'Task';
 
 /**
+ * Finds all tasks in the database
+ * @version 1.0.0
+ * @returns {Promise<Task[]>} a promise taht resolves to an array of tasks
+ */
+
+async function findAll(): Promise<Task[]> {
+  try {
+    const data = await Prisma.task.findMany();
+    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return data.map(mapTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Finds a task by its id.
  *
  * @param id: string - Task id.
@@ -188,6 +205,7 @@ async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
 }
 
 export const TaskRepository = {
+  findAll,
   createTask,
   findTasksByProjectId,
   findTaskById,
