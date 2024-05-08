@@ -9,21 +9,42 @@ const RESOURCE_NAME = 'Project info';
 
 /**
  * Finds all company entities in the database
- * @version 1.0.0
- * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities
+ * @version 2.0.0
+ * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities ordered by status
  */
 
 async function findAll(): Promise<ProjectEntity[]> {
   try {
-    const data = await Prisma.project.findMany();
+    const data: Array<any> = await Prisma.$queryRaw`
+    SELECT * FROM project
+    ORDER BY case when status = 'Not started' then 1
+      when status = 'In progress' then 2
+      when status = 'In quotation' then 3
+      when status = 'Under revision' then 4
+      when status = 'Delayed' then 5
+      when status = 'Postponed' then 6
+      when status = 'Cancelled' then 7
+      when status = 'Accepted' then 8
+      when status = 'Done' then 9
+      else 10
+    end asc
+    `;
     if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    console.log(data);
 
     return data.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
+    console.log(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
 
+/**
+ * Finds a project status by id
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity>} a promise that resolves in a string with the project status
+ */
 async function findProjectStatusById(id: string) {
   try {
     const data = await Prisma.project.findUnique({
@@ -45,6 +66,11 @@ async function findProjectStatusById(id: string) {
   }
 }
 
+/**
+ * Finds a project by id
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity>} a promise that resolves in a project entity.
+ */
 async function findById(id: string): Promise<ProjectEntity> {
   try {
     const data = await Prisma.project.findUnique({
