@@ -40,8 +40,7 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
       });
 
       return mapEmployeeTaskEntityFromDbModel(createdEmployeeTask);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
       throw new Error(`Failed to create employee task on ${RESOURCE_NAME}`);
     }
   });
