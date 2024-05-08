@@ -224,6 +224,26 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   }
 }
 
+/**
+ * @brief Updates the status of a task using the repository.
+ *
+ * @param id: string - Task to be updated.
+ * @param status: TaskStatus - Status to be updated.
+ *
+ * @returns {Promise<Boolean>} - True if the task status was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boolean> {
+  try {
+    await TaskRepository.updateTaskStatus(idTask, status);
+
+    return true;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
 export const TaskService = {
   createTask,
   findUnique,
@@ -231,4 +251,5 @@ export const TaskService = {
   getTasksAssignedToEmployee,
   deleteTask,
   updateTask,
+  updateTaskStatus,
 };

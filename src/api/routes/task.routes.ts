@@ -41,4 +41,10 @@ router.put(
   TaskController.updateTask
 );
 
+router.put(
+  '/update/status/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  TaskController.updateTaskStatus
+);
+
 export { router as TaskRouter };
