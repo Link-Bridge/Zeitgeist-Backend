@@ -26,9 +26,12 @@ async function findAll(): Promise<ProjectEntity[]> {
       when status = 'Cancelled' then 7
       when status = 'Accepted' then 8
       when status = 'Done' then 9
-      else 10
+      when status = '-' then 10
+      else 11
     end asc
     `;
+
+    console.log(data);
     if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
 
     return data.map(mapProjectEntityFromDbModel);
@@ -49,12 +52,21 @@ async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
     let doneProjects: PrismaProjectsRes;
     let res: Awaited<PrismaProjectsRes>;
     if (role === SupportedRoles.ADMIN) {
-      projects = Prisma.project.findMany({ where: { NOT: { status: ProjectStatus.DONE } } });
+      projects = Prisma.project.findMany({
+        where: { NOT: { status: ProjectStatus.DONE } },
+        orderBy: { status: 'desc' },
+      });
       doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
       res = (await Promise.all([projects, doneProjects])).flat();
     } else {
-      projects = Prisma.project.findMany({ where: { area: role, NOT: { status: ProjectStatus.DONE } } });
-      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE, area: role } });
+      projects = Prisma.project.findMany({
+        where: { area: role, NOT: { status: ProjectStatus.DONE } },
+        orderBy: { status: 'desc' },
+      });
+      doneProjects = Prisma.project.findMany({
+        where: { status: ProjectStatus.DONE, area: role },
+        orderBy: { status: 'desc' },
+      });
       res = (await Promise.all([projects, doneProjects])).flat();
     }
     if (!res) throw new NotFoundError(`${RESOURCE_NAME} error`);
