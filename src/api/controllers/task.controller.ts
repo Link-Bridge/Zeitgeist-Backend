@@ -249,7 +249,6 @@ function validateUpdatedStatusData(idTask: string, updatedStatus: TaskStatus) {
     status: status,
   };
 
-  console.log(validatedTaskStatusData.id, validatedTaskStatusData.status);
   return validatedTaskStatusData;
 }
 

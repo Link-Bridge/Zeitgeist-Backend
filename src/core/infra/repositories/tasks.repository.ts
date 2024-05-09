@@ -229,7 +229,6 @@ async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boo
 
     return true;
   } catch (error) {
-    console.error(error);
     throw new Error(`Failed to update task status`);
   }
 }
