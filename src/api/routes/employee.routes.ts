@@ -5,9 +5,9 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.post('/signup', EmployeeController.userExists);
 router.get('/', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
-router.delete('/delete/:id', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.deleteEmployee);
 router.get('/getAllEmployees', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.getAllEmployees);
+router.post('/signup', EmployeeController.userExists);
+router.delete('/delete/:id', checkAuthRole([SupportedRoles.ADMIN]), EmployeeController.deleteEmployee);
 
 export { router as EmployeeRouter };
