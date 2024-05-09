@@ -1,4 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { Task } from './task.entity';
 
 /**
  * @brief This class is used to define the structure of the Project entity
@@ -89,4 +90,9 @@ export interface ProjectEntity {
    * @param payed: boolean - indicates if the project has been paid
    */
   payed?: boolean;
+
+  /**
+   * @param task?: Task[] - Project tasks array
+   */
+  task?: Task[];
 }
