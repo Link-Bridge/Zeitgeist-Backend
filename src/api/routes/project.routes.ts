@@ -30,7 +30,7 @@ router.post(
 router.get(
   '/',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getAllProjects
+  ProjectController.getDepartmentProjects
 );
 router.get(
   '/details/:id',

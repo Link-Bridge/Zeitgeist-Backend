@@ -32,7 +32,7 @@ describe('ProjectService', () => {
 
   describe('findProjectsByClientId', () => {
     it('Should get the projects of a client with the given id', async () => {
-      const clientId = '3ea24e0c-519e-46d8-a45e-62bc5fcbada0';
+      const clientId = randomUUID();
       const projects: ProjectEntity[] = [
         {
           id: randomUUID(),
@@ -58,7 +58,7 @@ describe('ProjectService', () => {
     });
 
     it("Should throw an error if the projects couldn't be found", async () => {
-      const clientId = '3ea24e0c-519e-46d8-a45e-62bc5fcbada0';
+      const clientId = randomUUID();
       findProjectsByClientId.withArgs(clientId).throws(new Error('An unexpected error occured'));
       try {
         await ProjectService.findProjectsClient(clientId);

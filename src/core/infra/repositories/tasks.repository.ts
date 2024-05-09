@@ -111,8 +111,7 @@ async function createTask(newTask: Task): Promise<Task | null> {
       });
 
       return mapTaskEntityFromDbModel(createdTask);
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error: unknown) {
       throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
     }
   });
@@ -164,7 +163,6 @@ async function deleteTaskById(id: string): Promise<void> {
       },
     });
   } catch (error: unknown) {
-    console.error(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
