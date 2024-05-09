@@ -51,7 +51,6 @@ async function createProject(req: Request, res: Response) {
     });
     res.status(201).json(newProject);
   } catch (error: unknown) {
-    console.error(error);
     res.status(400).json({ message: error });
   }
 }
@@ -105,6 +104,20 @@ async function getProjectsClient(req: Request, res: Response) {
 async function getAllProjects(req: Request, res: Response) {
   try {
     const data = await ProjectService.getAllProjects();
+    res.status(200).json({ data: data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
+ * Retrieves all projects from a certain department
+ * @param req An HTTP Request
+ * @param res An HTTP Response
+ */
+async function getDepartmentProjects(req: Request, res: Response) {
+  try {
+    const data = await ProjectService.getDepartmentProjects(req.body.auth.email);
     res.status(200).json({ data: data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -167,4 +180,5 @@ export const ProjectController = {
   getProjectById,
   updateProject,
   updateProjectStatus,
+  getDepartmentProjects,
 };

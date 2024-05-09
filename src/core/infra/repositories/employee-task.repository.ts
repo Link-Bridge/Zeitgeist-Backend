@@ -40,8 +40,7 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
       });
 
       return mapEmployeeTaskEntityFromDbModel(createdEmployeeTask);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
       throw new Error(`Failed to create employee task on ${RESOURCE_NAME}`);
     }
   });
@@ -101,11 +100,10 @@ async function deleteByTaskId(taskId: string): Promise<void> {
  *
  * @returns {Promise<boolean>} - True if the task is assigned to the employee, false otherwise.
  */
-async function validateEmployeeTask(employeeId: string, taskId: string): Promise<boolean> {
+async function validateEmployeeTask(taskId: string): Promise<boolean> {
   try {
     const data = await Prisma.employee_task.findFirst({
       where: {
-        id_employee: employeeId,
         id_task: taskId,
       },
     });

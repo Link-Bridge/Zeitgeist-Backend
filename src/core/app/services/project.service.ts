@@ -4,6 +4,7 @@ import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { UpdateProjectBody } from '../interfaces/project.interface';
+import { EmployeeService } from './employee.service';
 
 interface CreateProjectData {
   name: string;
@@ -52,6 +53,17 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
  */
 async function getAllProjects(): Promise<ProjectEntity[]> {
   return await ProjectRepository.findAll();
+}
+
+/**
+ * Retrieves all project from a certain role given an email
+ * @param email the email from the requester
+ * @returns the projects only from a specific role
+ */
+async function getDepartmentProjects(email: string): Promise<ProjectEntity[]> {
+  const role = await EmployeeService.findRoleByEmail(email);
+
+  return await ProjectRepository.findAllByRole(role);
 }
 
 /**
@@ -144,4 +156,5 @@ export const ProjectService = {
   getProjectById,
   updateProject,
   updateProjectStatus,
+  getDepartmentProjects,
 };

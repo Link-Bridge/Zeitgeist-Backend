@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { TaskStatus } from '../../../utils/enums';
 import { Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-mapper';
@@ -110,8 +111,7 @@ async function createTask(newTask: Task): Promise<Task | null> {
       });
 
       return mapTaskEntityFromDbModel(createdTask);
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error: unknown) {
       throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
     }
   });
@@ -163,7 +163,6 @@ async function deleteTaskById(id: string): Promise<void> {
       },
     });
   } catch (error: unknown) {
-    console.error(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
@@ -204,6 +203,36 @@ async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
   }
 }
 
+/**
+ * @brief Updates a task in the database.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boolean> {
+  try {
+    const updatedTaskStatus = await Prisma.task.update({
+      where: {
+        id: idTask,
+      },
+      data: {
+        status: status,
+        updated_at: new Date(),
+      },
+    });
+
+    if (!updatedTaskStatus) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task status`);
+  }
+}
+
 export const TaskRepository = {
   findAll,
   createTask,
@@ -212,4 +241,5 @@ export const TaskRepository = {
   findTasksById,
   deleteTaskById,
   updateTask,
+  updateTaskStatus,
 };

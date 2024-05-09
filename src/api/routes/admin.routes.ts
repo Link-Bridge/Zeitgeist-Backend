@@ -5,8 +5,8 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.put('/role', checkAuthRole([SupportedRoles.ADMIN]), updateUserRole);
 router.get('/roles', checkAuthRole([SupportedRoles.ADMIN]), getAllRoles);
+router.put('/role', checkAuthRole([SupportedRoles.ADMIN]), updateUserRole);
 router.put('/archive/:id', checkAuthRole([SupportedRoles.ADMIN]), archiveClient);
 
 export { router as AdminRouter };

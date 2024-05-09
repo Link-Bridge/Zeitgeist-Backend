@@ -24,6 +24,7 @@ describe('Task Service', () => {
   let deleteEmployeeTaskStub: sinon.SinonStub;
   let validateEmployeeTaskStub: sinon.SinonStub;
   let updateTaskRepositoryStub: sinon.SinonStub;
+  let updateTaskStatusRepositoryStub: sinon.SinonStub;
 
   const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
 
@@ -62,6 +63,7 @@ describe('Task Service', () => {
     deleteEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'deleteByTaskId');
     validateEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'validateEmployeeTask');
     updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
+    updateTaskStatusRepositoryStub = sinon.stub(TaskRepository, 'updateTaskStatus');
   });
 
   afterEach(() => {
@@ -356,6 +358,15 @@ describe('Task Service', () => {
       } catch (error: any) {
         expect(error.message).to.equal('Error: Error assigning a task to an employee');
       }
+    });
+  });
+
+  describe('updateTaskStatus', () => {
+    it('Should update a task status in the repository', async () => {
+      findTaskByIdStub.resolves({ id: createdTask.id });
+      updateTaskStatusRepositoryStub.resolves(true);
+      const result = await TaskService.updateTaskStatus(createdTask.id, TaskStatus.DONE);
+      expect(result).to.be.true;
     });
   });
 });

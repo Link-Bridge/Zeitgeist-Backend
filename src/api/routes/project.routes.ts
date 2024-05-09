@@ -6,17 +6,20 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 const router = Router();
 
 router.get(
+  '/',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.getDepartmentProjects
+);
+router.get(
+  '/details/:id',
+  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
+  ProjectController.getProjectById
+);
+router.get(
   '/report/:id',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.getReportData
 );
-
-router.get(
-  '/:clientId',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getProjectsClient
-);
-
 router.get(
   '/:clientId',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
@@ -26,16 +29,6 @@ router.post(
   '/create',
   checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
   ProjectController.createProject
-);
-router.get(
-  '/',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getAllProjects
-);
-router.get(
-  '/details/:id',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  ProjectController.getProjectById
 );
 router.put(
   '/edit/:id',

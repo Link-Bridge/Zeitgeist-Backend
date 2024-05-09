@@ -1,4 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { ProjectEntity } from './project.entity';
 /**
  * @brief This class is used to define the company entity
  *
@@ -104,4 +105,9 @@ export interface CompanyEntity {
    * @param totalProjects?: number - Company total projects
    */
   totalProjects?: number;
+
+  /**
+   * @param project?: ProjectEntity[] - Company projects array
+   */
+  project?: ProjectEntity[];
 }
