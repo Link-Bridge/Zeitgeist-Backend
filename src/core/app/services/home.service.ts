@@ -1,5 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
-import { ProjectStatus } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
@@ -16,19 +14,6 @@ import { Home } from '../interfaces/home.interface';
  */
 async function getMyInfo(idEmployee: string): Promise<Home> {
   try {
-    const statusValue = new Map<string, number>([
-      [ProjectStatus.CANCELLED, 10],
-      [ProjectStatus.DEFAULT, 1],
-      [ProjectStatus.DELAYED, 7],
-      [ProjectStatus.DONE, 9],
-      [ProjectStatus.IN_PROGRESS, 5],
-      [ProjectStatus.NOT_STARTED, 2],
-      [ProjectStatus.POSTPONED, 8],
-      [ProjectStatus.UNDER_REVISION, 6],
-      [ProjectStatus.ACCEPTED, 3],
-      [ProjectStatus.IN_QUOTATION, 4],
-    ]);
-
     const projects = await ProjectRepository.findAll();
     const employeeTask = await EmployeeTaskRepository.findByEmployeeId(idEmployee);
     const tasks = await TaskRepository.findAll();
@@ -61,23 +46,6 @@ async function getMyInfo(idEmployee: string): Promise<Home> {
       }
     }
 
-    homeInfo.companies.map(company => {
-      company.chargeableHours = new Decimal(0);
-
-      homeInfo.projects.forEach(project => {
-        if (project.idCompany == company.id && project.isChargeable && project.totalHours) {
-          company.chargeableHours = company.chargeableHours!.add(new Decimal(project.totalHours.toString()));
-        }
-      });
-    });
-
-    homeInfo.projects.sort((a, b) =>
-      (statusValue.get(a.status) || 10) < (statusValue.get(b.status) || 10)
-        ? -1
-        : (statusValue.get(a.status) || 10) > (statusValue.get(b.status) || 10)
-          ? 1
-          : 0
-    );
     return homeInfo;
   } catch (error: unknown) {
     throw new Error('An unexpected error occurred');
