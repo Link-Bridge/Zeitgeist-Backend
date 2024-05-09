@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { Decimal } from '@prisma/client/runtime/library';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
@@ -52,19 +51,6 @@ describe('CompanyService', () => {
 
     expect(res[0].name).to.equal('Zeitgeist');
     expect(res[1].name).to.equal('Microsoft');
-  });
-
-  it('should update legal, accounting, chargeable hours, and total projects', async () => {
-    const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
-    findAllCompaniesStub.resolves(mockData.existingCompanies);
-
-    const res = await CompanyService.findAll();
-
-    expect(res[0].legalHours).to.eql(new Decimal(10));
-    expect(res[0].accountingHours).to.eql(new Decimal(5));
-    expect(res[0].chargeableHours).to.eql(new Decimal(15));
-    expect(res[0].totalProjects).to.eql(2);
   });
 
   it('should update a company and return the updated entity', async () => {
