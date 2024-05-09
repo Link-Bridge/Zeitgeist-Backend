@@ -236,8 +236,11 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
  */
 async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boolean> {
   try {
-    await TaskRepository.updateTaskStatus(idTask, status);
+    if (status === TaskStatus.DONE) {
+      await TaskRepository.updateTaskEndDate(idTask, new Date());
+    }
 
+    await TaskRepository.updateTaskStatus(idTask, status);
     return true;
   } catch (error: any) {
     throw new Error(error);
