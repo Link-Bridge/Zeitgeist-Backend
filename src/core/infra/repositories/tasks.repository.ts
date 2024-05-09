@@ -233,6 +233,36 @@ async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boo
   }
 }
 
+/**
+ * @brief Updates the endDate of a task.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskEndDate(idTask: string, endDate: Date): Promise<boolean> {
+  try {
+    const updatedTaskEndDate = await Prisma.task.update({
+      where: {
+        id: idTask,
+      },
+      data: {
+        end_date: endDate,
+        updated_at: new Date(),
+      },
+    });
+
+    if (!updatedTaskEndDate) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task end date`);
+  }
+}
+
 export const TaskRepository = {
   findAll,
   createTask,
@@ -242,4 +272,5 @@ export const TaskRepository = {
   deleteTaskById,
   updateTask,
   updateTaskStatus,
+  updateTaskEndDate,
 };
