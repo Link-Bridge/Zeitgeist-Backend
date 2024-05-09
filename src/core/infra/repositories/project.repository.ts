@@ -31,11 +31,8 @@ async function findAll(): Promise<ProjectEntity[]> {
     `;
     if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
 
-    console.log(data);
-
     return data.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
-    console.log(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }

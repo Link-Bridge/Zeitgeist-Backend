@@ -12,16 +12,22 @@ const RESOURCE_NAME = 'Company';
  */
 async function findAll(): Promise<CompanyEntity[]> {
   try {
-    const data = await Prisma.company.findMany({
-      orderBy: {
-        name: 'asc',
-      },
-    });
+    const data: Array<any> = await Prisma.$queryRaw`
+      SELECT c.*, 
+      COUNT(DISTINCT p.id) as total_projects,
+      SUM(CASE WHEN p.is_chargeable THEN t.worked_hours ELSE 0 END) AS chargeable_hours,
+      SUM(CASE WHEN p.is_chargeable AND p.area='ACCOUNTING' THEN t.worked_hours ELSE 0 END) AS accounting_hours,
+      SUM(CASE WHEN p.is_chargeable AND p.area='LEGAL' THEN t.worked_hours ELSE 0 END) AS legal_hours
+      FROM company c
+      LEFT JOIN project p ON c.id=p.id_company
+      LEFT JOIN task t ON p.id=t.id_project
+      GROUP BY c.id
+      ORDER BY c.name ASC
+    `;
 
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
-
     return data.map(mapCompanyEntityFromDbModel);
   } catch (error: any) {
     throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
