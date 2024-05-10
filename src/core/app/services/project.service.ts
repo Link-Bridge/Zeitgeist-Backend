@@ -50,6 +50,7 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
  * @returns {Promise<ProjectEntity[]>} - An array of project entities
  */
 async function getAllProjects(): Promise<ProjectEntity[]> {
+  console.log(await ProjectRepository.findAll());
   return await ProjectRepository.findAll();
 }
 

@@ -4,6 +4,23 @@ import { RoleEntity } from '../../domain/entities/role.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-db-model.mapper';
 
+async function findByEmail(email: string): Promise<RoleEntity> {
+  try {
+    const role = await Prisma.employee.findUnique({
+      where: { email: email },
+      include: {
+        role: true,
+      },
+    });
+
+    if (!role) throw new NotFoundError('Role not found');
+
+    return mapRoleEntityFromDbModelToDbModel(role.role);
+  } catch (error: any) {
+    throw new Error(`Role repository error: ${error.message}`);
+  }
+}
+
 async function findById(id: string): Promise<RoleEntity> {
   try {
     const role = await Prisma.role.findUnique({
@@ -44,4 +61,4 @@ async function findAll(): Promise<RoleEntity[]> {
   }
 }
 
-export const RoleRepository = { findById, findByTitle, findAll };
+export const RoleRepository = { findById, findByTitle, findAll, findByEmail };

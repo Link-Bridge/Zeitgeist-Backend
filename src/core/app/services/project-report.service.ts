@@ -4,6 +4,7 @@ import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { Project, ProjectStatistics, Report, Task } from '../interfaces/project-report.interface';
 
@@ -66,10 +67,15 @@ function compareDate(task: Task, date: Date): boolean {
  * associated tasks and their statistics.
  *
  */
-async function getReport(id: string, date?: Date): Promise<Report> {
+async function getReport(id: string, email: string, date?: Date): Promise<Report> {
   try {
+    const role = await RoleRepository.findByEmail(email);
     const rawProject = await ProjectRepository.findById(id);
     const company = await CompanyRepository.findById(rawProject.idCompany);
+
+    if (rawProject.area && role.title.toUpperCase() != rawProject.area.toUpperCase()) {
+      throw new Error('Unauthorized user');
+    }
 
     const project: Project = { ...rawProject, companyName: company.name };
     const report: Report = { project: project };
