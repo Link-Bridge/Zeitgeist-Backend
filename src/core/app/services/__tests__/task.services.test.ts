@@ -25,6 +25,7 @@ describe('Task Service', () => {
   let validateEmployeeTaskStub: sinon.SinonStub;
   let updateTaskRepositoryStub: sinon.SinonStub;
   let updateTaskStatusRepositoryStub: sinon.SinonStub;
+  let updateTaskEndDateRepositoryStub: sinon.SinonStub;
 
   const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
 
@@ -64,6 +65,7 @@ describe('Task Service', () => {
     validateEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'validateEmployeeTask');
     updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
     updateTaskStatusRepositoryStub = sinon.stub(TaskRepository, 'updateTaskStatus');
+    updateTaskEndDateRepositoryStub = sinon.stub(TaskRepository, 'updateTaskEndDate');
   });
 
   afterEach(() => {
@@ -365,6 +367,14 @@ describe('Task Service', () => {
     it('Should update a task status in the repository', async () => {
       findTaskByIdStub.resolves({ id: createdTask.id });
       updateTaskStatusRepositoryStub.resolves(true);
+      const result = await TaskService.updateTaskStatus(createdTask.id, TaskStatus.CANCELLED);
+      expect(result).to.be.true;
+    });
+
+    it('Should update the endDate to today when status is Done', async () => {
+      findTaskByIdStub.resolves({ id: createdTask.id });
+      updateTaskStatusRepositoryStub.resolves(true);
+      updateTaskEndDateRepositoryStub.resolves(true);
       const result = await TaskService.updateTaskStatus(createdTask.id, TaskStatus.DONE);
       expect(result).to.be.true;
     });
