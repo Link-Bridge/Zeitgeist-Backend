@@ -4,6 +4,11 @@ import { RoleEntity } from '../../domain/entities/role.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapRoleEntityFromDbModelToDbModel } from '../mappers/role-entity-from-db-model.mapper';
 
+/**
+ * Retrieves the role of an employee by email
+ * @param email The email from the requester
+ * @returns The role of the employee
+ */
 async function findByEmail(email: string): Promise<RoleEntity> {
   try {
     const role = await Prisma.employee.findUnique({

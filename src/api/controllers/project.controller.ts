@@ -72,7 +72,11 @@ async function getReportData(req: Request, res: Response) {
 
     res.status(200).json(data);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 

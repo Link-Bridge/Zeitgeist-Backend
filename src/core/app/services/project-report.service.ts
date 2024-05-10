@@ -73,8 +73,12 @@ async function getReport(id: string, email: string, date?: Date): Promise<Report
     const rawProject = await ProjectRepository.findById(id);
     const company = await CompanyRepository.findById(rawProject.idCompany);
 
-    if (rawProject.area && role.title.toUpperCase() != rawProject.area.toUpperCase()) {
-      throw new Error('Unauthorized user');
+    if (
+      rawProject.area &&
+      role.title.toUpperCase() != 'ADMIN' &&
+      role.title.toUpperCase() != rawProject.area.toUpperCase()
+    ) {
+      throw new Error('Unauthorized employee');
     }
 
     const project: Project = { ...rawProject, companyName: company.name };
@@ -128,7 +132,10 @@ async function getReport(id: string, email: string, date?: Date): Promise<Report
     report.statistics = projectStatistics;
 
     return report;
-  } catch (error: unknown) {
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
     throw new Error('An unexpected error occurred');
   }
 }
