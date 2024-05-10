@@ -155,7 +155,6 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
       total_hours: entity.totalHours ? new Decimal(entity.totalHours.toString()) : null,
       periodicity: entity.periodicity,
       is_chargeable: entity.isChargeable,
-      is_archived: entity.isArchived,
       area: entity.area,
       created_at: entity.createdAt,
       id_company: entity.idCompany,
