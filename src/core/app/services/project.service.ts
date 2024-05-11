@@ -127,6 +127,7 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     area: body.area ?? project.area,
     payed: body.payed,
     isChargeable: body.isChargeable ?? project.isChargeable,
+    isArchived: body.isArchived ?? project.isArchived,
     status: body.status ?? project.status,
     createdAt: project.createdAt,
   });

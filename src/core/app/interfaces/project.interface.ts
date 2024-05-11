@@ -12,6 +12,7 @@ export interface UpdateProjectBody {
   periodicity?: string | null;
   area?: string | null;
   isChargeable?: boolean | null;
+  isArchived?: boolean | null;
   status: string;
   totalHours?: Decimal | null;
   payed?: boolean;
