@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { ProjectStatus } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
+import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { UpdateProjectBody } from '../interfaces/project.interface';
 import { EmployeeService } from './employee.service';
@@ -24,24 +25,31 @@ interface CreateProjectData {
  * @param data The data required to create a project in the database
  * @returns The entity created
  */
-async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
-  const newProject = await ProjectRepository.createProject({
-    id: randomUUID(),
-    name: data.name,
-    matter: data.matter ? data.matter : undefined,
-    description: data.description ? data.description : undefined,
-    area: data.area,
-    status: data.status,
-    category: data.category,
-    endDate: data.endDate,
-    idCompany: data.idCompany,
-    isChargeable: data.isChargeable ? data.isChargeable : undefined,
-    periodicity: data.periodicity,
-    startDate: data.startDate,
-    createdAt: new Date(),
-  });
+async function createProject(data: CreateProjectData): Promise<ProjectEntity | string> {
+  try {
+    const company = await CompanyRepository.findById(data.idCompany);
+    if (company.archived) throw new Error('Cannot create projects for archived companies');
 
-  return newProject;
+    const newProject = await ProjectRepository.createProject({
+      id: randomUUID(),
+      name: data.name,
+      matter: data.matter ? data.matter : undefined,
+      description: data.description ? data.description : undefined,
+      area: data.area,
+      status: data.status,
+      category: data.category,
+      endDate: data.endDate,
+      idCompany: data.idCompany,
+      isChargeable: data.isChargeable ? data.isChargeable : undefined,
+      periodicity: data.periodicity,
+      startDate: data.startDate,
+      createdAt: new Date(),
+    });
+
+    return newProject;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 /**
@@ -54,7 +62,6 @@ async function getDepartmentProjects(email: string): Promise<ProjectEntity[]> {
     const role = await EmployeeService.findRoleByEmail(email);
     return await ProjectRepository.findAllByRole(role);
   } catch (error) {
-    console.log(error);
     throw new Error('An unexpected error occured');
   }
 }

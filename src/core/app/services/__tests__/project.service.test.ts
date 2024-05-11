@@ -85,6 +85,20 @@ describe('ProjectService', () => {
     it('should create a project', async () => {
       const uuid = randomUUID();
       const clientUuid = randomUUID();
+
+      const company = {
+        id: clientUuid,
+        name: 'Zeitgeist',
+        email: 'info@zeitgeist.mx',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
+        archived: false,
+        createdAt: new Date(),
+        updatedAt: null,
+        idCompanyDirectContact: null,
+        idForm: null,
+      };
+
       const projectData = {
         id: uuid,
         name: 'Nuevo Proyecto de Desarrollo',
@@ -101,6 +115,8 @@ describe('ProjectService', () => {
         createdAt: new Date('2024-04-19T01:23:49.555Z'),
         idCompany: clientUuid,
       };
+
+      findCompanyByIdStub.resolves(company);
       createProject.resolves(projectData);
       const newProject = await ProjectService.createProject(projectData);
       expect(newProject).to.equal(projectData);

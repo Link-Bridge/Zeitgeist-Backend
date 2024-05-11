@@ -48,8 +48,8 @@ async function createProject(req: Request, res: Response) {
       startDate: data.startDate,
     });
     res.status(201).json(newProject);
-  } catch (error: unknown) {
-    res.status(400).json({ message: error });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
   }
 }
 
