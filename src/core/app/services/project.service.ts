@@ -45,23 +45,18 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity> {
 }
 
 /**
- * Gets all projects from the database
- *
- * @returns {Promise<ProjectEntity[]>} - An array of project entities
- */
-async function getAllProjects(): Promise<ProjectEntity[]> {
-  return await ProjectRepository.findAll();
-}
-
-/**
  * Retrieves all project from a certain role given an email
  * @param email the email from the requester
  * @returns the projects only from a specific role
  */
 async function getDepartmentProjects(email: string): Promise<ProjectEntity[]> {
-  const role = await EmployeeService.findRoleByEmail(email);
-
-  return await ProjectRepository.findAllByRole(role);
+  try {
+    const role = await EmployeeService.findRoleByEmail(email);
+    return await ProjectRepository.findAllByRole(role);
+  } catch (error) {
+    console.log(error);
+    throw new Error('An unexpected error occured');
+  }
 }
 
 /**
@@ -148,7 +143,6 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
 
 export const ProjectService = {
   createProject,
-  getAllProjects,
   findProjectsClient,
   getProjectById,
   updateProject,

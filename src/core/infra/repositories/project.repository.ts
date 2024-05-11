@@ -8,39 +8,6 @@ import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-m
 const RESOURCE_NAME = 'Project info';
 
 /**
- * Finds all company entities in the database
- * @version 2.0.0
- * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities ordered by status
- */
-
-async function findAll(): Promise<ProjectEntity[]> {
-  try {
-    const data: Array<any> = await Prisma.$queryRaw`
-    SELECT * FROM project
-    ORDER BY case when status = 'Not started' then 1
-      when status = 'In progress' then 2
-      when status = 'In quotation' then 3
-      when status = 'Under revision' then 4
-      when status = 'Delayed' then 5
-      when status = 'Postponed' then 6
-      when status = 'Cancelled' then 7
-      when status = 'Accepted' then 8
-      when status = 'Done' then 9
-      when status = '-' then 10
-      else 11
-    end asc
-    `;
-
-    console.log(data);
-    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
-
-    return data.map(mapProjectEntityFromDbModel);
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
-  }
-}
-
-/**
  * Retrieves all projects from a certain role, done projects appear last
  * @param role The role from the requester
  * @returns All the projects from the role's department
@@ -51,20 +18,29 @@ async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
     let projects: PrismaProjectsRes;
     let doneProjects: PrismaProjectsRes;
     let res: Awaited<PrismaProjectsRes>;
+
     if (role === SupportedRoles.ADMIN) {
       projects = Prisma.project.findMany({
-        where: { NOT: { status: ProjectStatus.DONE } },
+        where: {
+          NOT: { status: ProjectStatus.DONE },
+        },
         orderBy: { status: 'desc' },
       });
       doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
       res = (await Promise.all([projects, doneProjects])).flat();
     } else {
       projects = Prisma.project.findMany({
-        where: { area: role, NOT: { status: ProjectStatus.DONE } },
+        where: {
+          area: role,
+          NOT: { status: ProjectStatus.DONE },
+        },
         orderBy: { status: 'desc' },
       });
       doneProjects = Prisma.project.findMany({
-        where: { status: ProjectStatus.DONE, area: role },
+        where: {
+          status: ProjectStatus.DONE,
+          area: role,
+        },
         orderBy: { status: 'desc' },
       });
       res = (await Promise.all([projects, doneProjects])).flat();
@@ -229,7 +205,6 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
 }
 
 export const ProjectRepository = {
-  findAll,
   findProjectStatusById,
   findById,
   findProjetsByClientId,

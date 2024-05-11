@@ -95,20 +95,6 @@ async function getProjectsClient(req: Request, res: Response) {
 }
 
 /**
- * A function that calls the service to get all projects in the database.
- * @param req HTTP Request
- * @param res Server response
- */
-async function getAllProjects(req: Request, res: Response) {
-  try {
-    const data = await ProjectService.getAllProjects();
-    res.status(200).json({ data: data });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-/**
  * Retrieves all projects from a certain department
  * @param req An HTTP Request
  * @param res An HTTP Response
@@ -173,7 +159,6 @@ async function updateProjectStatus(req: Request, res: Response) {
 export const ProjectController = {
   getReportData,
   createProject,
-  getAllProjects,
   getProjectsClient,
   getProjectById,
   updateProject,

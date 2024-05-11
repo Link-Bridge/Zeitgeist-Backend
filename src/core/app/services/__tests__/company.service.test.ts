@@ -3,23 +3,19 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { SupportedDepartments } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
-import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { CompanyService } from '../company.service';
 
 chai.use(chaiAsPromised);
 
 describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
-  let findAllProjectsStub: sinon.SinonStub;
   let updateCompanyStub: sinon.SinonStub;
   let findCompanyByIdStub: sinon.SinonStub;
   let archiveClientdStub: sinon.SinonStub;
   let getArchivedStatusStub: sinon.SinonStub;
 
   beforeEach(() => {
-    findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     updateCompanyStub = sinon.stub(CompanyRepository, 'update');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
@@ -33,7 +29,6 @@ describe('CompanyService', () => {
 
   it('should return an array of all companies', async () => {
     const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
     findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
@@ -44,7 +39,6 @@ describe('CompanyService', () => {
 
   it('should match the name of the companies', async () => {
     const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
     findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
@@ -150,34 +144,7 @@ function prepareMockData() {
     },
   ];
 
-  const existingProjects = [
-    {
-      id: randomUUID(),
-      name: 'Zeitgeist P1',
-      description: 'Desc',
-      status: 'Not started',
-      startDate: new Date(),
-      totalHours: 10,
-      isChargeable: true,
-      area: SupportedDepartments.LEGAL,
-      createdAt: new Date(),
-      idCompany: idCompany1,
-    },
-    {
-      id: randomUUID(),
-      name: 'Zeitgeist P2',
-      description: 'Desc',
-      status: 'Not started',
-      startDate: new Date(),
-      totalHours: 5,
-      isChargeable: true,
-      area: SupportedDepartments.ACCOUNTING,
-      createdAt: new Date(),
-      idCompany: idCompany1,
-    },
-  ];
-
-  return { existingCompanies, existingProjects };
+  return { existingCompanies };
 }
 
 function prepareSingleFakeCompany() {
