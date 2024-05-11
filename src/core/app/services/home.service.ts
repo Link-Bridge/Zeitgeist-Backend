@@ -1,6 +1,8 @@
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
+import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { Home } from '../interfaces/home.interface';
 
@@ -14,7 +16,10 @@ import { Home } from '../interfaces/home.interface';
  */
 async function getMyInfo(idEmployee: string): Promise<Home> {
   try {
-    const projects = await ProjectRepository.findAll();
+    const employee = await EmployeeRepository.findById(idEmployee);
+    const role = await RoleRepository.findById(employee.idRole);
+
+    const projects = await ProjectRepository.findAllByRole(role.title);
     const employeeTask = await EmployeeTaskRepository.findByEmployeeId(idEmployee);
     const tasks = await TaskRepository.findAll();
     const companies = await CompanyRepository.findAll();
@@ -48,6 +53,7 @@ async function getMyInfo(idEmployee: string): Promise<Home> {
 
     return homeInfo;
   } catch (error: unknown) {
+    console.log(error);
     throw new Error('An unexpected error occurred');
   }
 }

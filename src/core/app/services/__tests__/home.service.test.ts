@@ -3,9 +3,12 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
+import { SupportedRoles } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
+import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { HomeService } from '../home.service';
 
@@ -16,12 +19,18 @@ describe('HomeService', () => {
   let findTaskByEmployeeIdStub: sinon.SinonStub;
   let findAllTasksStub: sinon.SinonStub;
   let findAllCompaniesStub: sinon.SinonStub;
+  let findEmployeeByEmail: sinon.SinonStub;
+  let findEmployeeById: sinon.SinonStub;
+  let findRoleById: sinon.SinonStub;
 
   beforeEach(() => {
-    findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
+    findAllProjectsStub = sinon.stub(ProjectRepository, 'findAllByRole');
     findTaskByEmployeeIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
     findAllTasksStub = sinon.stub(TaskRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
+    findEmployeeByEmail = sinon.stub(EmployeeRepository, 'findByEmail');
+    findEmployeeById = sinon.stub(EmployeeRepository, 'findById');
+    findRoleById = sinon.stub(RoleRepository, 'findById');
   });
 
   afterEach(() => {
@@ -29,8 +38,25 @@ describe('HomeService', () => {
   });
 
   describe('getHomeInfo', () => {
-    it('should return the projects an employee has assigned and teh companies of those projects', async () => {
+    it('should return the projects an employee has assigned and the companies of those projects', async () => {
       const employeeId = randomUUID();
+
+      const accountingRole = randomUUID();
+
+      const role = {
+        title: SupportedRoles.ACCOUNTING,
+        createdAr: new Date(),
+      };
+
+      const employee = {
+        id: employeeId,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'joe.doe@email.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: accountingRole,
+      };
 
       const companyId = randomUUID();
       const companyId2 = randomUUID();
@@ -121,6 +147,10 @@ describe('HomeService', () => {
           idTask: taskId2,
         },
       ];
+
+      findEmployeeByEmail.resolves(employee);
+      findEmployeeById.resolves(employee);
+      findRoleById.resolves(role);
 
       findAllProjectsStub.resolves(existingProjects);
       findAllCompaniesStub.resolves(existingCompanies);

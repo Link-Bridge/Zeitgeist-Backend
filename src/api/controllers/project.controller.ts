@@ -48,8 +48,8 @@ async function createProject(req: Request, res: Response) {
       startDate: data.startDate,
     });
     res.status(201).json(newProject);
-  } catch (error: unknown) {
-    res.status(400).json({ message: error });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
   }
 }
 
@@ -93,20 +93,6 @@ async function getProjectsClient(req: Request, res: Response) {
   try {
     const data = await ProjectService.findProjectsClient(req.params.clientId);
     res.status(200).json({ data });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-/**
- * A function that calls the service to get all projects in the database.
- * @param req HTTP Request
- * @param res Server response
- */
-async function getAllProjects(req: Request, res: Response) {
-  try {
-    const data = await ProjectService.getAllProjects();
-    res.status(200).json({ data: data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -177,7 +163,6 @@ async function updateProjectStatus(req: Request, res: Response) {
 export const ProjectController = {
   getReportData,
   createProject,
-  getAllProjects,
   getProjectsClient,
   getProjectById,
   updateProject,

@@ -2,28 +2,40 @@ import { faker } from '@faker-js/faker';
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import { default as Sinon, default as sinon } from 'sinon';
-import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../../../utils/enums';
+import {
+  ProjectCategory,
+  ProjectPeriodicity,
+  ProjectStatus,
+  SupportedDepartments,
+  SupportedRoles,
+} from '../../../../utils/enums';
 import { ProjectEntity } from '../../../domain/entities/project.entity';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
+import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { CompanyService } from '../company.service';
 import { ProjectService } from '../project.service';
 
 describe('ProjectService', () => {
   let findProjectByIdStub: Sinon.SinonStub;
   let createProject: sinon.SinonStub;
-  let findAllStub: sinon.SinonStub;
+  let findAllByRoleStub: sinon.SinonStub;
   let findCompanyByIdStub: Sinon.SinonStub;
   let findProjectsByClientId: Sinon.SinonStub;
   let updateProjectStub: sinon.SinonStub;
   let updateProjectStatusStub: sinon.SinonStub;
+  let findEmployeeByEmail: sinon.SinonStub;
+  let findRoleById: sinon.SinonStub;
 
   beforeEach(() => {
     createProject = sinon.stub(ProjectRepository, 'createProject');
-    findAllStub = sinon.stub(ProjectRepository, 'findAll');
+    findAllByRoleStub = sinon.stub(ProjectRepository, 'findAllByRole');
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
     findProjectsByClientId = sinon.stub(ProjectRepository, 'findProjetsByClientId');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
+    findEmployeeByEmail = sinon.stub(EmployeeRepository, 'findByEmail');
+    findRoleById = sinon.stub(RoleRepository, 'findById');
   });
 
   afterEach(() => {
@@ -74,6 +86,20 @@ describe('ProjectService', () => {
     it('should create a project', async () => {
       const uuid = randomUUID();
       const clientUuid = randomUUID();
+
+      const company = {
+        id: clientUuid,
+        name: 'Zeitgeist',
+        email: 'info@zeitgeist.mx',
+        phoneNumber: '1234567890',
+        landlinePhone: '0987654321',
+        archived: false,
+        createdAt: new Date(),
+        updatedAt: null,
+        idCompanyDirectContact: null,
+        idForm: null,
+      };
+
       const projectData = {
         id: uuid,
         name: 'Nuevo Proyecto de Desarrollo',
@@ -91,6 +117,8 @@ describe('ProjectService', () => {
         createdAt: new Date('2024-04-19T01:23:49.555Z'),
         idCompany: clientUuid,
       };
+
+      findCompanyByIdStub.resolves(company);
       createProject.resolves(projectData);
       const newProject = await ProjectService.createProject(projectData);
       expect(newProject).to.equal(projectData);
@@ -99,6 +127,23 @@ describe('ProjectService', () => {
 
   describe('getAllProjects', () => {
     it('should return all projects', async () => {
+      const accountingRole = randomUUID();
+
+      const role = {
+        title: SupportedRoles.ACCOUNTING,
+        createdAr: new Date(),
+      };
+
+      const employee = {
+        id: randomUUID(),
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'joe.doe@email.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: accountingRole,
+      };
+
       const projects = [
         {
           id: randomUUID(),
@@ -113,7 +158,7 @@ describe('ProjectService', () => {
           periodicity: '1 week',
           isChargeable: true,
           isArchived: false,
-          area: 'Client',
+          area: SupportedDepartments.ACCOUNTING,
           createdAt: new Date('2024-04-19T01:23:49.555Z'),
           idCompany: randomUUID(),
         },
@@ -130,15 +175,17 @@ describe('ProjectService', () => {
           periodicity: '1 week',
           isChargeable: true,
           isArchived: false,
-          area: 'Client',
+          area: SupportedDepartments.ACCOUNTING,
           createdAt: new Date('2024-04-19T01:23:49.555Z'),
           idCompany: randomUUID(),
         },
       ];
 
-      findAllStub.resolves(projects);
+      findEmployeeByEmail.resolves(employee);
+      findRoleById.resolves(role);
+      findAllByRoleStub.resolves(projects);
 
-      const getProjects = await ProjectService.getAllProjects();
+      const getProjects = await ProjectService.getDepartmentProjects(employee.email);
 
       expect(getProjects).eql(projects);
     });
