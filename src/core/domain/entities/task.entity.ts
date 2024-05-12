@@ -80,7 +80,7 @@ export interface Task {
  * @param description: string - Description of the task
  * @param status: TaskStatus - Status of the task
  * @param startDate: Date - Start date of the task
- * @param dueDate: Date | null - Due date of the task
+ * @param endDate: Date | null - End date of the task
  * @param workedHours: number | null - Worked hours of the task
  * @param idProject: string - Project id of the task
  * @param employeeId: string - Employee id of the task
@@ -90,10 +90,10 @@ export interface BareboneTask {
   description: string;
   status: TaskStatus;
   startDate: Date;
-  dueDate: Date | null;
+  endDate: Date | null;
   workedHours: number | null;
   idProject: string;
-  idEmployee: string;
+  idEmployee: string | null;
 }
 
 /**
