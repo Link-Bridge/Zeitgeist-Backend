@@ -49,7 +49,7 @@ export interface Task {
   /**
    * @param endDate: Date - End date of the task (optional)
    */
-  endDate?: Date;
+  endDate?: Date | null;
 
   /**
    * @param workedHours: number - Hours worked on the task (optional)

@@ -34,7 +34,7 @@ const taskSchema = z.object({
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  dueDate: z.coerce.date().optional(),
+  dueDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
   idEmployee: z.string().uuid({ message: 'Invalid UUID format' }),
@@ -80,6 +80,7 @@ function validateTaskData(data: BareboneTask) {
  */
 async function createTask(req: Request, res: Response) {
   try {
+    console.log(req.body);
     const validatedTaskData = validateTaskData(req.body);
     const payloadTask = await TaskService.createTask(validatedTaskData);
 
