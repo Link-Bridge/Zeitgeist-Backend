@@ -185,7 +185,7 @@ const updatedTaskSchema = z.object({
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   idProject: z.string().optional(),
-  idEmployee: z.string(),
+  idEmployee: z.string().optional(),
 });
 
 /**
@@ -222,7 +222,10 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
-    const data = await TaskService.updateTask(idTask, validatedTaskData);
+    const data = await TaskService.updateTask(idTask, {
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!data) {
       return res.status(500).json({ message: 'An error occured while updating Task' });
