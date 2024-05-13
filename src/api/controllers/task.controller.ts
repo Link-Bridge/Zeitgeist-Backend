@@ -34,7 +34,7 @@ const taskSchema = z.object({
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  endDate: z.coerce.date().optional(),
+  dueDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
   idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
@@ -62,7 +62,7 @@ function validateTaskData(data: BareboneTask) {
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
-    endDate: bodyTask.endDate || null,
+    endDate: bodyTask.dueDate || null,
     idEmployee: bodyTask.idEmployee,
   };
 }

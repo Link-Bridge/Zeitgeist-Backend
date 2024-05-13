@@ -102,7 +102,7 @@ describe('Task Service', () => {
     description: createdTask.description,
     status: createdTask.status,
     startDate: createdTask.startDate,
-    endDate: createdTask.endDate,
+    endDate: createdTask.endDate ?? undefined,
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
     idEmployee: randomUUID(),
