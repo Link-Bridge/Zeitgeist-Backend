@@ -102,7 +102,7 @@ describe('Task Service', () => {
     description: createdTask.description,
     status: createdTask.status,
     startDate: createdTask.startDate,
-    endDate: createdTask.endDate,
+    endDate: createdTask.endDate ?? undefined,
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
     idEmployee: randomUUID(),
@@ -354,9 +354,10 @@ describe('Task Service', () => {
     it('Should throw an error if the EmployeeTask could not be created', async () => {
       findTaskByIdStub.resolves({ id: createdTask.id });
       validateEmployeeTaskStub.resolves(null);
+      const invalidEmployeeTask = { ...updatedEmployeeTask, idEmployee: '' };
 
       try {
-        await TaskService.updateTask(createdTask.id, updatedTask);
+        await TaskService.updateTask(createdTask.id, invalidEmployeeTask);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Error assigning a task to an employee');
       }
