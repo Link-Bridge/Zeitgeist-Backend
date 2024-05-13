@@ -53,7 +53,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       description: newTask.description,
       status: newTask.status,
       startDate: newTask.startDate,
-      endDate: newTask.dueDate,
+      endDate: newTask.endDate,
       workedHours: newTask.workedHours ?? undefined,
       createdAt: new Date(),
       idProject: newTask.idProject,
@@ -64,22 +64,21 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Task already exists');
     }
 
-    const employee = await EmployeeRepository.findById(newTask.idEmployee);
-
-    if (!employee) {
-      throw new NotFoundError('Employee');
-    }
-
-    const newEmployeeTask: EmployeeTask = {
-      id: randomUUID(),
-      createdAt: new Date(),
-      idEmployee: employee.id,
-      idTask: createdTask.id as string,
-    };
-
-    const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
-    if (!assignedTask) {
-      throw new Error('Error assigning a task to an employee');
+    if (newTask.idEmployee) {
+      const employee = await EmployeeRepository.findById(newTask.idEmployee);
+      if (!employee) {
+        throw new NotFoundError('Employee');
+      }
+      const newEmployeeTask: EmployeeTask = {
+        id: randomUUID(),
+        createdAt: new Date(),
+        idEmployee: employee.id,
+        idTask: createdTask.id as string,
+      };
+      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+      if (!assignedTask) {
+        throw new Error('Error assigning a task to an employee');
+      }
     }
 
     return createdTask;

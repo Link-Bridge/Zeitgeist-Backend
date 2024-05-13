@@ -34,10 +34,10 @@ const taskSchema = z.object({
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  dueDate: z.coerce.date().nullable(),
+  endDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
+  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
-  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }),
 });
 
 const idSchema = z.object({
@@ -62,8 +62,8 @@ function validateTaskData(data: BareboneTask) {
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
-    dueDate: bodyTask.dueDate || null,
-    employeeId: bodyTask.idEmployee,
+    endDate: bodyTask.endDate || null,
+    idEmployee: bodyTask.idEmployee,
   };
 }
 
@@ -82,7 +82,10 @@ async function createTask(req: Request, res: Response) {
   try {
     console.log(req.body);
     const validatedTaskData = validateTaskData(req.body);
-    const payloadTask = await TaskService.createTask(validatedTaskData);
+    const payloadTask = await TaskService.createTask({
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
