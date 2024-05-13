@@ -9,16 +9,16 @@ const idSchema = z.object({
 });
 
 const createProjectRequestSchema = z.object({
-  projectName: z.string(),
-  client: z.string().uuid({ message: 'Please provide valid UUID' }),
+  name: z.string(),
+  idCompany: z.string().uuid({ message: 'Please provide valid UUID' }),
   category: z.nativeEnum(ProjectCategory),
   matter: z.string().optional(),
   description: z.string().optional(),
   status: z.nativeEnum(ProjectStatus),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable(),
-  periodic: z.nativeEnum(ProjectPeriodicity),
-  chargable: z.boolean(),
+  periodicity: z.nativeEnum(ProjectPeriodicity),
+  isChargeable: z.boolean(),
   area: z.nativeEnum(SupportedDepartments),
 });
 
@@ -35,22 +35,21 @@ async function createProject(req: Request, res: Response) {
   try {
     const data = createProjectRequestSchema.parse(req.body);
     const newProject = await ProjectService.createProject({
-      name: data.projectName,
+      name: data.name,
       matter: data.matter || null,
       description: data.description || null,
       area: data.area,
       status: data.status,
       category: data.category,
       endDate: data.endDate || null,
-      idCompany: data.client,
-      isChargeable: data.chargable,
-      periodicity: data.periodic,
+      idCompany: data.idCompany,
+      isChargeable: data.isChargeable,
+      periodicity: data.periodicity,
       startDate: data.startDate,
     });
     res.status(201).json(newProject);
-  } catch (error: unknown) {
-    console.error(error);
-    res.status(400).json({ message: error });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
   }
 }
 
@@ -66,14 +65,18 @@ async function getReportData(req: Request, res: Response) {
 
     if (req.query.date) {
       const { date } = reportRequestSchema.parse({ date: req.query.date });
-      data = await ProjectReportService.getReport(id, date);
+      data = await ProjectReportService.getReport(id, req.body.auth.email, date);
     } else {
-      data = await ProjectReportService.getReport(id);
+      data = await ProjectReportService.getReport(id, req.body.auth.email);
     }
 
     res.status(200).json(data);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 
@@ -96,13 +99,13 @@ async function getProjectsClient(req: Request, res: Response) {
 }
 
 /**
- * A function that calls the service to get all projects in the database.
- * @param req HTTP Request
- * @param res Server response
+ * Retrieves all projects from a certain department
+ * @param req An HTTP Request
+ * @param res An HTTP Response
  */
-async function getAllProjects(req: Request, res: Response) {
+async function getDepartmentProjects(req: Request, res: Response) {
   try {
-    const data = await ProjectService.getAllProjects();
+    const data = await ProjectService.getDepartmentProjects(req.body.auth.email);
     res.status(200).json({ data: data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -126,4 +129,43 @@ async function getProjectById(req: Request, res: Response) {
   }
 }
 
-export const ProjectController = { getReportData, createProject, getAllProjects, getProjectsClient, getProjectById };
+/**
+ * Recives a request to update a project data
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateProject(req: Request, res: Response) {
+  try {
+    const projectData = req.body;
+    const updatedProject = await ProjectService.updateProject(projectData);
+    res.status(200).json({ data: updatedProject });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
+ * A function that updates a project status
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateProjectStatus(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const { status } = req.body;
+    await ProjectService.updateProjectStatus(id, status);
+    res.status(200).json({ message: 'Project status updated' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const ProjectController = {
+  getReportData,
+  createProject,
+  getProjectsClient,
+  getProjectById,
+  updateProject,
+  updateProjectStatus,
+  getDepartmentProjects,
+};

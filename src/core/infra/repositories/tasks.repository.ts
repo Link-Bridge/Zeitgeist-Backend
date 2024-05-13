@@ -1,9 +1,27 @@
 import { Prisma } from '../../..';
-import { Task } from '../../domain/entities/task.entity';
+import { TaskStatus } from '../../../utils/enums';
+import { Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapTaskEntityFromDbModel } from '../mappers/task-entity-from-db-model-mapper';
 
 const RESOURCE_NAME = 'Task';
+
+/**
+ * Finds all tasks in the database
+ * @version 1.0.0
+ * @returns {Promise<Task[]>} a promise taht resolves to an array of tasks
+ */
+
+async function findAll(): Promise<Task[]> {
+  try {
+    const data = await Prisma.task.findMany();
+    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return data.map(mapTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
 
 /**
  * Finds a task by its id.
@@ -26,6 +44,34 @@ async function findTaskById(id: string): Promise<Task> {
     return mapTaskEntityFromDbModel(existingTask);
   } catch (error) {
     throw new Error(`Failed to find task on ${RESOURCE_NAME} with id ${id}`);
+  }
+}
+
+/**
+ * Finds an array of tasks based of an array of tasks id.
+ *
+ * @param tasksId: string[] - Array of tasks id.
+ * @returns {Promise<Task[]>} - Array of tasks found.
+ *
+ * @throws {Error} - If an error occurs when finding the tasks.
+ */
+async function findTasksById(tasksId: string[]): Promise<Task[]> {
+  try {
+    const data = await Prisma.task.findMany({
+      where: {
+        id: {
+          in: tasksId,
+        },
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
 
@@ -65,8 +111,7 @@ async function createTask(newTask: Task): Promise<Task | null> {
       });
 
       return mapTaskEntityFromDbModel(createdTask);
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error: unknown) {
       throw new Error(`Failed to create task on ${RESOURCE_NAME}`);
     }
   });
@@ -102,4 +147,130 @@ async function findTasksByProjectId(idProject: string): Promise<Task[]> {
   }
 }
 
-export const TaskRepository = { createTask, findTasksByProjectId, findTaskById };
+/**
+ * Deletes a task from the database.
+ *
+ * @param id: string - Task id.
+ * @returns {Promise<void>} - If the task is deleted.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ */
+async function deleteTaskById(id: string): Promise<void> {
+  try {
+    await Prisma.task.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
+ * @brief Updates a task in the database.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTask(id: string, task: UpdatedTask): Promise<boolean> {
+  try {
+    const updatedTask = await Prisma.task.update({
+      where: {
+        id: id,
+      },
+      data: {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        start_date: task.startDate,
+        end_date: task.endDate,
+        worked_hours: Number(task.workedHours),
+        updated_at: new Date(),
+        id_project: task.idProject,
+      },
+    });
+
+    if (!updatedTask) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task on ${RESOURCE_NAME}`);
+  }
+}
+
+/**
+ * @brief Updates a task in the database.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boolean> {
+  try {
+    const updatedTaskStatus = await Prisma.task.update({
+      where: {
+        id: idTask,
+      },
+      data: {
+        status: status,
+        updated_at: new Date(),
+      },
+    });
+
+    if (!updatedTaskStatus) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task status`);
+  }
+}
+
+/**
+ * @brief Updates the endDate of a task.
+ *
+ * @param task: UpdatedTask - Updated task.
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskEndDate(idTask: string, endDate: Date): Promise<boolean> {
+  try {
+    const updatedTaskEndDate = await Prisma.task.update({
+      where: {
+        id: idTask,
+      },
+      data: {
+        end_date: endDate,
+        updated_at: new Date(),
+      },
+    });
+
+    if (!updatedTaskEndDate) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to update task end date`);
+  }
+}
+
+export const TaskRepository = {
+  findAll,
+  createTask,
+  findTasksByProjectId,
+  findTaskById,
+  findTasksById,
+  deleteTaskById,
+  updateTask,
+  updateTaskStatus,
+  updateTaskEndDate,
+};

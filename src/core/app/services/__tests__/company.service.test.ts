@@ -1,26 +1,26 @@
-import { Decimal } from '@prisma/client/runtime/library';
+import { faker } from '@faker-js/faker';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { SupportedDepartments } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
-import { ProjectRepository } from '../../../infra/repositories/project.repository';
 import { CompanyService } from '../company.service';
 
 chai.use(chaiAsPromised);
 
 describe('CompanyService', () => {
   let findAllCompaniesStub: sinon.SinonStub;
-  let findAllProjectsStub: sinon.SinonStub;
   let updateCompanyStub: sinon.SinonStub;
   let findCompanyByIdStub: sinon.SinonStub;
+  let archiveClientdStub: sinon.SinonStub;
+  let getArchivedStatusStub: sinon.SinonStub;
 
   beforeEach(() => {
-    findAllProjectsStub = sinon.stub(ProjectRepository, 'findAll');
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
     updateCompanyStub = sinon.stub(CompanyRepository, 'update');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
+    archiveClientdStub = sinon.stub(CompanyRepository, 'archiveClient');
+    getArchivedStatusStub = sinon.stub(CompanyRepository, 'getArchivedStatus');
   });
 
   afterEach(() => {
@@ -29,7 +29,6 @@ describe('CompanyService', () => {
 
   it('should return an array of all companies', async () => {
     const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
     findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
@@ -40,26 +39,12 @@ describe('CompanyService', () => {
 
   it('should match the name of the companies', async () => {
     const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
     findAllCompaniesStub.resolves(mockData.existingCompanies);
 
     const res = await CompanyService.findAll();
 
     expect(res[0].name).to.equal('Zeitgeist');
     expect(res[1].name).to.equal('Microsoft');
-  });
-
-  it('should update legal, accounting, chargeable hours, and total projects', async () => {
-    const mockData = prepareMockData();
-    findAllProjectsStub.resolves(mockData.existingProjects);
-    findAllCompaniesStub.resolves(mockData.existingCompanies);
-
-    const res = await CompanyService.findAll();
-
-    expect(res[0].legalHours).to.eql(new Decimal(10));
-    expect(res[0].accountingHours).to.eql(new Decimal(5));
-    expect(res[0].chargeableHours).to.eql(new Decimal(15));
-    expect(res[0].totalProjects).to.eql(2);
   });
 
   it('should update a company and return the updated entity', async () => {
@@ -70,6 +55,34 @@ describe('CompanyService', () => {
     const result = await CompanyService.update(fakeCompany.updatePayload);
 
     expect(result).to.deep.equal(fakeCompany.updated);
+  });
+
+  it('should update the archived status of a company', async () => {
+    const idCompany1 = randomUUID();
+    const company = {
+      id: idCompany1,
+      name: faker.company.name(), // Usar Faker para generar un nombre de empresa falso
+      email: faker.internet.email(), // Usar Faker para generar un correo electrónico falso
+      phoneNumber: faker.phone.number().toString(), // Usar Faker para generar un número de teléfono falso
+      landlinePhone: faker.phone.number().toString(),
+      archived: false,
+      createdAt: new Date(),
+      updatedAt: null,
+      idCompanyDirectContact: null,
+      idForm: null,
+    };
+
+    findCompanyByIdStub.resolves(company);
+    getArchivedStatusStub.resolves(company.archived);
+    archiveClientdStub.resolves({ ...company, archived: !company.archived });
+
+    const updatedCompany = await CompanyService.archiveClient(idCompany1);
+
+    expect(findCompanyByIdStub.calledOnceWith(idCompany1)).to.be.false;
+    expect(getArchivedStatusStub.calledOnceWith(idCompany1)).to.be.true;
+
+    expect(archiveClientdStub.calledOnceWith(idCompany1, company.archived)).to.be.false;
+    expect(updatedCompany.archived).to.be.true;
   });
 
   it('should get a single company', async () => {
@@ -131,34 +144,7 @@ function prepareMockData() {
     },
   ];
 
-  const existingProjects = [
-    {
-      id: randomUUID(),
-      name: 'Zeitgeist P1',
-      description: 'Desc',
-      status: 'Not started',
-      startDate: new Date(),
-      totalHours: 10,
-      isChargeable: true,
-      area: SupportedDepartments.LEGAL,
-      createdAt: new Date(),
-      idCompany: idCompany1,
-    },
-    {
-      id: randomUUID(),
-      name: 'Zeitgeist P2',
-      description: 'Desc',
-      status: 'Not started',
-      startDate: new Date(),
-      totalHours: 5,
-      isChargeable: true,
-      area: SupportedDepartments.ACCOUNTING,
-      createdAt: new Date(),
-      idCompany: idCompany1,
-    },
-  ];
-
-  return { existingCompanies, existingProjects };
+  return { existingCompanies };
 }
 
 function prepareSingleFakeCompany() {

@@ -1,5 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '../../..';
+import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -7,22 +8,55 @@ import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-m
 const RESOURCE_NAME = 'Project info';
 
 /**
- * Finds all company entities in the database
- * @version 1.0.0
- * @returns {Promise<ProjectEntity[]>} a promise taht resolves to an array of company entities
+ * Retrieves all projects from a certain role, done projects appear last
+ * @param role The role from the requester
+ * @returns All the projects from the role's department
  */
-
-async function findAll(): Promise<ProjectEntity[]> {
+async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
   try {
-    const data = await Prisma.project.findMany();
-    if (!data) throw new NotFoundError(`${RESOURCE_NAME} error`);
+    type PrismaProjectsRes = ReturnType<typeof Prisma.project.findMany>;
+    let projects: PrismaProjectsRes;
+    let doneProjects: PrismaProjectsRes;
+    let res: Awaited<PrismaProjectsRes>;
 
-    return data.map(mapProjectEntityFromDbModel);
+    if (role === SupportedRoles.ADMIN) {
+      projects = Prisma.project.findMany({
+        where: {
+          NOT: { status: ProjectStatus.DONE },
+        },
+        orderBy: { status: 'desc' },
+      });
+      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
+      res = (await Promise.all([projects, doneProjects])).flat();
+    } else {
+      projects = Prisma.project.findMany({
+        where: {
+          area: role,
+          NOT: { status: ProjectStatus.DONE },
+        },
+        orderBy: { status: 'desc' },
+      });
+      doneProjects = Prisma.project.findMany({
+        where: {
+          status: ProjectStatus.DONE,
+          area: role,
+        },
+        orderBy: { status: 'desc' },
+      });
+      res = (await Promise.all([projects, doneProjects])).flat();
+    }
+    if (!res) throw new NotFoundError(`${RESOURCE_NAME} error`);
+
+    return res.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
-
+/**
+ * Finds a project status by id
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity>} a promise that resolves in a string with the project status
+ */
 async function findProjectStatusById(id: string) {
   try {
     const data = await Prisma.project.findUnique({
@@ -44,6 +78,11 @@ async function findProjectStatusById(id: string) {
   }
 }
 
+/**
+ * Finds a project by id
+ * @version 1.0.0
+ * @returns {Promise<ProjectEntity>} a promise that resolves in a project entity.
+ */
 async function findById(id: string): Promise<ProjectEntity> {
   try {
     const data = await Prisma.project.findUnique({
@@ -113,4 +152,65 @@ async function createProject(entity: ProjectEntity): Promise<ProjectEntity> {
   return mapProjectEntityFromDbModel(createData);
 }
 
-export const ProjectRepository = { findAll, findProjectStatusById, findById, findProjetsByClientId, createProject };
+/**
+ * A function that calls the Prisma interface to update a project
+ * @param {ProjectEntity} project data to update
+ * @returns {Promise<ProjectEntity>} project updated
+ * @throws {Error}
+ */
+async function updateProject(project: ProjectEntity): Promise<ProjectEntity> {
+  try {
+    const updatedProject = await Prisma.project.update({
+      where: {
+        id: project.id,
+      },
+      data: {
+        name: project.name,
+        id_company: project.idCompany,
+        category: project.category,
+        matter: project.matter,
+        description: project.description,
+        start_date: project.startDate,
+        end_date: project.endDate,
+        periodicity: project.periodicity,
+        area: project.area,
+        is_chargeable: project.isChargeable,
+        is_archived: project.isArchived ? project.isArchived : false,
+        status: project.status,
+        created_at: project.createdAt,
+        payed: project.payed,
+      },
+    });
+    return mapProjectEntityFromDbModel(updatedProject);
+  } catch (error: any) {
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+/**
+ * A function that updates the project status into data base
+ * @param projectId ID of the project status to update
+ * @param newStatus New project status
+ * @returns {Promise<ProjectStatus>} the status updated
+ */
+async function updateProjectStatus(projectId: string, newStatus: ProjectStatus): Promise<ProjectStatus> {
+  try {
+    await Prisma.project.update({
+      where: { id: projectId },
+      data: { status: newStatus },
+    });
+    return newStatus;
+  } catch (error) {
+    throw new Error('Error updating project status');
+  }
+}
+
+export const ProjectRepository = {
+  findProjectStatusById,
+  findById,
+  findProjetsByClientId,
+  createProject,
+  updateProject,
+  updateProjectStatus,
+  findAllByRole,
+};

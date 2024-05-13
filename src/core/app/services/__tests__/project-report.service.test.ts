@@ -7,6 +7,7 @@ import { CompanyRepository } from '../../../infra/repositories/company.repositor
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { ProjectReportService } from '../project-report.service';
 
@@ -18,6 +19,7 @@ describe('ProjectReportService', () => {
   let findAllEmployeesStub: sinon.SinonStub;
   let findAllEmployeeTaskStub: sinon.SinonStub;
   let findTasksByProjectIdStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
@@ -25,6 +27,7 @@ describe('ProjectReportService', () => {
     findAllEmployeesStub = sinon.stub(EmployeeRepository, 'findAll');
     findAllEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'findAll');
     findTasksByProjectIdStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {
@@ -57,6 +60,13 @@ describe('ProjectReportService', () => {
         idCompany: companyId,
       };
 
+      const roleId = randomUUID();
+      const existingRole = {
+        id: roleId,
+        title: 'Admin',
+        createdAt: new Date(),
+      };
+
       const employeeId = randomUUID();
       const existingEmployee = {
         id: employeeId,
@@ -65,7 +75,7 @@ describe('ProjectReportService', () => {
         email: 'john.doe@example.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
-        idRole: randomUUID(),
+        idRole: roleId,
       };
 
       const taskId = randomUUID();
@@ -93,6 +103,7 @@ describe('ProjectReportService', () => {
       findAllEmployeesStub.resolves([existingEmployee]);
       findAllEmployeeTaskStub.resolves([existingEmployeeTask]);
       findTasksByProjectIdStub.resolves([existingTask]);
+      findRoleByEmailStub.resolves(existingRole);
 
       const existingReport = {
         project: { ...existingProject, companyName: existingCompany.name },
@@ -115,7 +126,7 @@ describe('ProjectReportService', () => {
         },
       };
 
-      const result = await ProjectReportService.getReport(projectId);
+      const result = await ProjectReportService.getReport(projectId, existingEmployee.email);
 
       expect(result).to.eql(existingReport);
       expect(findProjectByIdStub.calledOnce).to.be.true;
@@ -123,13 +134,14 @@ describe('ProjectReportService', () => {
       expect(findTasksByProjectIdStub.calledOnce).to.be.true;
       expect(findAllEmployeesStub.calledOnce).to.be.true;
       expect(findAllEmployeeTaskStub.calledOnce).to.be.true;
+      expect(findRoleByEmailStub.calledOnce).to.be.true;
     });
 
     it('should throw an error if the project id does not exist', async () => {
       const errorMessage = 'An unexpected error occurred';
       findProjectByIdStub.rejects(new Error(errorMessage));
 
-      await expect(ProjectReportService.getReport(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+      await expect(ProjectReportService.getReport(randomUUID(), '')).to.be.rejectedWith(Error, errorMessage);
     });
   });
 });

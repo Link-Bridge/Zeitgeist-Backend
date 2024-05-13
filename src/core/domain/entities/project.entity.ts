@@ -1,4 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { Task } from './task.entity';
 
 /**
  * @brief This class is used to define the structure of the Project entity
@@ -14,6 +15,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  * @param totalHours?: Decimal - Project total hours (optional)
  * @param periodicity?: string - Project periodicity (optional)
  * @param isChargeable?: boolean - Determines whether the project is chargeable or not (optional)
+ * @param isArchived?: boolean - Determines whether the project can be archived or not (optional)
  * @param area?: string - Project area (optional)
  * @param createdAt: Date - Project creation date
  * @param updatedAt?: Date - Project update date (optional)
@@ -70,6 +72,10 @@ export interface ProjectEntity {
    */
   isChargeable?: boolean | null;
   /**
+   * @param isArchived: boolean - Determines whether the project is chargeable or not
+   */
+  isArchived?: boolean | null;
+  /**
    * @param area: string - Project area
    */
   area?: string;
@@ -85,4 +91,13 @@ export interface ProjectEntity {
    * @param idCompany: string - Id for project company
    */
   idCompany: string;
+  /**
+   * @param payed: boolean - indicates if the project has been paid
+   */
+  payed?: boolean;
+
+  /**
+   * @param task?: Task[] - Project tasks array
+   */
+  task?: Task[];
 }

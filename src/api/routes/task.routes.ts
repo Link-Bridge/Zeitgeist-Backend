@@ -5,22 +5,13 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.post(
-  '/create',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  TaskController.createTask
-);
-
-router.get(
-  '/:id',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  TaskController.findTaskById
-);
-
-router.get(
-  '/project/:idProject',
-  checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]),
-  TaskController.getTasksFromProject
-);
+router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
+router.get('/project/:idProject', TaskController.getTasksFromProject);
+router.get('/employee/:idEmployee', TaskController.findTasksByEmployeeId);
+router.get('/:id', TaskController.findTaskById);
+router.post('/create', TaskController.createTask);
+router.put('/update/:id', TaskController.updateTask);
+router.put('/update/status/:id', TaskController.updateTaskStatus);
+router.delete('/delete/:id', TaskController.deleteTask);
 
 export { router as TaskRouter };

@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
+import { TaskStatus } from '../../../utils/enums';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
-import { BareboneTask, Task } from '../../domain/entities/task.entity';
+import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -28,7 +29,6 @@ async function getTasksFromProject(projectId: string): Promise<Task[]> {
 
 /**
  * Creates a new task using the repository.
- * Creates a new task using the payload from the client.
  * The task is created only if the project ID is valid and the relationship
  * between task and employee is created.
  *
@@ -123,4 +123,136 @@ async function findUnique(id: string): Promise<TaskDetail> {
   }
 }
 
-export const TaskService = { createTask, findUnique, getTasksFromProject };
+/**
+ * Finds all the assigned tasks to an employee
+ *
+ * @param employeeId: string - Employee id.
+ * @returns {Promise<TaskDetail[]>} - Array of tasks assigned to the employee.
+ *
+ * @throws {Error} - If an error occurs when finding the tasks.
+ * @throws {NotFoundError} - If the employee is not found.
+ * @throws {NotFoundError} - If the task is not found.
+ * @throws {Error} - If an error occurs when looking for the task.
+ */
+async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
+  try {
+    if ((await EmployeeRepository.findById(employeeId)) === null) {
+      throw new NotFoundError('Employee');
+    }
+
+    const employeeTasks = await EmployeeTaskRepository.findByEmployeeId(employeeId);
+
+    if (!employeeTasks) {
+      throw new NotFoundError('Task assigned to employee');
+    }
+
+    const tasksId = employeeTasks.map(task => task.idTask);
+    const tasks = await TaskRepository.findTasksById(tasksId);
+
+    return tasks;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+/**
+ * Deletes a task using the repository.
+ *
+ * @param id: string - Task id.
+ *
+ * @throws {Error} - If an error occurs when deleting the task.
+ * @throws {NotFoundError} - If the task is not found.
+ */
+
+async function deleteTask(id: string): Promise<void> {
+  try {
+    if ((await TaskRepository.findTaskById(id)) === null) {
+      throw new NotFoundError('Task');
+    }
+
+    await EmployeeTaskRepository.deleteByTaskId(id);
+    await TaskRepository.deleteTaskById(id);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+/**
+ * @brief Updates a task using the repository.
+ *
+ * @param id: string - Task to be updated.
+ * @param task: UpdatedTask - Task to be updated.
+ *
+ * @returns {Promise<Boolean>} - True if the task was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
+  try {
+    if ((await TaskRepository.findTaskById(idTask)) === null) {
+      throw new Error('Task ID is not valid');
+    }
+
+    const status = task.status;
+    if (status === TaskStatus.DONE) {
+      task.endDate = new Date();
+    }
+
+    const newEmployeeTask: EmployeeTask = {
+      id: randomUUID(),
+      createdAt: new Date(),
+      idEmployee: task.idEmployee,
+      idTask: idTask,
+    };
+
+    const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(idTask);
+
+    if (!taskIsAssignedAlready) {
+      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+      if (!assignedTask) {
+        throw new Error('Error assigning a task to an employee');
+      }
+    } else if (taskIsAssignedAlready) {
+      await EmployeeTaskRepository.deleteByTaskId(idTask);
+      await EmployeeTaskRepository.create(newEmployeeTask);
+    }
+
+    const updatedTask = await TaskRepository.updateTask(idTask, task);
+    return updatedTask;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+/**
+ * @brief Updates the status of a task using the repository.
+ *
+ * @param id: string - Task to be updated.
+ * @param status: TaskStatus - Status to be updated.
+ *
+ * @returns {Promise<Boolean>} - True if the task status was updated.
+ *
+ * @throws {Error} - If an error occurs when updating the task.
+ */
+async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boolean> {
+  try {
+    if (status === TaskStatus.DONE) {
+      await TaskRepository.updateTaskEndDate(idTask, new Date());
+    }
+
+    await TaskRepository.updateTaskStatus(idTask, status);
+    return true;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export const TaskService = {
+  createTask,
+  findUnique,
+  getTasksFromProject,
+  getTasksAssignedToEmployee,
+  deleteTask,
+  updateTask,
+  updateTaskStatus,
+};

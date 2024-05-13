@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { SupportedRoles } from '../../utils/enums';
-import { getAllRoles, updateUserRole } from '../controllers/admin.controller';
+import { archiveClient, getAllRoles, updateUserRole } from '../controllers/admin.controller';
 import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
-router.put('/role', checkAuthRole([SupportedRoles.ADMIN]), updateUserRole);
-router.get('/roles', checkAuthRole([SupportedRoles.ADMIN]), getAllRoles);
+router.use(checkAuthRole([SupportedRoles.ADMIN]));
+router.get('/roles', getAllRoles);
+router.put('/role', updateUserRole);
+router.put('/archive/:id', archiveClient);
 
 export { router as AdminRouter };
