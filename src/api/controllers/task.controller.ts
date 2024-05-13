@@ -34,7 +34,7 @@ const taskSchema = z.object({
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  dueDate: z.coerce.date().nullable(),
+  endDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
   idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
@@ -62,7 +62,7 @@ function validateTaskData(data: BareboneTask) {
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
-    endDate: bodyTask.dueDate || null,
+    endDate: bodyTask.endDate || null,
     idEmployee: bodyTask.idEmployee,
   };
 }
@@ -185,7 +185,7 @@ const updatedTaskSchema = z.object({
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   idProject: z.string().optional(),
-  idEmployee: z.string(),
+  idEmployee: z.string().optional(),
 });
 
 /**
@@ -222,7 +222,10 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
-    const data = await TaskService.updateTask(idTask, validatedTaskData);
+    const data = await TaskService.updateTask(idTask, {
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!data) {
       return res.status(500).json({ message: 'An error occured while updating Task' });

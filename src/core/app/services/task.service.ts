@@ -197,23 +197,27 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       task.endDate = new Date();
     }
 
-    const newEmployeeTask: EmployeeTask = {
-      id: randomUUID(),
-      createdAt: new Date(),
-      idEmployee: task.idEmployee,
-      idTask: idTask,
-    };
-
-    const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(idTask);
-
-    if (!taskIsAssignedAlready) {
-      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
-      if (!assignedTask) {
-        throw new Error('Error assigning a task to an employee');
+    if (task.idEmployee !== '') {
+      const employee = await EmployeeRepository.findById(task.idEmployee);
+      if (!employee) {
+        throw new NotFoundError('Employee');
       }
-    } else if (taskIsAssignedAlready) {
-      await EmployeeTaskRepository.deleteByTaskId(idTask);
-      await EmployeeTaskRepository.create(newEmployeeTask);
+      const newEmployeeTask: EmployeeTask = {
+        id: randomUUID(),
+        createdAt: new Date(),
+        idEmployee: task.idEmployee,
+        idTask: idTask,
+      };
+      const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(idTask);
+      if (!taskIsAssignedAlready) {
+        const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+        if (!assignedTask) {
+          throw new Error('Error assigning a task to an employee');
+        }
+      } else if (taskIsAssignedAlready) {
+        await EmployeeTaskRepository.deleteByTaskId(idTask);
+        await EmployeeTaskRepository.create(newEmployeeTask);
+      }
     }
 
     const updatedTask = await TaskRepository.updateTask(idTask, task);
