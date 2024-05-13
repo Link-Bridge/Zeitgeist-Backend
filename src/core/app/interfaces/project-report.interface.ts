@@ -26,7 +26,7 @@ export interface Task {
   status: string;
   waitingFor?: string;
   startDate: Date;
-  endDate?: Date;
+  endDate?: Date | null;
   workedHours?: number;
   createdAt: Date;
   updatedAt?: Date;
