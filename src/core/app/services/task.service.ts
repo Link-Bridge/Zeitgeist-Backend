@@ -53,7 +53,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       description: newTask.description,
       status: newTask.status,
       startDate: newTask.startDate,
-      endDate: newTask.endDate,
+      endDate: newTask.dueDate,
       workedHours: newTask.workedHours ?? undefined,
       createdAt: new Date(),
       idProject: newTask.idProject,
