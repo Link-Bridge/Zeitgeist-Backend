@@ -34,7 +34,7 @@ const taskSchema = z.object({
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  endDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
   idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
