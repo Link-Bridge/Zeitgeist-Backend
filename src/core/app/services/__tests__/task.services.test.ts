@@ -8,6 +8,7 @@ import { BareboneTask, Task, UpdatedTask } from '../../../domain/entities/task.e
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
 
@@ -387,12 +388,14 @@ describe('TaskService', () => {
   let findProjectByIdStub: sinon.SinonStub;
   let findEmployeeByIdStub: sinon.SinonStub;
   let findAllEmployeeTaskStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
     findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
     findEmployeeByIdStub = sinon.stub(EmployeeRepository, 'findById');
     findAllEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'findAll');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {
@@ -413,6 +416,13 @@ describe('TaskService', () => {
         idCompany: randomUUID(),
       };
 
+      const roleId = randomUUID();
+      const existingRole = {
+        id: roleId,
+        title: 'Admin',
+        createdAt: new Date(),
+      };
+
       const employeeId = randomUUID();
       const existingEmployee = {
         id: employeeId,
@@ -421,7 +431,7 @@ describe('TaskService', () => {
         email: 'john.doe@example.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
-        idRole: randomUUID(),
+        idRole: roleId,
       };
 
       const taskId = randomUUID();
@@ -457,21 +467,23 @@ describe('TaskService', () => {
       findProjectByIdStub.resolves(existingProject);
       findEmployeeByIdStub.resolves(existingEmployee);
       findAllEmployeeTaskStub.resolves(existingEmployeeTask);
+      findRoleByEmailStub.resolves(existingRole);
 
-      const result = await TaskService.findUnique(taskId);
+      const result = await TaskService.findUnique(taskId, existingEmployee.email);
 
       expect(result).to.eql(taskDetail);
       expect(findTaskByIdStub.calledOnce).to.be.true;
       expect(findProjectByIdStub.calledOnce).to.be.true;
       expect(findEmployeeByIdStub.calledOnce).to.be.true;
       expect(findAllEmployeeTaskStub.calledOnce).to.be.true;
+      expect(findRoleByEmailStub.calledOnce).to.be.true;
     });
 
     it('should throw an error if the task id does not exist', async () => {
       const errorMessage = 'An unexpected error occurred';
       findTaskByIdStub.rejects(new Error(errorMessage));
 
-      await expect(TaskService.findUnique(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+      await expect(TaskService.findUnique(randomUUID(), randomUUID())).to.be.rejectedWith(Error, errorMessage);
     });
   });
 });
