@@ -122,7 +122,7 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     matter: body.matter ?? project.matter,
     description: body.description ?? project.description,
     startDate: body.startDate ?? project.startDate,
-    endDate: body.endDate ?? project.endDate,
+    endDate: body.endDate ?? null,
     periodicity: body.periodicity ?? project.periodicity,
     area: body.area ?? project.area,
     payed: body.payed,
