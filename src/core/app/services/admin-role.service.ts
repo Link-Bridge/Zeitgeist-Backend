@@ -1,12 +1,31 @@
 import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { RoleEntity } from '../../domain/entities/role.entity';
+import { NotFoundError } from '../../errors/not-found.error';
+import { DepartmentRepository } from '../../infra/repositories/department.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
 
-// Async function to update the role of a user
-async function updateUserRole(userId: string, roleId: string): Promise<EmployeeEntity> {
+/**
+ * Updates the role of an employee with the given user ID
+ *
+ * @param userId: string - The ID of the user to update
+ * @param roleId: string - The ID of the role to update
+ * @param departmentId: string - The ID of the department to update
+ *
+ * @returns EmployeeEntity - The updated employee
+ *
+ * @throws Error - If the department is not found
+ */
+async function updateUserRole(userId: string, roleId: string, departmentId: string): Promise<EmployeeEntity> {
   try {
-    return await EmployeeRepository.updateRoleById(userId, roleId);
+    const data = await EmployeeRepository.updateRoleById(userId, roleId);
+    const department = await DepartmentRepository.updateDepartmentByEmployeeId(userId, departmentId);
+
+    if (!department) {
+      throw new NotFoundError('Department');
+    }
+
+    return data;
   } catch (error: any) {
     throw new Error('An unexpected error occurred');
   }
