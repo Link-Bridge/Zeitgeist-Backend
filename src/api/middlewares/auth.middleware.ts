@@ -24,6 +24,6 @@ export const checkAuthToken = (req: Request, res: Response, next: NextFunction) 
       next();
     })
     .catch(() => {
-      res.status(403).json({ message: 'Expired or invalid token' });
+      res.status(401).json({ message: 'Expired or invalid token' });
     });
 };
