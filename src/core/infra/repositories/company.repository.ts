@@ -16,8 +16,8 @@ async function findAll(): Promise<CompanyEntity[]> {
       SELECT c.*, 
       COUNT(DISTINCT p.id) as total_projects,
       SUM(CASE WHEN p.is_chargeable THEN t.worked_hours ELSE 0 END) AS chargeable_hours,
-      SUM(CASE WHEN p.is_chargeable AND p.area='ACCOUNTING' THEN t.worked_hours ELSE 0 END) AS accounting_hours,
-      SUM(CASE WHEN p.is_chargeable AND p.area='LEGAL' THEN t.worked_hours ELSE 0 END) AS legal_hours
+      SUM(CASE WHEN p.is_chargeable AND p.area='Accounting' THEN t.worked_hours ELSE 0 END) AS accounting_hours,
+      SUM(CASE WHEN p.is_chargeable AND p.area='Legal' THEN t.worked_hours ELSE 0 END) AS legal_hours
       FROM company c
       LEFT JOIN project p ON c.id=p.id_company
       LEFT JOIN task t ON p.id=t.id_project
