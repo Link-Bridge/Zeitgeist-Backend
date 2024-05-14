@@ -6,9 +6,9 @@ import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
-import { RoleRepository } from '../../infra/repositories/role.repository';
 
 /**
  * Gets all tasks from a unique project using the repository.
@@ -102,8 +102,8 @@ async function findUnique(id: string, email: string): Promise<TaskDetail> {
     const project = await ProjectRepository.findById(task.idProject);
     const employeeTask = await EmployeeTaskRepository.findAll();
     const role = await RoleRepository.findByEmail(email);
-    
-    if (role.title != SupportedRoles.ADMIN && role.title != project.area) {      
+
+    if (role.title != SupportedRoles.ADMIN && role.title != project.area) {
       throw new Error('Unauthorized employee');
     }
 

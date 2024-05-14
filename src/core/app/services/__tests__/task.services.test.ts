@@ -7,8 +7,8 @@ import { EmployeeTask } from '../../../domain/entities/employee-task.entity';
 import { BareboneTask, Task, UpdatedTask } from '../../../domain/entities/task.entity';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
-import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
 
