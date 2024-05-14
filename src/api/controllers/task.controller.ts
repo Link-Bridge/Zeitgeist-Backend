@@ -120,10 +120,14 @@ async function findTaskById(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
 
-    const data = await TaskService.findUnique(id);
+    const data = await TaskService.findUnique(id, req.body.auth.email);
     res.status(200).json(data);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 
