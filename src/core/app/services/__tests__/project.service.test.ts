@@ -19,23 +19,25 @@ import { ProjectService } from '../project.service';
 
 describe('ProjectService', () => {
   let findProjectByIdStub: Sinon.SinonStub;
-  let createProject: sinon.SinonStub;
+  let createProjectStub: sinon.SinonStub;
   let findAllByRoleStub: sinon.SinonStub;
   let findCompanyByIdStub: Sinon.SinonStub;
-  let findProjectsByClientId: Sinon.SinonStub;
+  let findProjectsByClientIdStub: Sinon.SinonStub;
   let updateProjectStub: sinon.SinonStub;
   let updateProjectStatusStub: sinon.SinonStub;
-  let findEmployeeByEmail: sinon.SinonStub;
-  let findRoleById: sinon.SinonStub;
+  let findEmployeeByEmailStub: sinon.SinonStub;
+  let findRoleByIdStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
-    createProject = sinon.stub(ProjectRepository, 'createProject');
+    createProjectStub = sinon.stub(ProjectRepository, 'createProject');
     findAllByRoleStub = sinon.stub(ProjectRepository, 'findAllByRole');
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
-    findProjectsByClientId = sinon.stub(ProjectRepository, 'findProjetsByClientId');
+    findProjectsByClientIdStub = sinon.stub(ProjectRepository, 'findProjetsByClientId');
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
-    findEmployeeByEmail = sinon.stub(EmployeeRepository, 'findByEmail');
-    findRoleById = sinon.stub(RoleRepository, 'findById');
+    findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
+    findRoleByIdStub = sinon.stub(RoleRepository, 'findById');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {
@@ -64,17 +66,38 @@ describe('ProjectService', () => {
           idCompany: clientId,
         },
       ];
-      findProjectsByClientId.withArgs(clientId).returns(Promise.resolve(projects));
-      const result = await ProjectService.findProjectsClient(clientId);
+
+      const roleId = randomUUID();
+      const existingRole = {
+        id: roleId,
+        title: 'Admin',
+        createdAt: new Date(),
+      };
+
+      const employeeId = randomUUID();
+      const existingEmployee = {
+        id: employeeId,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: roleId,
+      };
+
+      findProjectsByClientIdStub.withArgs(clientId).returns(Promise.resolve(projects));
+      findRoleByEmailStub.withArgs(existingEmployee.email).returns(Promise).returns(existingRole);
+
+      const result = await ProjectService.findProjectsClient(clientId, existingEmployee.email);
       expect(result).to.deep.equal(projects);
-      expect(findProjectsByClientId.calledOnceWithExactly(clientId)).to.be.true;
+      expect(findProjectsByClientIdStub.calledOnceWithExactly(clientId)).to.be.true;
     });
 
     it("Should throw an error if the projects couldn't be found", async () => {
       const clientId = randomUUID();
-      findProjectsByClientId.withArgs(clientId).throws(new Error('An unexpected error occured'));
+      findProjectsByClientIdStub.withArgs(clientId).throws(new Error('An unexpected error occured'));
       try {
-        await ProjectService.findProjectsClient(clientId);
+        await ProjectService.findProjectsClient(clientId, randomUUID());
       } catch (error: any) {
         expect(error).to.be.instanceOf(Error);
         expect(error.message).to.be.equal('An unexpected error occured');
@@ -119,7 +142,7 @@ describe('ProjectService', () => {
       };
 
       findCompanyByIdStub.resolves(company);
-      createProject.resolves(projectData);
+      createProjectStub.resolves(projectData);
       const newProject = await ProjectService.createProject(projectData);
       expect(newProject).to.equal(projectData);
     });
@@ -181,8 +204,8 @@ describe('ProjectService', () => {
         },
       ];
 
-      findEmployeeByEmail.resolves(employee);
-      findRoleById.resolves(role);
+      findEmployeeByEmailStub.resolves(employee);
+      findRoleByIdStub.resolves(role);
       findAllByRoleStub.resolves(projects);
 
       const getProjects = await ProjectService.getDepartmentProjects(employee.email);
