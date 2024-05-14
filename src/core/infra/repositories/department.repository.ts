@@ -45,11 +45,11 @@ async function findAll(): Promise<DepartmentEntity[]> {
 
 /**
  * Update department by employee id
- * 
+ *
  * @param employeeId: string - employee id
  * @param departmentId: string - department id
- * 
- * @returns DepartmentEntity - updated department 
+ *
+ * @returns DepartmentEntity - updated department
  */
 async function updateDepartmentByEmployeeId(employeeId: string, departmentId: string): Promise<DepartmentEntity> {
   try {
