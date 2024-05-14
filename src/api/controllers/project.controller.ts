@@ -91,7 +91,7 @@ async function getReportData(req: Request, res: Response) {
 
 async function getProjectsClient(req: Request, res: Response) {
   try {
-    const data = await ProjectService.findProjectsClient(req.params.clientId);
+    const data = await ProjectService.findProjectsClient(req.params.clientId, req.body.auth.email);
     res.status(200).json({ data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

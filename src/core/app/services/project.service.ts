@@ -1,12 +1,12 @@
 import { randomUUID } from 'crypto';
-import { ProjectStatus } from '../../../utils/enums';
+import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { UpdateProjectBody } from '../interfaces/project.interface';
 import { EmployeeService } from './employee.service';
-
 interface CreateProjectData {
   name: string;
   matter: string | null;
@@ -72,14 +72,20 @@ async function getDepartmentProjects(email: string): Promise<ProjectEntity[]> {
  * @throws {Error} if an unexpected error occurs
  */
 
-async function findProjectsClient(clientId: string): Promise<ProjectEntity[]> {
+async function findProjectsClient(clientId: string, email: string): Promise<ProjectEntity[]> {
   try {
     const projects = await ProjectRepository.findProjetsByClientId(clientId);
-    const sortedProjects = projects.sort((a, b) => {
-      if (a.status === 'Done' && b.status !== 'Done') return 1;
-      if (a.status !== 'Done' && b.status === 'Done') return -1;
+    const role = await RoleRepository.findByEmail(email);
+
+    let sortedProjects = projects.sort((a, b) => {
+      if (a.status === ProjectStatus.DONE && b.status !== ProjectStatus.DONE) return 1;
+      if (a.status !== ProjectStatus.DONE && b.status === ProjectStatus.DONE) return -1;
       return 0;
     });
+    if (role.title !== SupportedRoles.ADMIN) {
+      sortedProjects = sortedProjects.filter(project => project.area === role.title);
+    }
+
     return sortedProjects;
   } catch (error) {
     throw new Error('An unexpected error occured');
