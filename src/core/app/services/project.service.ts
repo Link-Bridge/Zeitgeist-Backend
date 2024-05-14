@@ -77,19 +77,16 @@ async function findProjectsClient(clientId: string, email: string): Promise<Proj
     const projects = await ProjectRepository.findProjetsByClientId(clientId);
     const role = await RoleRepository.findByEmail(email);
 
-    const sortedProjects = projects.sort((a, b) => {
+    let sortedProjects = projects.sort((a, b) => {
       if (a.status === ProjectStatus.DONE && b.status !== ProjectStatus.DONE) return 1;
       if (a.status !== ProjectStatus.DONE && b.status === ProjectStatus.DONE) return -1;
       return 0;
     });
-
-    if (role.title === SupportedRoles.ADMIN) {
-      return sortedProjects;
-    } else {
-      return sortedProjects.filter(project => {
-        project.area === role.title;
-      });
+    if (role.title !== SupportedRoles.ADMIN) {
+      sortedProjects = sortedProjects.filter(project => project.area === role.title);
     }
+
+    return sortedProjects;
   } catch (error) {
     throw new Error('An unexpected error occured');
   }
