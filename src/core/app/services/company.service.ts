@@ -70,7 +70,7 @@ async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
     phoneNumber: body.phoneNumber ?? company.phoneNumber,
     landlinePhone: body.landlinePhone ?? company.landlinePhone,
     archived: body.archived,
-    constitutionDate: body.constitutionDate ?? company.constitutionDate,
+    constitutionDate: body.constitutionDate,
     rfc: body.rfc ?? company.rfc,
     taxResidence: body.taxResidence ?? company.taxResidence,
     idCompanyDirectContact: company.idCompanyDirectContact,
