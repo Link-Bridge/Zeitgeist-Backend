@@ -6,14 +6,14 @@ const companySchema = z.object({
   email: zodValidEmail.optional().nullable(),
   phone_number: z
     .string()
-    .min(10, { message: 'Phone number must be between 10 and 13 digits long' })
-    .max(13, { message: 'Phone number must be between 10 and 13 digits long' })
+    .min(10, { message: 'Phone number must be between 10 and 15 digits long' })
+    .max(15, { message: 'Phone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
   landline_phone: z
     .string()
-    .min(10, { message: 'Landlinephone number must be between 10 and 13 digits long' })
-    .max(13, { message: 'Landlinephone number must be between 10 and 13 digits long' })
+    .min(10, { message: 'Landlinephone number must be between 10 and 15 digits long' })
+    .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
   archived: z.boolean().optional().nullable(),

@@ -10,7 +10,7 @@ export const zodValidCreatedAtDate = z.date();
 export const zodValidUpdatedAtDate = z.date().nullable();
 export const zodValidPhoneNumber = z
   .string()
-  .min(8, { message: 'Phone number must have at least 8 characters' })
+  .min(10, { message: 'Phone number must have at least 10 characters' })
   .max(15, { message: 'Phone number must have at most 15 characters' });
 export const zodValidRfc = z.string().regex(/^[A-Z&Ñ]{3,4}\d{6}(?:[A-Z\d]{3})?$/, {
   message: 'Provided RFC is not valid',

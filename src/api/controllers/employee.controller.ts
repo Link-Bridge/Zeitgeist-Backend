@@ -8,7 +8,7 @@ const authSchema = z.object({
     name: z
       .string()
       .min(1, { message: "Provided name can't be empty" })
-      .max(255, { message: 'Provided name must be less than 256 characters' }),
+      .max(256, { message: 'Provided name must be at most 256 characters' }),
     email: z.string().email({ message: 'Provided email is not valid' }),
     picture: z.string().url({ message: 'Provided picture URL is not valid' }),
   }),
