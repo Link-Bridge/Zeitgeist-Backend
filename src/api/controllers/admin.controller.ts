@@ -28,9 +28,6 @@ const updateUserRoleSchema = z.object({
 async function updateUserRole(req: Request, res: Response) {
   try {
     const { userId, roleId, departmentId } = updateUserRoleSchema.parse(req.body);
-
-    console.log(userId, roleId, departmentId);
-
     const employee = await AdminRoleService.updateUserRole(userId, roleId, departmentId);
 
     res.status(200).json({ data: employee });
