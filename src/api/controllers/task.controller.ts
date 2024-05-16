@@ -29,8 +29,8 @@ const taskSchema = z.object({
     .min(1, {
       message: 'Description must have at least 1 character',
     })
-    .max(255, {
-      message: 'Description must have at most 255 characters',
+    .max(256, {
+      message: 'Description must have at most 256 characters',
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
@@ -181,7 +181,7 @@ async function deleteTask(req: Request, res: Response) {
 const updatedTaskSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1).max(70).optional(),
-  description: z.string().min(1).max(255).optional(),
+  description: z.string().min(1).max(256).optional(),
   status: taskStatusSchema.optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
