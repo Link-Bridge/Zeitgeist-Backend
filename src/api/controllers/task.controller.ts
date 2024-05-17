@@ -109,10 +109,14 @@ async function createTask(req: Request, res: Response) {
 async function getTasksFromProject(req: Request, res: Response) {
   try {
     const { idProject } = idProjectSchema.parse({ idProject: req.params.idProject });
-    const data = await TaskService.getTasksFromProject(idProject);
+    const data = await TaskService.getTasksFromProject(idProject, req.body.auth.email);
     res.status(200).json({ data });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 

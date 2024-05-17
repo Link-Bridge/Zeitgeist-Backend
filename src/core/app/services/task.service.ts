@@ -14,17 +14,31 @@ import { TaskDetail } from '../interfaces/task.interface';
  * Gets all tasks from a unique project using the repository.
  *
  * @param projectId: string - projectId to which the tasks are related.
+ * @param email: string - users's email
  * @returns {Promise<Task[]>} - Array of tasks from a unique project.
  *
  * @throws {Error} - If an error occurs when creating the task.
  */
 
-async function getTasksFromProject(projectId: string): Promise<Task[]> {
+async function getTasksFromProject(projectId: string, email: string): Promise<Task[]> {
   try {
+    const role = await RoleRepository.findByEmail(email);
+    const project = await ProjectRepository.findById(projectId);
     const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
+    if (
+      project.area &&
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() != project.area.toUpperCase()
+    ) {
+      throw new Error('Unauthorized employee');
+    }
+
     return taskRecords;
-  } catch (error: unknown) {
-    throw new Error('Error fetching array of tasks from project');
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
+    throw new Error('An unexpected error occured');
   }
 }
 
