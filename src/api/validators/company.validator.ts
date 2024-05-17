@@ -1,25 +1,32 @@
 import { z } from 'zod';
-import { zodValidEmail, zodValidPhoneNumber, zodValidRfc, zodValidString, zodValidUuid } from './zod.validator';
+import { zodValidEmail, zodValidPhoneNumber, zodValidRfc, zodValidUuid } from './zod.validator';
 
 const companySchema = z.object({
-  name: z.string().min(3, { message: 'Name cannot be empty' }),
+  name: z
+    .string()
+    .min(1, { message: 'Name cannot be empty.' })
+    .max(70, { message: 'Name must be at most 70 characters long.' }),
   email: zodValidEmail.optional().nullable(),
   phone_number: z
     .string()
-    .min(10, { message: 'Phone number must be between 10 and 13 digits long' })
-    .max(13, { message: 'Phone number must be between 10 and 13 digits long' })
+    .min(10, { message: 'Phone number must be at least 10 characters.' })
+    .max(15, { message: 'Phone number cannot be longer than 15 characters.' })
     .optional()
     .nullable(),
   landline_phone: z
     .string()
     .min(10, { message: 'Landlinephone number must be between 10 and 13 digits long' })
-    .max(13, { message: 'Landlinephone number must be between 10 and 13 digits long' })
+    .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
   archived: z.boolean().optional().nullable(),
   constitutionDate: z.string().optional().nullable(),
   rfc: zodValidRfc.optional().nullable(),
-  taxResidence: z.string().nullable().optional(),
+  taxResidence: z
+    .string()
+    .max(150, { message: 'Tax residence cannot be longer than 150 characters.' })
+    .nullable()
+    .optional(),
   id_company_direct_contact: zodValidUuid.optional().nullable(),
   id_form: zodValidUuid.optional().nullable(),
   updated_at: z.string().datetime().optional().nullable(),
@@ -27,14 +34,30 @@ const companySchema = z.object({
 
 export const updateCompanySchema = z.object({
   id: zodValidUuid,
-  name: zodValidString,
-  email: zodValidEmail.optional(),
-  phoneNumber: zodValidPhoneNumber.optional().nullable(),
-  landlinePhone: zodValidPhoneNumber.optional().nullable(),
+  name: z
+    .string()
+    .min(1, { message: 'Name cannot be empty.' })
+    .max(70, { message: 'Name must be at most 70 characters long.' }),
+  email: zodValidEmail.optional().nullable(),
+  phoneNumber: zodValidPhoneNumber
+    .min(10, { message: 'Phone number must be at least 10 characters.' })
+    .max(15, { message: 'Phone number cannot be longer than 15 characters.' })
+    .optional()
+    .nullable(),
+  landline_phone: z
+    .string()
+    .min(10, { message: 'Landlinephone number must be between 10 and 13 digits long' })
+    .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
+    .optional()
+    .nullable(),
   archived: z.boolean().optional(),
   constitutionDate: z.coerce.date().nullable(),
   rfc: zodValidRfc.optional().nullable(),
-  taxResidence: z.string().optional().nullable(),
+  taxResidence: z
+    .string()
+    .max(150, { message: 'Tax residence cannot be longer than 150 characters.' })
+    .nullable()
+    .optional(),
 });
 
 export { companySchema };
