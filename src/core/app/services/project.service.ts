@@ -95,15 +95,29 @@ async function findProjectsClient(clientId: string, email: string): Promise<Proj
 /**
  *
  * @param projectId the id of the proyect we want the details
+ * @param email the email of the user
  * @returns {Promise<ProjectEntity>} a promise that resolves the details of the project
  * @throws {Error} if an unexpected error occurs
  */
 
-async function getProjectById(projectId: string): Promise<ProjectEntity> {
+async function getProjectById(projectId: string, email: string): Promise<ProjectEntity> {
   try {
+    const role = await RoleRepository.findByEmail(email);
     const project = await ProjectRepository.findById(projectId);
+
+    if (
+      project.area &&
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() != project.area.toUpperCase()
+    ) {
+      throw new Error('Unauthorized employee');
+    }
+
     return project;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
     throw new Error('An unexpected error occured');
   }
 }
