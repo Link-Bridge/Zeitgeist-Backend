@@ -15,7 +15,7 @@ const companySchema = z.object({
     .nullable(),
   landline_phone: z
     .string()
-    .min(10, { message: 'Landlinephone number must be between 10 and 13 digits long' })
+    .min(10, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
@@ -46,7 +46,7 @@ export const updateCompanySchema = z.object({
     .nullable(),
   landline_phone: z
     .string()
-    .min(10, { message: 'Landlinephone number must be between 10 and 13 digits long' })
+    .min(10, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
