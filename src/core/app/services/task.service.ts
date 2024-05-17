@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { SupportedRoles, TaskStatus } from '../../../utils/enums';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
-import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
+import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -20,25 +20,50 @@ import { TaskDetail } from '../interfaces/task.interface';
  * @throws {Error} - If an error occurs when creating the task.
  */
 
-async function getTasksFromProject(projectId: string, email: string): Promise<Task[]> {
+async function getTasksFromProject(projectId: string, email: string): Promise<ProjectDetailsTask[]> {
   try {
-    const role = await RoleRepository.findByEmail(email);
-    const project = await ProjectRepository.findById(projectId);
-    const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
+    const [role, project, taskRecords] = await Promise.all([
+      RoleRepository.findByEmail(email),
+      ProjectRepository.findById(projectId),
+      TaskRepository.findTasksByProjectId(projectId),
+    ]);
+
     if (
       project.area &&
-      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
-      role.title.toUpperCase() != project.area.toUpperCase()
+      role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() !== project.area.toUpperCase()
     ) {
       throw new Error('Unauthorized employee');
     }
 
-    return taskRecords;
+    const employeeTaskIds = taskRecords.map(task => task.id);
+    const employeeTasks = await EmployeeTaskRepository.findByTaskIds(employeeTaskIds);
+    const employeeMap = new Map(employeeTasks.map(empTask => [empTask.idTask, empTask.idEmployee]));
+
+    const tasksWithEmployeeInfo = await Promise.all(
+      taskRecords.map(async task => {
+        const idEmployee = employeeMap.get(task.id) || '';
+        if (!idEmployee) {
+          return { ...task, employeeFirstName: '', employeeLastName: '' };
+        }
+
+        const { firstName, lastName } = await EmployeeRepository.findById(idEmployee);
+
+        return {
+          ...task,
+          employeeFirstName: firstName,
+          employeeLastName: lastName,
+        };
+      })
+    );
+
+    return tasksWithEmployeeInfo;
   } catch (error: any) {
     if (error.message === 'Unauthorized employee') {
       throw error;
     }
-    throw new Error('An unexpected error occured');
+
+    throw new Error('An unexpected error occurred');
   }
 }
 

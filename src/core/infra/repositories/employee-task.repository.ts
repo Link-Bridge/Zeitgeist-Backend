@@ -47,6 +47,35 @@ async function create(newEmployeeTask: EmployeeTask): Promise<EmployeeTask | nul
 }
 
 /**
+ * Finds an array of tasks assigned to an employee based off an array
+ * of task IDs.
+ *
+ * @param taskIds: string[] - Array of task IDs.
+ * @returns {Promise<EmployeeTask[]>} - List of employee tasks.
+ *
+ * @throws {Error} - If an error occurs when finding the employee task.
+ */
+async function findByTaskIds(taskIds: string[]): Promise<EmployeeTask[]> {
+  try {
+    const data = await Prisma.employee_task.findMany({
+      where: {
+        id_task: {
+          in: taskIds,
+        },
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapEmployeeTaskEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Finds an employee task object by the employee ID.
  *
  * @param employeeId: string - Unique identifier of the employee.
@@ -114,4 +143,11 @@ async function validateEmployeeTask(taskId: string): Promise<boolean> {
   }
 }
 
-export const EmployeeTaskRepository = { findAll, create, findByEmployeeId, deleteByTaskId, validateEmployeeTask };
+export const EmployeeTaskRepository = {
+  findAll,
+  create,
+  findByEmployeeId,
+  deleteByTaskId,
+  validateEmployeeTask,
+  findByTaskIds,
+};
