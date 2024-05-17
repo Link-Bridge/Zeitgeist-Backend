@@ -13,6 +13,10 @@ const idSchema = z.object({
 const updateUserRoleSchema = z.object({
   userId: z.string().min(1, { message: 'User ID cannot be empty' }),
   roleId: z.string().min(1, { message: 'Role ID cannot be empty' }),
+  departmentId: z
+    .string()
+    .min(1, { message: 'Department ID cannot be empty' })
+    .max(36, { message: 'Department ID is too long' }),
 });
 
 /**
@@ -23,9 +27,9 @@ const updateUserRoleSchema = z.object({
  */
 async function updateUserRole(req: Request, res: Response) {
   try {
-    const { userId, roleId } = updateUserRoleSchema.parse(req.body);
+    const { userId, roleId, departmentId } = updateUserRoleSchema.parse(req.body);
+    const employee = await AdminRoleService.updateUserRole(userId, roleId, departmentId);
 
-    const employee = await AdminRoleService.updateUserRole(userId, roleId);
     res.status(200).json({ data: employee });
   } catch (error: any) {
     if (error instanceof z.ZodError) {

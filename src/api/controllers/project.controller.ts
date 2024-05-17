@@ -91,7 +91,7 @@ async function getReportData(req: Request, res: Response) {
 
 async function getProjectsClient(req: Request, res: Response) {
   try {
-    const data = await ProjectService.findProjectsClient(req.params.clientId);
+    const data = await ProjectService.findProjectsClient(req.params.clientId, req.body.auth.email);
     res.status(200).json({ data });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -120,12 +120,16 @@ async function getDepartmentProjects(req: Request, res: Response) {
 async function getProjectById(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
-    const projectDetails = await ProjectService.getProjectById(id);
+    const projectDetails = await ProjectService.getProjectById(id, req.body.auth.email);
     if (projectDetails) {
       res.status(200).json(projectDetails);
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 

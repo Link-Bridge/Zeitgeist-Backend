@@ -89,8 +89,8 @@ model employee_task {
   updated_at  DateTime? @updatedAt @db.Timestamp(6)
   id_employee String    @db.Uuid
   id_task     String    @db.Uuid
-  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  task        task      @relation(fields: [id_task], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  task        task      @relation(fields: [id_task], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model expense {

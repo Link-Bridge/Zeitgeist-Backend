@@ -29,15 +29,15 @@ const taskSchema = z.object({
     .min(1, {
       message: 'Description must have at least 1 character',
     })
-    .max(255, {
-      message: 'Description must have at most 255 characters',
+    .max(256, {
+      message: 'Description must have at most 256 characters',
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
-  dueDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().nullable(),
   workedHours: z.string().optional(),
+  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
-  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }),
 });
 
 const idSchema = z.object({
@@ -62,8 +62,8 @@ function validateTaskData(data: BareboneTask) {
     ...bodyTask,
     status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
-    dueDate: bodyTask.dueDate || null,
-    employeeId: bodyTask.idEmployee,
+    endDate: bodyTask.endDate || null,
+    idEmployee: bodyTask.idEmployee,
   };
 }
 
@@ -81,7 +81,10 @@ function validateTaskData(data: BareboneTask) {
 async function createTask(req: Request, res: Response) {
   try {
     const validatedTaskData = validateTaskData(req.body);
-    const payloadTask = await TaskService.createTask(validatedTaskData);
+    const payloadTask = await TaskService.createTask({
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
@@ -106,10 +109,14 @@ async function createTask(req: Request, res: Response) {
 async function getTasksFromProject(req: Request, res: Response) {
   try {
     const { idProject } = idProjectSchema.parse({ idProject: req.params.idProject });
-    const data = await TaskService.getTasksFromProject(idProject);
+    const data = await TaskService.getTasksFromProject(idProject, req.body.auth.email);
     res.status(200).json({ data });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 
@@ -117,10 +124,14 @@ async function findTaskById(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
 
-    const data = await TaskService.findUnique(id);
+    const data = await TaskService.findUnique(id, req.body.auth.email);
     res.status(200).json(data);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 
@@ -174,7 +185,7 @@ async function deleteTask(req: Request, res: Response) {
 const updatedTaskSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1).max(70).optional(),
-  description: z.string().min(1).max(255).optional(),
+  description: z.string().min(1).max(256).optional(),
   status: taskStatusSchema.optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
@@ -182,7 +193,7 @@ const updatedTaskSchema = z.object({
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   idProject: z.string().optional(),
-  idEmployee: z.string(),
+  idEmployee: z.string().optional(),
 });
 
 /**
@@ -219,7 +230,10 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
-    const data = await TaskService.updateTask(idTask, validatedTaskData);
+    const data = await TaskService.updateTask(idTask, {
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!data) {
       return res.status(500).json({ message: 'An error occured while updating Task' });

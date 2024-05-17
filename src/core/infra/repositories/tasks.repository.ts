@@ -102,7 +102,7 @@ async function createTask(newTask: Task): Promise<Task | null> {
           description: newTask.description,
           status: newTask.status,
           start_date: newTask.startDate,
-          end_date: newTask.endDate,
+          end_date: newTask.endDate ?? null,
           worked_hours: Number(newTask.workedHours),
           created_at: newTask.createdAt || new Date(),
           updated_at: new Date(),

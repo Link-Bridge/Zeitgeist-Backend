@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { checkAuthToken } from '../middlewares/auth.middleware';
 import { AdminRouter } from './admin.routes';
 import { CompanyRouter } from './company.routes';
+import { DepartmentRouter } from './department.routes';
 import { EmployeeRouter } from './employee.routes';
 import { HomeRouter } from './home.routes';
 import { NotificationRouter } from './notification.routes';
@@ -22,6 +23,9 @@ baseRouter.use(`${V1_PATH}/home`, HomeRouter);
 
 // Employee
 baseRouter.use(`${V1_PATH}/employee`, EmployeeRouter);
+
+// Department
+baseRouter.use(`${V1_PATH}/department`, DepartmentRouter);
 
 //Project
 baseRouter.use(`${V1_PATH}/project`, ProjectRouter);

@@ -1,11 +1,12 @@
 import { randomUUID } from 'crypto';
-import { TaskStatus } from '../../../utils/enums';
+import { SupportedRoles, TaskStatus } from '../../../utils/enums';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
-import { BareboneTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
+import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
 
@@ -13,17 +14,56 @@ import { TaskDetail } from '../interfaces/task.interface';
  * Gets all tasks from a unique project using the repository.
  *
  * @param projectId: string - projectId to which the tasks are related.
+ * @param email: string - users's email
  * @returns {Promise<Task[]>} - Array of tasks from a unique project.
  *
  * @throws {Error} - If an error occurs when creating the task.
  */
 
-async function getTasksFromProject(projectId: string): Promise<Task[]> {
+async function getTasksFromProject(projectId: string, email: string): Promise<ProjectDetailsTask[]> {
   try {
-    const taskRecords = await TaskRepository.findTasksByProjectId(projectId);
-    return taskRecords;
-  } catch (error: unknown) {
-    throw new Error('Error fetching array of tasks from project');
+    const [role, project, taskRecords] = await Promise.all([
+      RoleRepository.findByEmail(email),
+      ProjectRepository.findById(projectId),
+      TaskRepository.findTasksByProjectId(projectId),
+    ]);
+
+    if (
+      project.area &&
+      role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() !== project.area.toUpperCase()
+    ) {
+      throw new Error('Unauthorized employee');
+    }
+
+    const employeeTaskIds = taskRecords.map(task => task.id);
+    const employeeTasks = await EmployeeTaskRepository.findByTaskIds(employeeTaskIds);
+    const employeeMap = new Map(employeeTasks.map(empTask => [empTask.idTask, empTask.idEmployee]));
+
+    const tasksWithEmployeeInfo = await Promise.all(
+      taskRecords.map(async task => {
+        const idEmployee = employeeMap.get(task.id) || '';
+        if (!idEmployee) {
+          return { ...task, employeeFirstName: '', employeeLastName: '' };
+        }
+
+        const { firstName, lastName } = await EmployeeRepository.findById(idEmployee);
+
+        return {
+          ...task,
+          employeeFirstName: firstName,
+          employeeLastName: lastName,
+        };
+      })
+    );
+
+    return tasksWithEmployeeInfo;
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
+
+    throw new Error('An unexpected error occurred');
   }
 }
 
@@ -53,7 +93,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       description: newTask.description,
       status: newTask.status,
       startDate: newTask.startDate,
-      endDate: newTask.dueDate ?? undefined,
+      endDate: newTask.endDate,
       workedHours: newTask.workedHours ?? undefined,
       createdAt: new Date(),
       idProject: newTask.idProject,
@@ -64,22 +104,21 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Task already exists');
     }
 
-    const employee = await EmployeeRepository.findById(newTask.idEmployee);
-
-    if (!employee) {
-      throw new NotFoundError('Employee');
-    }
-
-    const newEmployeeTask: EmployeeTask = {
-      id: randomUUID(),
-      createdAt: new Date(),
-      idEmployee: employee.id,
-      idTask: createdTask.id as string,
-    };
-
-    const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
-    if (!assignedTask) {
-      throw new Error('Error assigning a task to an employee');
+    if (newTask.idEmployee) {
+      const employee = await EmployeeRepository.findById(newTask.idEmployee);
+      if (!employee) {
+        throw new NotFoundError('Employee');
+      }
+      const newEmployeeTask: EmployeeTask = {
+        id: randomUUID(),
+        createdAt: new Date(),
+        idEmployee: employee.id,
+        idTask: createdTask.id as string,
+      };
+      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+      if (!assignedTask) {
+        throw new Error('Error assigning a task to an employee');
+      }
     }
 
     return createdTask;
@@ -96,11 +135,16 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
  *
  * @throws {Error} - If an error occurs when looking for the task.
  */
-async function findUnique(id: string): Promise<TaskDetail> {
+async function findUnique(id: string, email: string): Promise<TaskDetail> {
   try {
     const task = await TaskRepository.findTaskById(id);
     const project = await ProjectRepository.findById(task.idProject);
     const employeeTask = await EmployeeTaskRepository.findAll();
+    const role = await RoleRepository.findByEmail(email);
+
+    if (role.title != SupportedRoles.ADMIN && role.title != project.area) {
+      throw new Error('Unauthorized employee');
+    }
 
     const selectedEmployeeTask = employeeTask.find(record => {
       if (record.idTask === task.id) return record;
@@ -118,7 +162,10 @@ async function findUnique(id: string): Promise<TaskDetail> {
       employeeFirstName: employee.firstName,
       employeeLastName: employee.lastName,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
     throw new Error('An unexpected error occurred');
   }
 }
@@ -198,23 +245,27 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       task.endDate = new Date();
     }
 
-    const newEmployeeTask: EmployeeTask = {
-      id: randomUUID(),
-      createdAt: new Date(),
-      idEmployee: task.idEmployee,
-      idTask: idTask,
-    };
-
-    const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(idTask);
-
-    if (!taskIsAssignedAlready) {
-      const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
-      if (!assignedTask) {
-        throw new Error('Error assigning a task to an employee');
+    if (task.idEmployee !== '') {
+      const employee = await EmployeeRepository.findById(task.idEmployee);
+      if (!employee) {
+        throw new NotFoundError('Employee');
       }
-    } else if (taskIsAssignedAlready) {
-      await EmployeeTaskRepository.deleteByTaskId(idTask);
-      await EmployeeTaskRepository.create(newEmployeeTask);
+      const newEmployeeTask: EmployeeTask = {
+        id: randomUUID(),
+        createdAt: new Date(),
+        idEmployee: task.idEmployee,
+        idTask: idTask,
+      };
+      const taskIsAssignedAlready = await EmployeeTaskRepository.validateEmployeeTask(idTask);
+      if (!taskIsAssignedAlready) {
+        const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
+        if (!assignedTask) {
+          throw new Error('Error assigning a task to an employee');
+        }
+      } else if (taskIsAssignedAlready) {
+        await EmployeeTaskRepository.deleteByTaskId(idTask);
+        await EmployeeTaskRepository.create(newEmployeeTask);
+      }
     }
 
     const updatedTask = await TaskRepository.updateTask(idTask, task);

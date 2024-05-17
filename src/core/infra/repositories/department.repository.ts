@@ -43,4 +43,34 @@ async function findAll(): Promise<DepartmentEntity[]> {
   }
 }
 
-export const DepartmentRepository = { findById, findByTitle, findAll };
+/**
+ * Update department by employee id
+ *
+ * @param employeeId: string - employee id
+ * @param departmentId: string - department id
+ *
+ * @returns DepartmentEntity - updated department
+ */
+async function updateDepartmentByEmployeeId(employeeId: string, departmentId: string): Promise<DepartmentEntity> {
+  try {
+    const department = await Prisma.$transaction(async prisma => {
+      const updatedDepartment = await prisma.department.update({
+        where: { id: departmentId },
+        data: {
+          employee: {
+            connect: [{ id: employeeId }],
+          },
+        },
+      });
+
+      if (!updatedDepartment) throw new NotFoundError('Department not found');
+      return updatedDepartment;
+    });
+
+    return mapDepartmentEntityFromDbModelToDbModel(department);
+  } catch (error: any) {
+    throw new Error(`Department repository error: ${error.message}`);
+  }
+}
+
+export const DepartmentRepository = { findById, findByTitle, findAll, updateDepartmentByEmployeeId };

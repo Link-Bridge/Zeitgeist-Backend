@@ -2,12 +2,13 @@ import { faker } from '@faker-js/faker';
 import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { TaskStatus } from '../../../../utils/enums';
+import { ProjectStatus, SupportedRoles, TaskStatus } from '../../../../utils/enums';
 import { EmployeeTask } from '../../../domain/entities/employee-task.entity';
-import { BareboneTask, Task, UpdatedTask } from '../../../domain/entities/task.entity';
+import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../../domain/entities/task.entity';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../../infra/repositories/project.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { TaskService } from '../task.service';
 
@@ -26,10 +27,22 @@ describe('Task Service', () => {
   let updateTaskRepositoryStub: sinon.SinonStub;
   let updateTaskStatusRepositoryStub: sinon.SinonStub;
   let updateTaskEndDateRepositoryStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
+  let findTasksByIdsStub: sinon.SinonStub;
 
-  const idProject = 'fb6bde87-5890-4cf7-978b-8daa13f105f7';
+  const idProject = randomUUID();
+  const project = {
+    id: idProject,
+    name: 'Project',
+    status: ProjectStatus.ACCEPTED,
+    category: 'Internal',
+    startDate: new Date(),
+    area: 'Legal',
+    createdAt: new Date(),
+    idCompany: randomUUID(),
+  };
 
-  const existingTasks: Task[] = [
+  const existingTasks: ProjectDetailsTask[] = [
     {
       id: randomUUID(),
       title: 'Zombie',
@@ -37,7 +50,9 @@ describe('Task Service', () => {
       status: TaskStatus.DONE,
       startDate: new Date(),
       createdAt: new Date(),
-      idProject: 'fb6bde87-5890-4cf7-978b-8daa13f105f7',
+      idProject: idProject,
+      employeeFirstName: faker.person.firstName(),
+      employeeLastName: faker.person.lastName(),
     },
     {
       id: randomUUID(),
@@ -47,7 +62,9 @@ describe('Task Service', () => {
       status: TaskStatus.POSTPONED,
       startDate: new Date(),
       createdAt: new Date(),
-      idProject: 'fb6bde87-5890-4cf7-978b-8daa13f105f7',
+      idProject: idProject,
+      employeeFirstName: faker.person.firstName(),
+      employeeLastName: faker.person.lastName(),
     },
   ];
 
@@ -66,11 +83,29 @@ describe('Task Service', () => {
     updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
     updateTaskStatusRepositoryStub = sinon.stub(TaskRepository, 'updateTaskStatus');
     updateTaskEndDateRepositoryStub = sinon.stub(TaskRepository, 'updateTaskEndDate');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
+    findTasksByIdsStub = sinon.stub(EmployeeTaskRepository, 'findByTaskIds');
   });
 
   afterEach(() => {
     sinon.restore();
   });
+  const idRole = randomUUID();
+  const role = {
+    id: idRole,
+    title: SupportedRoles.ADMIN,
+    createdAr: new Date(),
+  };
+
+  const employee = {
+    id: randomUUID(),
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'joe.doe@email.com',
+    imageUrl: 'http://example.com/john.jpg',
+    createdAt: new Date(),
+    idRole: idRole,
+  };
 
   const projectID = randomUUID();
   const task: BareboneTask = {
@@ -78,7 +113,7 @@ describe('Task Service', () => {
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
     startDate: faker.date.recent(),
-    dueDate: faker.date.future(),
+    endDate: faker.date.future(),
     workedHours: faker.number.int(),
     idProject: projectID,
     idEmployee: randomUUID(),
@@ -90,7 +125,7 @@ describe('Task Service', () => {
     description: task.description,
     status: task.status,
     startDate: task.startDate,
-    endDate: task.dueDate ?? undefined,
+    endDate: task.endDate ?? undefined,
     workedHours: task.workedHours ?? undefined,
     createdAt: new Date(),
     idProject: task.idProject,
@@ -102,7 +137,7 @@ describe('Task Service', () => {
     description: createdTask.description,
     status: createdTask.status,
     startDate: createdTask.startDate,
-    endDate: createdTask.endDate,
+    endDate: createdTask.endDate ?? undefined,
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
     idEmployee: randomUUID(),
@@ -176,21 +211,42 @@ describe('Task Service', () => {
   describe('getTasksFromProject', () => {
     it('Should get an array of tasks from the repository', async () => {
       taskFetchRepositoryStub.resolves(existingTasks);
+      findRoleByEmailStub.resolves(role);
+      projectRepositoryStub.resolves(project);
 
-      const result = await TaskService.getTasksFromProject(idProject);
+      findTasksByIdsStub.resolves(
+        existingTasks.map(task => ({
+          idTask: task.id,
+          idEmployee: employee.id,
+        }))
+      );
 
-      expect(result).to.deep.equal(existingTasks);
+      employeeRepositoryStub.resolves({
+        id: employee.id,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
+      });
+
+      const result = await TaskService.getTasksFromProject(idProject, employee.email);
+
+      expect(result).to.deep.equal(
+        existingTasks.map(task => ({
+          ...task,
+          employeeFirstName: employee.firstName,
+          employeeLastName: employee.lastName,
+        }))
+      );
       expect(taskFetchRepositoryStub.calledOnce).to.be.true;
     });
 
     it('Should throw an error if the task could not be created', async () => {
-      taskFetchRepositoryStub.withArgs(existingTasks).throws(new Error('Could not get tasks'));
+      taskFetchRepositoryStub.withArgs(existingTasks).throws(new Error('An unexpected error occurred'));
 
       try {
-        await TaskService.getTasksFromProject(idProject);
+        await TaskService.getTasksFromProject(idProject, employee.email);
       } catch (error: any) {
         expect(error).to.be.an('error');
-        expect(error.message).to.equal('Could not get tasks');
+        expect(error.message).to.equal('An unexpected error occurred');
       }
     });
   });
@@ -354,9 +410,10 @@ describe('Task Service', () => {
     it('Should throw an error if the EmployeeTask could not be created', async () => {
       findTaskByIdStub.resolves({ id: createdTask.id });
       validateEmployeeTaskStub.resolves(null);
+      const invalidEmployeeTask = { ...updatedEmployeeTask, idEmployee: '' };
 
       try {
-        await TaskService.updateTask(createdTask.id, updatedTask);
+        await TaskService.updateTask(createdTask.id, invalidEmployeeTask);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Error assigning a task to an employee');
       }
@@ -386,12 +443,14 @@ describe('TaskService', () => {
   let findProjectByIdStub: sinon.SinonStub;
   let findEmployeeByIdStub: sinon.SinonStub;
   let findAllEmployeeTaskStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
     findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
     findProjectByIdStub = sinon.stub(ProjectRepository, 'findById');
     findEmployeeByIdStub = sinon.stub(EmployeeRepository, 'findById');
     findAllEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'findAll');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {
@@ -412,6 +471,13 @@ describe('TaskService', () => {
         idCompany: randomUUID(),
       };
 
+      const roleId = randomUUID();
+      const existingRole = {
+        id: roleId,
+        title: 'Admin',
+        createdAt: new Date(),
+      };
+
       const employeeId = randomUUID();
       const existingEmployee = {
         id: employeeId,
@@ -420,7 +486,7 @@ describe('TaskService', () => {
         email: 'john.doe@example.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
-        idRole: randomUUID(),
+        idRole: roleId,
       };
 
       const taskId = randomUUID();
@@ -456,21 +522,23 @@ describe('TaskService', () => {
       findProjectByIdStub.resolves(existingProject);
       findEmployeeByIdStub.resolves(existingEmployee);
       findAllEmployeeTaskStub.resolves(existingEmployeeTask);
+      findRoleByEmailStub.resolves(existingRole);
 
-      const result = await TaskService.findUnique(taskId);
+      const result = await TaskService.findUnique(taskId, existingEmployee.email);
 
       expect(result).to.eql(taskDetail);
       expect(findTaskByIdStub.calledOnce).to.be.true;
       expect(findProjectByIdStub.calledOnce).to.be.true;
       expect(findEmployeeByIdStub.calledOnce).to.be.true;
       expect(findAllEmployeeTaskStub.calledOnce).to.be.true;
+      expect(findRoleByEmailStub.calledOnce).to.be.true;
     });
 
     it('should throw an error if the task id does not exist', async () => {
       const errorMessage = 'An unexpected error occurred';
       findTaskByIdStub.rejects(new Error(errorMessage));
 
-      await expect(TaskService.findUnique(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+      await expect(TaskService.findUnique(randomUUID(), randomUUID())).to.be.rejectedWith(Error, errorMessage);
     });
   });
 });

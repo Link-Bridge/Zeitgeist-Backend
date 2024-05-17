@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { TaskStatus } from '../../../utils/enums';
+import { SupportedRoles, TaskStatus } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -59,6 +59,10 @@ function compareDate(task: Task, date: Date): boolean {
  *
  * @param id: string - Project ID
  *
+ * @param email: string - user's email
+ *
+ * @param date?: Date - Filter date
+ *
  * @return Report - The generated report
  *
  * @description A distinction is made between a project in the quotation or
@@ -75,7 +79,7 @@ async function getReport(id: string, email: string, date?: Date): Promise<Report
 
     if (
       rawProject.area &&
-      role.title.toUpperCase() != 'ADMIN' &&
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
       role.title.toUpperCase() != rawProject.area.toUpperCase()
     ) {
       throw new Error('Unauthorized employee');
