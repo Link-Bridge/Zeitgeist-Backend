@@ -96,7 +96,7 @@ export interface BareboneTask {
   idEmployee: string | null;
 }
 
-export interface EmployeeTask extends Task {
+export interface ProjectDetailsTask extends Task {
   employeeFirstName: string;
   employeeLastName: string;
 }
