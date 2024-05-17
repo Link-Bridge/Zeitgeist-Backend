@@ -216,6 +216,21 @@ describe('ProjectService', () => {
 
   describe('getProjectById', () => {
     it('Should return the project information and client name acording its id', async () => {
+      const role = {
+        title: SupportedRoles.ADMIN,
+        createdAr: new Date(),
+      };
+
+      const employee = {
+        id: randomUUID(),
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'joe.doe@email.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: role,
+      };
+
       const projectId = randomUUID();
       const existingProject = {
         id: projectId,
@@ -230,10 +245,12 @@ describe('ProjectService', () => {
       };
 
       findProjectByIdStub.resolves(existingProject);
+      findRoleByEmailStub.resolves(role);
 
-      const res = await ProjectService.getProjectById(projectId);
+      const res = await ProjectService.getProjectById(projectId, employee.email);
 
       expect(res).to.exist;
+      expect(res).to.be.equal(existingProject);
       expect(res.id).to.equal(projectId);
       expect(res.matter).to.equal(existingProject.matter);
     });
@@ -241,6 +258,21 @@ describe('ProjectService', () => {
 
   describe('getProjectAndClientById', () => {
     it('Should return the project information acording its id', async () => {
+      const role = {
+        title: SupportedRoles.ADMIN,
+        createdAr: new Date(),
+      };
+
+      const employee = {
+        id: randomUUID(),
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'joe.doe@email.com',
+        imageUrl: 'http://example.com/john.jpg',
+        createdAt: new Date(),
+        idRole: role,
+      };
+
       const companyId = randomUUID();
 
       const existingCompany = {
@@ -265,7 +297,7 @@ describe('ProjectService', () => {
       findProjectByIdStub.resolves(existingProject);
       findCompanyByIdStub.resolves(existingCompany);
 
-      const res = await ProjectService.getProjectById(projectId);
+      const res = await ProjectService.getProjectById(projectId, employee.email);
       const res2 = await CompanyService.findById(companyId);
 
       expect(res).to.exist;
