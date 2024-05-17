@@ -96,6 +96,11 @@ export interface BareboneTask {
   idEmployee: string | null;
 }
 
+export interface EmployeeTask extends Task {
+  employeeFirstName: string;
+  employeeLastName: string;
+}
+
 /**
  * @brief This class defines the structure of a Task that will be updated
  *
