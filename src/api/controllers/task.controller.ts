@@ -247,26 +247,6 @@ async function updateTask(req: Request, res: Response) {
 }
 
 /**
- * @brief Validates the data received through the PUT method
- *
- * @param idTask: string - The task id.
- * @param updatedStatus: TaskStatus - The status to be validated.
- *
- * @returns {id: string, status: TaskStatus}
- */
-function validateUpdatedStatusData(idTask: string, updatedStatus: TaskStatus) {
-  const statusIdTask = idTask as string;
-  const status = updatedStatus as TaskStatus;
-
-  const validatedTaskStatusData = {
-    id: statusIdTask,
-    status: status,
-  };
-
-  return validatedTaskStatusData;
-}
-
-/**
  * @brief Sends a request to the service to update a task status with the given data.
  *
  * @param req: Request - The request object.
@@ -277,7 +257,8 @@ function validateUpdatedStatusData(idTask: string, updatedStatus: TaskStatus) {
  */
 async function updateTaskStatus(req: Request, res: Response) {
   try {
-    const { id, status } = validateUpdatedStatusData(req.params.id, req.body.status);
+    const status = z.nativeEnum(TaskStatus).parse(req.body.status);
+    const { id } = req.params;
     const data = await TaskService.updateTaskStatus(id, status);
 
     if (!data) {
@@ -287,7 +268,6 @@ async function updateTaskStatus(req: Request, res: Response) {
     res.status(200).json('Task status updated successfully');
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-    throw new Error(error);
   }
 }
 
