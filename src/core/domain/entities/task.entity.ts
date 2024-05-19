@@ -150,7 +150,7 @@ export interface UpdatedTask {
   /**
    * @param endDate: Date - End date of the task
    */
-  endDate?: Date;
+  endDate?: Date | null;
 
   /**
    * @param workedHours: number - Number of hours worked on the task
@@ -176,5 +176,5 @@ export interface UpdatedTask {
   /**
    * @param idEmployee: string - The employee associated with the task
    */
-  idEmployee: string;
+  idEmployee: string | null | undefined;
 }
