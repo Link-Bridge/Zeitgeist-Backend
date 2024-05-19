@@ -35,8 +35,8 @@ const taskSchema = z.object({
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
   endDate: z.coerce.date().nullable(),
-  workedHours: z.string().optional(),
-  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).optional(),
+  workedHours: z.number(),
+  idEmployee: z.string().uuid({ message: 'Invalid UUID format' }).nullable(),
   idProject: z.string().uuid({ message: 'Invalid UUID format' }),
 });
 
@@ -188,12 +188,10 @@ const updatedTaskSchema = z.object({
   description: z.string().min(1).max(256).optional(),
   status: taskStatusSchema.optional(),
   startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().optional(),
-  workedHours: z.string().optional(),
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional().nullable(),
+  workedHours: z.number().optional().nullable(),
   idProject: z.string().optional(),
-  idEmployee: z.string().optional(),
+  idEmployee: z.string().optional().nullable(),
 });
 
 /**
@@ -230,9 +228,10 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
+    console.log(validatedTaskData);
     const data = await TaskService.updateTask(idTask, {
       ...validatedTaskData,
-      idEmployee: validatedTaskData.idEmployee || '',
+      idEmployee: validatedTaskData.idEmployee,
     });
 
     if (!data) {
@@ -241,8 +240,8 @@ async function updateTask(req: Request, res: Response) {
 
     res.status(200).json('Task updated successfully');
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({ message: error.message });
-    throw new Error(error);
   }
 }
 

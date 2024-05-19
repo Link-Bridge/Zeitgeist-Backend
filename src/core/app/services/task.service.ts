@@ -159,6 +159,7 @@ async function findUnique(id: string, email: string): Promise<TaskDetail> {
     return {
       ...task,
       projectName: project.name,
+      employeeId: employee.id,
       employeeFirstName: employee.firstName,
       employeeLastName: employee.lastName,
     };
@@ -245,7 +246,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       task.endDate = new Date();
     }
 
-    if (task.idEmployee !== '') {
+    if (task.idEmployee) {
       const employee = await EmployeeRepository.findById(task.idEmployee);
       if (!employee) {
         throw new NotFoundError('Employee');
@@ -267,6 +268,8 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
         await EmployeeTaskRepository.create(newEmployeeTask);
       }
     }
+
+    if (task.idEmployee === null) await EmployeeTaskRepository.deleteByTaskId(idTask);
 
     const updatedTask = await TaskRepository.updateTask(idTask, task);
     return updatedTask;
