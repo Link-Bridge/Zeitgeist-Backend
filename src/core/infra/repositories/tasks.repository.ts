@@ -219,7 +219,6 @@ async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boo
       },
       data: {
         status: status,
-        updated_at: new Date(),
       },
     });
 
