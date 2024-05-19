@@ -1,3 +1,4 @@
+import { SupportedDepartments, SupportedRoles } from '../../../utils/enums';
 import { EmployeeEntity } from '../../domain/entities/employee.entity';
 import { RoleEntity } from '../../domain/entities/role.entity';
 import { NotFoundError } from '../../errors/not-found.error';
@@ -16,8 +17,25 @@ import { RoleRepository } from '../../infra/repositories/role.repository';
  *
  * @throws Error - If the department is not found
  */
-async function updateUserRole(userId: string, roleId: string, departmentId: string): Promise<EmployeeEntity> {
+async function updateUserRole(userId: string, roleId: string): Promise<EmployeeEntity> {
   try {
+    const role = await RoleRepository.findById(roleId);
+    let departmentId = '';
+
+    switch (role.title) {
+      case SupportedRoles.ADMIN:
+        departmentId = (await DepartmentRepository.findByTitle(SupportedDepartments.WITHOUT_DEPARTMENT))?.id;
+        break;
+      case SupportedRoles.LEGAL:
+        departmentId = (await DepartmentRepository.findByTitle(SupportedDepartments.LEGAL))?.id;
+        break;
+      case SupportedRoles.ACCOUNTING:
+        departmentId = (await DepartmentRepository.findByTitle(SupportedDepartments.ACCOUNTING))?.id;
+        break;
+      default:
+        departmentId = (await DepartmentRepository.findByTitle(SupportedDepartments.WITHOUT_DEPARTMENT))?.id;
+    }
+
     const data = await EmployeeRepository.updateRoleById(userId, roleId);
     const department = await DepartmentRepository.updateDepartmentByEmployeeId(userId, departmentId);
 
