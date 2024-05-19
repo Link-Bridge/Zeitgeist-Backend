@@ -14,7 +14,6 @@ router.get(
 
 router.use(checkAuthRole([SupportedRoles.ADMIN]));
 router.get('/', EmployeeController.getAllEmployees);
-router.get('/getAllEmployees', EmployeeController.getAllEmployees);
 router.delete('/delete/:id', EmployeeController.deleteEmployee);
 
 export { router as EmployeeRouter };
