@@ -1,0 +1,7 @@
+{
+  "extension": ["ts"],
+  "spec": "src/core/app/services/__tests__/**/*.test.ts",
+  "require": ["ts-node/register"],
+  "recursive": true,
+  "reporter": "spec"
+}

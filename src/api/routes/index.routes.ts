@@ -1,15 +1,45 @@
 import { Router } from 'express';
-import { DummyRouter } from './dummy.routes';
+import { checkAuthToken } from '../middlewares/auth.middleware';
+import { AdminRouter } from './admin.routes';
+import { CompanyRouter } from './company.routes';
+import { DepartmentRouter } from './department.routes';
+import { EmployeeRouter } from './employee.routes';
+import { HomeRouter } from './home.routes';
+import { NotificationRouter } from './notification.routes';
+import { ProjectRouter } from './project.routes';
+import { TaskRouter } from './task.routes';
 
-// Crea un router base para agrupar todos los routers de módulos
 const baseRouter = Router();
 
-// Instancia el router y también el controlador
-const dummyRouter = new DummyRouter().router;
+const V1_PATH = '/api/v1';
 
-// Monta el router de Dummy en una ruta base específica
-baseRouter.use('/dummy', dummyRouter);
-// Monta otros routers aquí de ser necesario
+baseRouter.use(checkAuthToken);
 
-// Exporta el router base
-export default baseRouter;
+//Auth
+baseRouter.use(`${V1_PATH}/admin`, AdminRouter);
+
+//Homepage
+baseRouter.use(`${V1_PATH}/home`, HomeRouter);
+
+// Employee
+baseRouter.use(`${V1_PATH}/employee`, EmployeeRouter);
+
+// Department
+baseRouter.use(`${V1_PATH}/department`, DepartmentRouter);
+
+//Project
+baseRouter.use(`${V1_PATH}/project`, ProjectRouter);
+
+// Tasks
+baseRouter.use(`${V1_PATH}/tasks`, TaskRouter);
+
+//Company
+baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
+
+// Notification
+baseRouter.use(`${V1_PATH}/notification`, NotificationRouter);
+
+// Health check
+baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
+
+export { baseRouter };

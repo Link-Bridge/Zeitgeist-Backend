@@ -11,7 +11,8 @@
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_department uuid,
-        id_role uuid NOT NULL
+        id_role uuid NOT NULL,
+        device_token VARCHAR(255)
     );
 
     CREATE TABLE Role (
@@ -34,6 +35,7 @@
         email VARCHAR(180) UNIQUE,
         phone_number VARCHAR(15),
         landline_phone VARCHAR(15),
+        archived boolean NOT NULL DEFAULT FALSE,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company_direct_contact uuid,
@@ -62,6 +64,7 @@
         total_hours NUMERIC(8,2),
         periodicity VARCHAR(256) DEFAULT NULL,
         is_chargeable BOOLEAN DEFAULT NULL,
+        area VARCHAR(256),
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP,
         id_company uuid NOT NULL
