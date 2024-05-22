@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { ProjectStatus, SupportedRoles, TaskStatus } from '../../../../utils/enums';
 import { CompanyEntity } from '../../../domain/entities/company.entity';
+import { EmployeeTask } from '../../../domain/entities/employee-task.entity';
 import { EmployeeEntity } from '../../../domain/entities/employee.entity';
 import { ProjectEntity } from '../../../domain/entities/project.entity';
 import { RoleEntity } from '../../../domain/entities/role.entity';
@@ -94,12 +95,15 @@ describe('HomeService', () => {
         idProject: projects[index % projects.length].id,
       }));
 
-      const employeeTasks = Array.from({ length: projects.length * MIN_TASKS_PER_PROJECT }, (_, index) => ({
-        id: randomUUID(),
-        createdAt: faker.date.recent(),
-        idEmployee: employee.id,
-        idTask: tasks[index].id,
-      }));
+      const employeeTasks: EmployeeTask[] = Array.from(
+        { length: projects.length * MIN_TASKS_PER_PROJECT },
+        (_, index) => ({
+          id: randomUUID(),
+          createdAt: faker.date.recent(),
+          idEmployee: employee.id,
+          idTask: tasks[index].id,
+        })
+      );
 
       findByEmployeeId.withArgs(employee.id).resolves(employee);
       findRoleById.withArgs(employee.idRole).returns(role);
