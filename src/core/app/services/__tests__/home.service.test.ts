@@ -158,6 +158,8 @@ describe('HomeService', () => {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Error: An unexpected error occurred');
       }
+
+      sinon.assert.calledOnce(findByEmployeeId);
     });
 
     it('Should throw an error if the role does not exist', async () => {
