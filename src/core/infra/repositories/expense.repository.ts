@@ -31,6 +31,11 @@ async function findById(id: string): Promise<ExpenseReport> {
   }
 }
 
+/**
+ * Finds expenses by report id
+ * @version 1.0.0
+ * @returns {Promise<ExpenseEntity[]>} a promise that resolves in a list of expense entities.
+ */
 async function findExpensesByReportId(reportId: string): Promise<ExpenseEntity[]> {
   try {
     const data = await Prisma.expense.findMany({
