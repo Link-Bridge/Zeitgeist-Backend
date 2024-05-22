@@ -143,6 +143,8 @@ describe('HomeService', () => {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Error: Requested Employee was not found');
       }
+
+      sinon.assert.calledOnce(findByEmployeeId);
     });
 
     it('Should throw an error if an error occurs', async () => {
@@ -178,6 +180,9 @@ describe('HomeService', () => {
         expect(error).to.be.an('error');
         expect(error.message).to.equal('Error: Requested Role was not found');
       }
+
+      sinon.assert.calledOnce(findByEmployeeId);
+      sinon.assert.calledOnce(findRoleById);
     });
   });
 });
