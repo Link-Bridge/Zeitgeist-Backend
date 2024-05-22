@@ -19,20 +19,20 @@ import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { HomeService } from '../home.service';
 
 describe('HomeService', () => {
-  let findByEmployeeId: sinon.SinonStub;
-  let findRoleById: sinon.SinonStub;
-  let findProjectsByRole: sinon.SinonStub;
-  let findEmployeeTasks: sinon.SinonStub;
-  let findTasks: sinon.SinonStub;
-  let findCompanies: sinon.SinonStub;
+  let findByEmployeeIdStub: sinon.SinonStub;
+  let findRoleByIdStub: sinon.SinonStub;
+  let findProjectsByRoleStub: sinon.SinonStub;
+  let findEmployeeTasksStub: sinon.SinonStub;
+  let findTasksStub: sinon.SinonStub;
+  let findCompaniesStub: sinon.SinonStub;
 
   beforeEach(() => {
-    findByEmployeeId = sinon.stub(EmployeeRepository, 'findById');
-    findRoleById = sinon.stub(RoleRepository, 'findById');
-    findProjectsByRole = sinon.stub(ProjectRepository, 'findAllByRole');
-    findEmployeeTasks = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
-    findTasks = sinon.stub(TaskRepository, 'findAll');
-    findCompanies = sinon.stub(CompanyRepository, 'findAll');
+    findByEmployeeIdStub = sinon.stub(EmployeeRepository, 'findById');
+    findRoleByIdStub = sinon.stub(RoleRepository, 'findById');
+    findProjectsByRoleStub = sinon.stub(ProjectRepository, 'findAllByRole');
+    findEmployeeTasksStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
+    findTasksStub = sinon.stub(TaskRepository, 'findAll');
+    findCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
   });
 
   afterEach(() => {
@@ -105,12 +105,12 @@ describe('HomeService', () => {
         })
       );
 
-      findByEmployeeId.withArgs(employee.id).resolves(employee);
-      findRoleById.withArgs(employee.idRole).returns(role);
-      findProjectsByRole.withArgs(role.title).resolves(projects);
-      findEmployeeTasks.withArgs(employee.id).resolves(employeeTasks);
-      findTasks.resolves(tasks);
-      findCompanies.resolves(companies);
+      findByEmployeeIdStub.withArgs(employee.id).resolves(employee);
+      findRoleByIdStub.withArgs(employee.idRole).returns(role);
+      findProjectsByRoleStub.withArgs(role.title).resolves(projects);
+      findEmployeeTasksStub.withArgs(employee.id).resolves(employeeTasks);
+      findTasksStub.resolves(tasks);
+      findCompaniesStub.resolves(companies);
 
       const result = await HomeService.getMyInfo(employee.id);
 
@@ -124,18 +124,18 @@ describe('HomeService', () => {
       expect(result.companies).to.deep.equal(companies);
       expect(result.companies).to.have.lengthOf(3);
 
-      sinon.assert.calledOnce(findByEmployeeId);
-      sinon.assert.calledOnce(findRoleById);
-      sinon.assert.calledOnce(findProjectsByRole);
-      sinon.assert.calledOnce(findEmployeeTasks);
-      sinon.assert.calledOnce(findTasks);
-      sinon.assert.calledOnce(findCompanies);
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+      sinon.assert.calledOnce(findRoleByIdStub);
+      sinon.assert.calledOnce(findProjectsByRoleStub);
+      sinon.assert.calledOnce(findEmployeeTasksStub);
+      sinon.assert.calledOnce(findTasksStub);
+      sinon.assert.calledOnce(findCompaniesStub);
     });
 
     it('Should throw an error if the employee does not exist', async () => {
       const employeeId = randomUUID();
 
-      findByEmployeeId.withArgs(employeeId).resolves(null);
+      findByEmployeeIdStub.withArgs(employeeId).resolves(null);
 
       try {
         await HomeService.getMyInfo(employeeId);
@@ -144,13 +144,13 @@ describe('HomeService', () => {
         expect(error.message).to.equal('Error: Requested Employee was not found');
       }
 
-      sinon.assert.calledOnce(findByEmployeeId);
+      sinon.assert.calledOnce(findByEmployeeIdStub);
     });
 
     it('Should throw an error if an error occurs', async () => {
       const employeeId = randomUUID();
 
-      findByEmployeeId.withArgs(employeeId).throws(new Error('An unexpected error occurred'));
+      findByEmployeeIdStub.withArgs(employeeId).throws(new Error('An unexpected error occurred'));
 
       try {
         await HomeService.getMyInfo(employeeId);
@@ -159,7 +159,7 @@ describe('HomeService', () => {
         expect(error.message).to.equal('Error: An unexpected error occurred');
       }
 
-      sinon.assert.calledOnce(findByEmployeeId);
+      sinon.assert.calledOnce(findByEmployeeIdStub);
     });
 
     it('Should throw an error if the role does not exist', async () => {
@@ -173,8 +173,8 @@ describe('HomeService', () => {
         idRole: randomUUID(),
       };
 
-      findByEmployeeId.withArgs(employee.id).resolves(employee);
-      findRoleById.withArgs(employee.idRole).resolves(null);
+      findByEmployeeIdStub.withArgs(employee.id).resolves(employee);
+      findRoleByIdStub.withArgs(employee.idRole).resolves(null);
 
       try {
         await HomeService.getMyInfo(employee.id);
@@ -183,8 +183,8 @@ describe('HomeService', () => {
         expect(error.message).to.equal('Error: Requested Role was not found');
       }
 
-      sinon.assert.calledOnce(findByEmployeeId);
-      sinon.assert.calledOnce(findRoleById);
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+      sinon.assert.calledOnce(findRoleByIdStub);
     });
   });
 });
