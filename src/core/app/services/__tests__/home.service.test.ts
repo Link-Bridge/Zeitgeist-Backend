@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Decimal } from '@prisma/client/runtime/library';
 import { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { ProjectStatus, SupportedRoles, TaskStatus } from '../../../../utils/enums';
@@ -17,6 +18,9 @@ import { ProjectRepository } from '../../../infra/repositories/project.repositor
 import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { HomeService } from '../home.service';
+import chai from 'chai';
+
+chai.use(chaiAsPromised);
 
 describe('HomeService', () => {
   let findByEmployeeIdStub: sinon.SinonStub;
