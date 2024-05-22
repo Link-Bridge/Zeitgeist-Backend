@@ -21,6 +21,8 @@ async function getMyInfo(idEmployee: string): Promise<Home> {
     if (!employee) throw new NotFoundError('Employee');
 
     const role = await RoleRepository.findById(employee.idRole);
+    if (!role) throw new NotFoundError('Role');
+
     const projects = await ProjectRepository.findAllByRole(role.title);
     const employeeTask = await EmployeeTaskRepository.findByEmployeeId(idEmployee);
     const tasks = await TaskRepository.findAll();

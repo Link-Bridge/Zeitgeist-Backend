@@ -127,31 +127,53 @@ describe('HomeService', () => {
       sinon.assert.calledOnce(findTasks);
       sinon.assert.calledOnce(findCompanies);
     });
-  });
 
-  it('Should throw an error if the employee does not exist', async () => {
-    const employeeId = randomUUID();
+    it('Should throw an error if the employee does not exist', async () => {
+      const employeeId = randomUUID();
 
-    findByEmployeeId.withArgs(employeeId).resolves(null);
+      findByEmployeeId.withArgs(employeeId).resolves(null);
 
-    try {
-      await HomeService.getMyInfo(employeeId);
-    } catch (error: any) {
-      expect(error).to.be.an('error');
-      expect(error.message).to.equal('Error: Requested Employee was not found');
-    }
-  });
+      try {
+        await HomeService.getMyInfo(employeeId);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Requested Employee was not found');
+      }
+    });
 
-  it('Should throw an error if an error occurs', async () => {
-    const employeeId = randomUUID();
+    it('Should throw an error if an error occurs', async () => {
+      const employeeId = randomUUID();
 
-    findByEmployeeId.withArgs(employeeId).throws(new Error('An unexpected error occurred'));
+      findByEmployeeId.withArgs(employeeId).throws(new Error('An unexpected error occurred'));
 
-    try {
-      await HomeService.getMyInfo(employeeId);
-    } catch (error: any) {
-      expect(error).to.be.an('error');
-      expect(error.message).to.equal('Error: An unexpected error occurred');
-    }
+      try {
+        await HomeService.getMyInfo(employeeId);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: An unexpected error occurred');
+      }
+    });
+
+    it('Should throw an error if the role does not exist', async () => {
+      const employee: EmployeeEntity = {
+        id: randomUUID(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        imageUrl: faker.image.url(),
+        createdAt: faker.date.recent(),
+        idRole: randomUUID(),
+      };
+
+      findByEmployeeId.withArgs(employee.id).resolves(employee);
+      findRoleById.withArgs(employee.idRole).resolves(null);
+
+      try {
+        await HomeService.getMyInfo(employee.id);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Requested Role was not found');
+      }
+    });
   });
 });
