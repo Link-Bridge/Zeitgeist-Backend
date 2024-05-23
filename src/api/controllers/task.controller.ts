@@ -228,7 +228,6 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
-    console.log(validatedTaskData);
     const data = await TaskService.updateTask(idTask, {
       ...validatedTaskData,
       idEmployee: validatedTaskData.idEmployee,
