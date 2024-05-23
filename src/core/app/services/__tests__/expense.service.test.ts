@@ -13,13 +13,11 @@ describe('ExpenseService', () => {
   let findEmployeeByEmailStub: Sinon.SinonStub;
   let findRoleByEmailStub: Sinon.SinonStub;
   let findExpenseByIdStub: Sinon.SinonStub;
-  let findExpensesByReportIdStub: Sinon.SinonStub;
 
   beforeEach(() => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
     findExpenseByIdStub = sinon.stub(ExpenseRepository, 'findById');
-    findExpensesByReportIdStub = sinon.stub(ExpenseRepository, 'findExpensesByReportId');
   });
 
   afterEach(() => {
@@ -67,7 +65,6 @@ describe('ExpenseService', () => {
       findEmployeeByEmailStub.resolves(employee);
       findRoleByEmailStub.resolves(role);
       findExpenseByIdStub.resolves(existingReport);
-      findExpensesByReportIdStub.resolves(expenses);
 
       const res = await ExpenseService.getReportById(reportId, userEmail);
 

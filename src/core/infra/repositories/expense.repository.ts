@@ -1,10 +1,7 @@
 import { Prisma } from '../../..';
-import { ExpenseEntity, ExpenseReport } from '../../domain/entities/expense.entity';
+import { ExpenseReport } from '../../domain/entities/expense.entity';
 import { NotFoundError } from '../../errors/not-found.error';
-import {
-  mapExpenseEntityFromDbModel,
-  mapExpenseReportEntityFromDbModel,
-} from '../mappers/expense-entity-from-db-model.mapper';
+import { mapExpenseReportEntityFromDbModel } from '../mappers/expense-entity-from-db-model.mapper';
 
 const RESOURCE_NAME = 'Expense report';
 
@@ -34,23 +31,4 @@ async function findById(id: string): Promise<ExpenseReport> {
   }
 }
 
-/**
- * Finds expenses by report id
- * @version 1.0.0
- * @returns {Promise<ExpenseEntity[]>} a promise that resolves in a list of expense entities.
- */
-async function findExpensesByReportId(reportId: string): Promise<ExpenseEntity[]> {
-  try {
-    const data = await Prisma.expense.findMany({
-      where: {
-        id_report: reportId,
-      },
-    });
-
-    return data.map(mapExpenseEntityFromDbModel);
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
-  }
-}
-
-export const ExpenseRepository = { findById, findExpensesByReportId };
+export const ExpenseRepository = { findById };
