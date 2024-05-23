@@ -18,6 +18,7 @@ async function findById(id: string): Promise<ExpenseReport> {
       },
       include: {
         expense: true,
+        employee: true,
       },
     });
 

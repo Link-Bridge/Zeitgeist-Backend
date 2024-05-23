@@ -1,4 +1,4 @@
-import { expense } from '@prisma/client';
+import { employee, expense } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
 /**
@@ -80,6 +80,8 @@ export interface ExpenseEntity {
  * @param createdAt?: Date - Expense Report creation date (optional)
  * @param updatedAt?: Date - Expense Report update date (optional)
  * @param idEmployee: string - Unique identifier of the employee associated
+ * @param employeeFirstName?: string - Employee first name (optional)
+ * @param employeeLastName?: string - Employee last name (optional)
  * @param expenses?: ExpenseEntity[] - Array of expenses associated with the report (optional)
  * @param totalAmount?: Decimal - Total amount of the expenses associated with the report (optional)
  *
@@ -126,6 +128,14 @@ export interface ExpenseReport {
    */
   idEmployee: string;
   /**
+   * @param employeeFirstName: string - Employee first name
+   */
+  employeeFirstName?: string;
+  /**
+   * @param employeeLastName: string - Employee last name
+   */
+  employeeLastName?: string;
+  /**
    * @param expenses: ExpenseEntity[] - Array of expenses associated with the report
    */
   expenses?: ExpenseEntity[];
@@ -148,6 +158,7 @@ export interface ExpenseReport {
  * @param createdAt: Date - Expense Report creation date
  * @param updatedAt?: Date - Expense Report update date (optional)
  * @param id_employee: string - Unique identifier of the employee associated
+ * @param employee?: employee - Employee information associated with the report (optional)
  * @param expense?: expense[] - Array of expenses associated with the report (optional)
  * @param totalAmount?: Decimal - Total amount of the expenses associated with the report (optional)
  *
@@ -193,6 +204,10 @@ export interface RawExpenseReport {
    * @param idEmployee: string - Employee id
    */
   id_employee: string;
+  /**
+   * @param employee: employee - Employee information associated with the report
+   */
+  employee?: employee | null;
   /**
    * @param expense: expense[] - Array of expenses associated with the report
    */
