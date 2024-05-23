@@ -6,7 +6,7 @@ export function mapExpenseEntityFromDbModel(model: expense): ExpenseEntity {
     id: model.id,
     title: model.title,
     justification: model.justification,
-    total_amount: model.total_amount,
+    totalAmount: model.total_amount,
     status: model.status ? model.status : '',
     category: model.category ? model.category : '',
     date: model.date,

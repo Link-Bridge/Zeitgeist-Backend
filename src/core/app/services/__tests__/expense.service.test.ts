@@ -46,7 +46,7 @@ describe('ExpenseService', () => {
           id: randomUUID(),
           title: faker.lorem.words(3),
           justification: faker.lorem.words(10),
-          total_amount: faker.number.float(),
+          totalAmount: faker.number.float(),
           date: new Date(),
           createdAt: new Date(),
           idReport: reportId,

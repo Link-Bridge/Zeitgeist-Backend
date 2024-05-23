@@ -28,10 +28,10 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
     let totalAmount = new Decimal(0);
     if (expenseReport.expenses) {
       expenseReport.expenses.forEach(expense => {
-        totalAmount = totalAmount.add(expense.total_amount);
+        totalAmount = totalAmount.add(expense.totalAmount);
       });
     }
-    expenseReport.total_amount = totalAmount;
+    expenseReport.totalAmount = totalAmount;
 
     return expenseReport;
   } catch (error: any) {

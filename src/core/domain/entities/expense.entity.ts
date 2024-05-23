@@ -6,7 +6,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  * @param id: string - Unique identifier of the expense
  * @param title: string - Expense title
  * @param justification: string - Expense justification
- * @param total_amount: Decimal - Expense amount
+ * @param totalAmount: Decimal - Expense amount
  + @param status?: string - Expense status (optional)
  * @param category?: string - Expense category (optional)
  * @param date: Date - Expense date
@@ -34,9 +34,9 @@ export interface ExpenseEntity {
    */
   justification: string;
   /**
-   * @param total_amount: Decimal - Expense amount
+   * @param totalAmount: Decimal - Expense amount
    */
-  total_amount: Decimal;
+  totalAmount: Decimal;
   /**
    * @param status: string - Expense status
    */
@@ -80,7 +80,7 @@ export interface ExpenseEntity {
  * @param updatedAt?: Date - Expense Report update date (optional)
  * @param idEmployee: string - Unique identifier of the employee associated
  * @param expenses?: ExpenseEntity[] - Array of expenses associated with the report (optional)
- * @param total_amount?: Decimal - Total amount of the expenses associated with the report (optional)
+ * @param totalAmount?: Decimal - Total amount of the expenses associated with the report (optional)
  *
  * @return void
  *
@@ -130,7 +130,7 @@ export interface ExpenseReport {
   expenses?: ExpenseEntity[];
 
   /**
-   * @param total_amount: Decimal - Total amount of the expenses associated with the report
+   * @param totalAmount: Decimal - Total amount of the expenses associated with the report
    */
-  total_amount?: Decimal;
+  totalAmount?: Decimal;
 }
