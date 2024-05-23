@@ -76,10 +76,11 @@ export interface ExpenseEntity {
  * @param startDate: Date - Expense Report start date
  * @param endDate?: Date - Expense Report end date (optional)
  + @param status?: string - Expense Report status (optional)
- * @param createdAt: Date - Expense Report creation date
+ * @param createdAt?: Date - Expense Report creation date (optional)
  * @param updatedAt?: Date - Expense Report update date (optional)
  * @param idEmployee: string - Unique identifier of the employee associated
  * @param expenses?: ExpenseEntity[] - Array of expenses associated with the report (optional)
+ * @param total_amount?: Decimal - Total amount of the expenses associated with the report (optional)
  *
  * @return void
  *
@@ -114,7 +115,7 @@ export interface ExpenseReport {
   /**
    * @param createdAt: Date - Expense report creation date
    */
-  createdAt: Date;
+  createdAt?: Date | null;
   /**
    * @param updatedAt: Date - Expense report update date
    */
@@ -127,4 +128,9 @@ export interface ExpenseReport {
    * @param expenses: ExpenseEntity[] - Array of expenses associated with the report
    */
   expenses?: ExpenseEntity[];
+
+  /**
+   * @param total_amount: Decimal - Total amount of the expenses associated with the report
+   */
+  total_amount?: Decimal;
 }

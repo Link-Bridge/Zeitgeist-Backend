@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library';
 import { SupportedRoles } from '../../../utils/enums';
 import { ExpenseReport } from '../../domain/entities/expense.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -14,15 +15,23 @@ import { RoleRepository } from '../../infra/repositories/role.repository';
 
 async function getReportById(reportId: string, email: string): Promise<ExpenseReport> {
   try {
-    const employee = await EmployeeRepository.findByEmail(email);
-    const role = await RoleRepository.findByEmail(email);
-    const expenseReport = await ExpenseRepository.findById(reportId);
-    const expenses = await ExpenseRepository.findExpensesByReportId(reportId);
-    expenseReport.expenses = expenses;
+    const [employee, role, expenseReport] = await Promise.all([
+      EmployeeRepository.findByEmail(email),
+      RoleRepository.findByEmail(email),
+      ExpenseRepository.findById(reportId),
+    ]);
 
     if (role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() && expenseReport.idEmployee != employee?.id) {
       throw new Error('Unauthorized employee');
     }
+
+    let totalAmount = new Decimal(0);
+    if (expenseReport.expenses) {
+      expenseReport.expenses.forEach(expense => {
+        totalAmount = totalAmount.add(expense.total_amount);
+      });
+    }
+    expenseReport.total_amount = totalAmount;
 
     return expenseReport;
   } catch (error: any) {

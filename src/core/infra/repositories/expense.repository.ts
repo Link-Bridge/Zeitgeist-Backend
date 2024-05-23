@@ -19,6 +19,9 @@ async function findById(id: string): Promise<ExpenseReport> {
       where: {
         id: id,
       },
+      include: {
+        expense: true,
+      },
     });
 
     if (!data) {
