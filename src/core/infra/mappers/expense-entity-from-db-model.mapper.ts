@@ -1,5 +1,5 @@
 import { expense } from '@prisma/client';
-import { ExpenseEntity, ExpenseReport } from '../../domain/entities/expense.entity';
+import { ExpenseEntity, ExpenseReport, RawExpenseReport } from '../../domain/entities/expense.entity';
 
 export function mapExpenseEntityFromDbModel(model: expense): ExpenseEntity {
   return {
@@ -17,20 +17,7 @@ export function mapExpenseEntityFromDbModel(model: expense): ExpenseEntity {
   };
 }
 
-type rawExpenseReport = {
-  id: string;
-  title: string;
-  description: string;
-  start_date: Date;
-  end_date: Date | null;
-  status: string | null;
-  created_at: Date;
-  updated_at: Date | null;
-  id_employee: string;
-  expense: expense[] | null;
-};
-
-export function mapExpenseReportEntityFromDbModel(model: rawExpenseReport): ExpenseReport {
+export function mapExpenseReportEntityFromDbModel(model: RawExpenseReport): ExpenseReport {
   return {
     id: model.id,
     title: model.title,

@@ -1,3 +1,4 @@
+import { expense } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
 /**
@@ -133,4 +134,67 @@ export interface ExpenseReport {
    * @param totalAmount: Decimal - Total amount of the expenses associated with the report
    */
   totalAmount?: Decimal;
+}
+
+/**
+ * @brief This class is used to define the structure of the Expense Report Raw Data from the db.
+ *
+ * @param id: string - Unique identifier of the expense report
+ * @param title: string - Expense Report title
+ * @param description: string - Expense Report description
+ * @param start_date: Date - Expense Report start date
+ * @param end_date?: Date - Expense Report end date (optional)
+ + @param status?: string - Expense Report status (optional)
+ * @param createdAt: Date - Expense Report creation date
+ * @param updatedAt?: Date - Expense Report update date (optional)
+ * @param id_employee: string - Unique identifier of the employee associated
+ * @param expense?: expense[] - Array of expenses associated with the report (optional)
+ * @param totalAmount?: Decimal - Total amount of the expenses associated with the report (optional)
+ *
+ * @return void
+ *
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
+ */
+
+export interface RawExpenseReport {
+  /**
+   * @param id: string - Expense report id
+   */
+  id: string;
+  /**
+   * @param title: string - Expense report title
+   */
+  title: string;
+  /**
+   * @param description: string - Expense report description
+   */
+  description: string;
+  /**
+   * @param startDate: Date - Expense report start date
+   */
+  start_date: Date;
+  /**
+   * @param endDate: Date - Expense report end date
+   */
+  end_date?: Date | null;
+  /**
+   * @param status: string - Expense report status
+   */
+  status?: string | null;
+  /**
+   * @param createdAt: Date - Expense report creation date
+   */
+  createdAt?: Date | null;
+  /**
+   * @param updatedAt: Date - Expense report update date
+   */
+  updatedAt?: Date | null;
+  /**
+   * @param idEmployee: string - Employee id
+   */
+  id_employee: string;
+  /**
+   * @param expense: expense[] - Array of expenses associated with the report
+   */
+  expense?: expense[] | null;
 }
