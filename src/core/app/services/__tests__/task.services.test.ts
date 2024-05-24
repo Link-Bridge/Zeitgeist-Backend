@@ -516,6 +516,7 @@ describe('TaskService', () => {
         projectName: existingProject.name,
         employeeFirstName: existingEmployee.firstName,
         employeeLastName: existingEmployee.lastName,
+        employeeId: employeeId,
       };
 
       findTaskByIdStub.resolves(existingTask);
