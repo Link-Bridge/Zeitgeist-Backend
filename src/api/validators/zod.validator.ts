@@ -17,7 +17,7 @@ export const zodValidPhoneNumber = z
 
 export const zodValidRfc = z
   .union([
-    z.string().regex(/^[A-Z&Ñ]{3,4}\d{6}(?:[A-Z\d]{3})?$/, {
+    z.string().regex(/^[a-zA-Z]{3,4}[0-9]{6}[a-zA-Z0-9]{3}$/, {
       message: 'Provided RFC is not valid',
     }),
     z.string().length(0),
