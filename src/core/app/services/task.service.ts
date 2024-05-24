@@ -109,6 +109,16 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       idProject: newTask.idProject,
     };
 
+    if (task.endDate !== null && task.endDate !== undefined && !areDatesValid(task.startDate, task.endDate)) {
+      throw new Error('Start date must be before end date');
+    }
+    if (task.workedHours !== undefined && task.workedHours < 0) {
+      throw new Error('Worked hours must be greater than or equal to 0');
+    }
+    if (task.workedHours !== undefined && task.workedHours > 1000) {
+      throw new Error('Worked hours must be lower than or equal to 1000');
+    }
+
     const createdTask = await TaskRepository.createTask(task);
     if (!createdTask) {
       throw new Error('Task already exists');
