@@ -60,7 +60,7 @@ async function updateClient(req: Request, res: Response) {
  * @param res
  */
 
-async function getAll(req: Request, res: Response) {
+async function getAll(_: Request, res: Response) {
   try {
     const data = await CompanyService.findAll();
     res.status(200).json(data);

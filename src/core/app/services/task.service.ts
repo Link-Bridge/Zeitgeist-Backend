@@ -11,6 +11,16 @@ import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
 
 /**
+ * @description Validates that a start date should be before than an end date
+ * @param {Date} start Start date
+ * @param {Date} end End date
+ * @returns {boolean} If dates are valid
+ */
+const areDatesValid = (start: Date, end: Date): boolean => {
+  return new Date(start).getTime() <= new Date(end).getTime();
+};
+
+/**
  * Gets all tasks from a unique project using the repository.
  *
  * @param projectId: string - projectId to which the tasks are related.
@@ -98,6 +108,16 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       createdAt: new Date(),
       idProject: newTask.idProject,
     };
+
+    if (task.endDate !== null && task.endDate !== undefined && !areDatesValid(task.startDate, task.endDate)) {
+      throw new Error('Start date must be before end date');
+    }
+    if (task.workedHours !== undefined && task.workedHours < 0) {
+      throw new Error('Worked hours must be greater than or equal to 0');
+    }
+    if (task.workedHours !== undefined && task.workedHours > 1000) {
+      throw new Error('Worked hours must be lower than or equal to 1000');
+    }
 
     const createdTask = await TaskRepository.createTask(task);
     if (!createdTask) {
@@ -244,6 +264,22 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     const status = task.status;
     if (status === TaskStatus.DONE) {
       task.endDate = new Date();
+    }
+
+    if (
+      task.startDate !== null &&
+      task.endDate !== null &&
+      task.startDate !== undefined &&
+      task.endDate !== undefined &&
+      !areDatesValid(task.startDate, task.endDate)
+    ) {
+      throw new Error('Start date must be before end date');
+    }
+    if (task.workedHours !== undefined && task.workedHours < 0) {
+      throw new Error('Worked hours must be greater than or equal to 0');
+    }
+    if (task.workedHours !== undefined && task.workedHours > 1000) {
+      throw new Error('Worked hours must be lower than or equal to 1000');
     }
 
     if (task.idEmployee) {
