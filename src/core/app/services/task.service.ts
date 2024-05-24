@@ -11,6 +11,16 @@ import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
 
 /**
+ * @description Validates that a start date should be before than an end date
+ * @param {Date} start Start date
+ * @param {Date} end End date
+ * @returns {boolean} If dates are valid
+ */
+const areDatesValid = (start: Date, end: Date): boolean => {
+  return new Date(start).getTime() <= new Date(end).getTime();
+}
+
+/**
  * Gets all tasks from a unique project using the repository.
  *
  * @param projectId: string - projectId to which the tasks are related.
