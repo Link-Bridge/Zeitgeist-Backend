@@ -16,7 +16,7 @@ async function getExpenses(email: string): Promise<ExpenseReport[]> {
     const role = await RoleRepository.findByEmail(email);
     const employee = await EmployeeRepository.findByEmail(email);
 
-    if (!employee) {
+    if (!role || !employee) {
       throw new Error('Employee not found');
     }
 
@@ -31,9 +31,9 @@ async function getExpenses(email: string): Promise<ExpenseReport[]> {
     }
 
     if (!data) {
-      throw new Error('An unexpected error occured');
+      throw new Error('An unexpected error occurred');
     }
-
+    
     for (let i = 0; i < data.length; i++) {
       let totalAmount = new Decimal(0);
       data[i].expenses?.forEach(record => {
@@ -41,10 +41,13 @@ async function getExpenses(email: string): Promise<ExpenseReport[]> {
       });
       data[i].totalAmount = totalAmount;
     }
-
     return data;
   } catch (error: any) {
-    throw new Error('An unexpected error occured');
+    if (error.message === 'Employee not found') {
+      throw new Error('Employee not found');
+    } else {
+      throw new Error('An unexpected error occurred');
+    }
   }
 }
 
@@ -81,7 +84,7 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
     if (error.message === 'Unauthorized employee') {
       throw error;
     }
-    throw new Error('An unexpected error occured');
+    throw new Error('An unexpected error occurred');
   }
 }
 
