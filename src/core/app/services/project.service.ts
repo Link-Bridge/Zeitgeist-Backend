@@ -7,6 +7,17 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
 import { UpdateProjectBody } from '../interfaces/project.interface';
 import { EmployeeService } from './employee.service';
+
+/**
+ * @description Validates that a start date should be before than an end date
+ * @param {Date} start Start date
+ * @param {Date} end End date
+ * @returns {boolean} If dates are valid
+ */
+const areDatesValid = (start: Date, end: Date): boolean => {
+  return new Date(start).getTime() <= new Date(end).getTime();
+};
+
 interface CreateProjectData {
   name: string;
   matter: string | null;
@@ -29,6 +40,9 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity | s
   try {
     const company = await CompanyRepository.findById(data.idCompany);
     if (company.archived) throw new Error('Cannot create projects for archived companies');
+    if (data.endDate !== null && !areDatesValid(data.startDate, data.endDate)) {
+      throw new Error('Start date must be before end date');
+    }
 
     const newProject = await ProjectRepository.createProject({
       id: randomUUID(),
@@ -40,7 +54,7 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity | s
       category: data.category,
       endDate: data.endDate,
       idCompany: data.idCompany,
-      isChargeable: data.isChargeable ? data.isChargeable : undefined,
+      isChargeable: data.isChargeable,
       periodicity: data.periodicity,
       startDate: data.startDate,
       createdAt: new Date(),
@@ -134,15 +148,22 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     throw new NotFoundError('Project not found');
   }
 
+  const startDate = body.startDate ?? project.startDate;
+  const endDate = body.endDate ?? null;
+
+  if (endDate !== null && !areDatesValid(startDate, endDate)) {
+    throw new Error('Start date must be before end date');
+  }
+
   return await ProjectRepository.updateProject({
     id: project.id,
     name: body.name ?? project.name,
     idCompany: body.idCompany ?? project.idCompany,
     category: body.category ?? project.category,
-    matter: body.matter ?? project.matter,
-    description: body.description ?? project.description,
-    startDate: body.startDate ?? project.startDate,
-    endDate: body.endDate ?? null,
+    matter: body.matter ?? null,
+    description: body.description ?? null,
+    startDate,
+    endDate,
     periodicity: body.periodicity ?? project.periodicity,
     area: body.area ?? project.area,
     payed: body.payed,

@@ -114,7 +114,7 @@ describe('Task Service', () => {
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
     startDate: faker.date.recent(),
     endDate: faker.date.future(),
-    workedHours: faker.number.int(),
+    workedHours: faker.number.int() % 1000,
     idProject: projectID,
     idEmployee: randomUUID(),
   };
