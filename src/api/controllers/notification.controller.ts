@@ -25,7 +25,7 @@ const userToken = z.object({
  * @return {z.ZodObject} - The schema for notification
  */
 
-const notificacionSchema = z.object({
+const notificationSchema = z.object({
   title: z.string(),
   body: z.string()
 });
