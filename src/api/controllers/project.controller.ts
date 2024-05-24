@@ -33,8 +33,39 @@ const createProjectRequestSchema = z.object({
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable(),
   periodicity: z.nativeEnum(ProjectPeriodicity),
-  isChargeable: z.boolean().nullable(),
+  isChargeable: z.boolean().optional(),
   area: z.nativeEnum(SupportedDepartments),
+});
+
+const updateProjectRequestSchema = z.object({
+  name: z
+    .string()
+    .min(1, {
+      message: 'Title must have at least 1 character',
+    })
+    .max(70, {
+      message: 'Title must have at most 70 characters',
+    })
+    .optional(),
+  idCompany: z.string().uuid({ message: 'Please provide valid UUID' }).optional(),
+  category: z.nativeEnum(ProjectCategory).optional(),
+  matter: z.string().optional().nullable(),
+  description: z
+    .string()
+    .min(1, {
+      message: 'Description must have at least 1 character',
+    })
+    .max(256, {
+      message: 'Description must have at most 255 characters',
+    })
+    .optional()
+    .nullable(),
+  status: z.nativeEnum(ProjectStatus).optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().nullable().optional(),
+  periodicity: z.nativeEnum(ProjectPeriodicity).optional(),
+  isChargeable: z.boolean().optional(),
+  area: z.nativeEnum(SupportedDepartments).optional(),
 });
 
 const reportRequestSchema = z.object({
@@ -155,7 +186,7 @@ async function getProjectById(req: Request, res: Response) {
  */
 async function updateProject(req: Request, res: Response) {
   try {
-    createProjectRequestSchema.parse(req.body);
+    updateProjectRequestSchema.parse(req.body);
     const projectData = req.body;
     const updatedProject = await ProjectService.updateProject({ ...projectData, id: req.params.id });
     res.status(200).json({ data: updatedProject });
