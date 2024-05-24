@@ -17,6 +17,20 @@ const userToken = z.object({
 });
 
 /**
+ * @brief Schema for notification
+ *
+ * @param title: string - Title of notification
+ * @param body: string - Body of notification
+ *
+ * @return {z.ZodObject} - The schema for notification
+ */
+
+const notificacionSchema = z.object({
+  title: z.string(),
+  body: z.string()
+});
+
+/**
  * @brief Function that calls the service to save the token of the employee
  *
  * @param req: Request
@@ -71,7 +85,7 @@ async function createNotification(req: Request, res: Response) {
  * @throws {Error} If an unexpected error occurs
  */
 
-async function getAllNotifications(req: Request, res: Response) {
+async function getAllNotifications(_: Request, res: Response) {
   try {
     const data = await NotificationService.getAllNotifications();
     res.status(200).json({ data });
