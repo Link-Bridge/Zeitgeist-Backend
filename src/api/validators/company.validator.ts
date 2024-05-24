@@ -33,17 +33,12 @@ const companySchema = z.object({
 });
 
 export const updateCompanySchema = z.object({
-  id: zodValidUuid,
   name: z
     .string()
     .min(1, { message: 'Name cannot be empty.' })
     .max(70, { message: 'Name must be at most 70 characters long.' }),
   email: zodValidEmail.optional().nullable(),
-  phoneNumber: zodValidPhoneNumber
-    .min(10, { message: 'Phone number must be at least 10 characters.' })
-    .max(15, { message: 'Phone number cannot be longer than 15 characters.' })
-    .optional()
-    .nullable(),
+  phoneNumber: zodValidPhoneNumber.optional().nullable(),
   landline_phone: z
     .string()
     .min(10, { message: 'Landlinephone number must be between 10 and 15 digits long' })

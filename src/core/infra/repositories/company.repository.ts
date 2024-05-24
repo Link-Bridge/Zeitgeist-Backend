@@ -162,6 +162,8 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
 
     return mapCompanyEntityFromDbModel(updatedCompany);
   } catch (error: any) {
+    if (error.code == 'P2002' && (error.meta?.target as string[])[0] === 'email')
+      throw new Error('Email already registered.');
     throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
   }
 }

@@ -44,12 +44,13 @@ async function getUnique(req: Request, res: Response) {
  */
 async function updateClient(req: Request, res: Response) {
   try {
+    const id = req.params.id;
     const validSchema = updateCompanySchema.parse(req.body);
-    const updatedCompany = await CompanyService.update(validSchema);
+    const updatedCompany = await CompanyService.update({ ...validSchema, id });
 
-    res.status(200).json({ data: updatedCompany });
+    res.status(200).json(updatedCompany);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 }
 
@@ -79,7 +80,7 @@ async function getAll(_: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const company: CompanyEntity = req.body.company;
+    const company: CompanyEntity = req.body;
     if (!company) throw new Error('Missing company data in body');
 
     companySchema.parse(company);
