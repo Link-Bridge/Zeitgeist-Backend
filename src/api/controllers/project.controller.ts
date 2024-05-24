@@ -4,16 +4,6 @@ import { ProjectReportService } from '../../core/app/services/project-report.ser
 import { ProjectService } from '../../core/app/services/project.service';
 import { ProjectCategory, ProjectPeriodicity, ProjectStatus, SupportedDepartments } from '../../utils/enums';
 
-/**
- * @description Validates that a start date should be before than an end date
- * @param {Date} start Start date
- * @param {Date} end End date
- * @returns {boolean} If dates are valid
- */
-const areDatesValid = (start: Date, end: Date): boolean => {
-  return new Date(start).getTime() <= new Date(end).getTime();
-}
-
 const idSchema = z.object({
   id: z.string().uuid(),
 });
