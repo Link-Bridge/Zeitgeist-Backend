@@ -19,7 +19,7 @@ const userToken = z.object({
 /**
  * @brief Schema for notification
  *
- * @param id: string - Id of notification
+ * @param id: uuid - Id of notification
  * @param title: string - Title of notification
  * @param body: string - Body of notification
  * @param createdAt: Date - Date of creation of notification
@@ -29,7 +29,7 @@ const userToken = z.object({
  */
 
 const notificationSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   title: z.string(),
   body: z.string(),
   createdAt: z.coerce.date(),
