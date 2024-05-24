@@ -6,6 +6,30 @@ import { mapExpenseReportEntityFromDbModel } from '../mappers/expense-entity-fro
 const RESOURCE_NAME = 'Expense report';
 
 /**
+ * Finds a expense report by employeeId
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport[]>} a promise that resolves in a expense report entity.
+ */
+async function findAll(): Promise<ExpenseReport[]> {
+  try {
+    const data = await Prisma.expense_report.findMany({
+      include: {
+        expense: true,
+        employee: true,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapExpenseReportEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
  * Finds a expense report by id
  * @version 1.0.0
  * @returns {Promise<ExpenseReport>} a promise that resolves in a expense report entity.
@@ -32,4 +56,31 @@ async function findById(id: string): Promise<ExpenseReport> {
   }
 }
 
-export const ExpenseRepository = { findById };
+/**
+ * Finds a expense report by employeeId
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport[]>} a promise that resolves in a expense report entity.
+ */
+async function findByEmployeeId(id: string): Promise<ExpenseReport[]> {
+  try {
+    const data = await Prisma.expense_report.findMany({
+      where: {
+        id_employee: id,
+      },
+      include: {
+        expense: true,
+        employee: true,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapExpenseReportEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const ExpenseRepository = { findAll, findById, findByEmployeeId };

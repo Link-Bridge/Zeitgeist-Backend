@@ -6,6 +6,49 @@ import { ExpenseRepository } from '../../infra/repositories/expense.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
 
 /**
+ * @param email the email of the user
+ * @returns {Promise<ExpenseReport[]>} a promise that resolves the expense records
+ * @throws {Error} if an unexpected error occurs
+ */
+
+async function getExpenses(email: string): Promise<ExpenseReport[]> {
+  try {
+    const role = await RoleRepository.findByEmail(email);
+    const employee = await EmployeeRepository.findByEmail(email);
+
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
+
+    let data;
+    if (role.title.toUpperCase() === SupportedRoles.LEGAL.toUpperCase()) {
+      data = await ExpenseRepository.findByEmployeeId(employee.id);
+    } else if (
+      role.title.toUpperCase() === SupportedRoles.ADMIN.toUpperCase() ||
+      role.title.toUpperCase() === SupportedRoles.ACCOUNTING.toUpperCase()
+    ) {
+      data = await ExpenseRepository.findAll();
+    }
+
+    if (!data) {
+      throw new Error('An unexpected error occured');
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      let totalAmount = new Decimal(0);
+      data[i].expenses?.forEach(record => {
+        totalAmount = totalAmount.add(record.totalAmount);
+      });
+      data[i].totalAmount = totalAmount;
+    }
+
+    return data;
+  } catch (error: any) {
+    throw new Error('An unexpected error occured');
+  }
+}
+
+/**
  *
  * @param getReportById the id of the expense report we want the details
  * @param email the email of the user
@@ -42,4 +85,4 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
   }
 }
 
-export const ExpenseService = { getReportById };
+export const ExpenseService = { getExpenses, getReportById };
