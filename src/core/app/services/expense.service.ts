@@ -33,7 +33,7 @@ async function getExpenses(email: string): Promise<ExpenseReport[]> {
     if (!data) {
       throw new Error('An unexpected error occurred');
     }
-    
+
     for (let i = 0; i < data.length; i++) {
       let totalAmount = new Decimal(0);
       data[i].expenses?.forEach(record => {
