@@ -16,7 +16,7 @@ import { EmployeeService } from './employee.service';
  */
 const areDatesValid = (start: Date, end: Date): boolean => {
   return new Date(start).getTime() <= new Date(end).getTime();
-}
+};
 
 interface CreateProjectData {
   name: string;

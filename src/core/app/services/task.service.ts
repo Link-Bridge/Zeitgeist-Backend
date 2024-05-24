@@ -18,7 +18,7 @@ import { TaskDetail } from '../interfaces/task.interface';
  */
 const areDatesValid = (start: Date, end: Date): boolean => {
   return new Date(start).getTime() <= new Date(end).getTime();
-}
+};
 
 /**
  * Gets all tasks from a unique project using the repository.
