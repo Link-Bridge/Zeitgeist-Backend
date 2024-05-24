@@ -33,7 +33,7 @@ const notificationSchema = z.object({
   title: z.string(),
   body: z.string(),
   createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date().nullable()
+  updatedAt: z.coerce.date().optional()
 });
 
 /**
