@@ -54,7 +54,7 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity | s
       category: data.category,
       endDate: data.endDate,
       idCompany: data.idCompany,
-      isChargeable: data.isChargeable ? data.isChargeable : undefined,
+      isChargeable: data.isChargeable,
       periodicity: data.periodicity,
       startDate: data.startDate,
       createdAt: new Date(),
