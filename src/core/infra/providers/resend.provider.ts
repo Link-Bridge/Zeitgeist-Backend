@@ -12,11 +12,11 @@ const resend = new Resend(process.env[EnvConfigKeys.RESEND_API_KEY]);
  * @param body string - Body of the email.
  * @returns data - The data returned from the email provider.
  */
-export async function sendEmail(emailTo: [string], subject: string, body: string) {
+async function sendEmail(emailTo: [string], subject: string, body: string) {
   try {
     const { data, error } = await resend.emails.send({
-      from: `Zeitgeist <${process.env[EnvConfigKeys.RESEND_EMAIL_FROM]}>`,
-      to: emailTo,
+      from: `Zeitgeist <onboarding@resend.dev>`,
+      to: 'linkbridge2024@gmail.com',
       subject,
       html: body,
     });
@@ -30,3 +30,5 @@ export async function sendEmail(emailTo: [string], subject: string, body: string
     console.error({ error });
   }
 }
+
+export const EmailProvider = { sendEmail };
