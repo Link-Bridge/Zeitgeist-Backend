@@ -140,6 +140,7 @@ async function getProjectById(req: Request, res: Response) {
  */
 async function updateProject(req: Request, res: Response) {
   try {
+    createProjectRequestSchema.parse(req.body);
     const projectData = req.body;
     const updatedProject = await ProjectService.updateProject({ ...projectData, id: req.params.id });
     res.status(200).json({ data: updatedProject });
