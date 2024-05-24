@@ -266,6 +266,22 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       task.endDate = new Date();
     }
 
+    if (
+      task.startDate !== null &&
+      task.endDate !== null &&
+      task.startDate !== undefined &&
+      task.endDate !== undefined &&
+      !areDatesValid(task.startDate, task.endDate)
+    ) {
+      throw new Error('Start date must be before end date');
+    }
+    if (task.workedHours !== undefined && task.workedHours < 0) {
+      throw new Error('Worked hours must be greater than or equal to 0');
+    }
+    if (task.workedHours !== undefined && task.workedHours > 1000) {
+      throw new Error('Worked hours must be lower than or equal to 1000');
+    }
+
     if (task.idEmployee) {
       const employee = await EmployeeRepository.findById(task.idEmployee);
       if (!employee) {
