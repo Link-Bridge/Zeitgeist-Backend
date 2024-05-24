@@ -30,7 +30,7 @@ const taskSchema = z.object({
       message: 'Description must have at least 1 character',
     })
     .max(256, {
-      message: 'Description must have at most 256 characters',
+      message: 'Description must have at most 255 characters',
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),

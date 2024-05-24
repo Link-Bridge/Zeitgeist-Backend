@@ -9,11 +9,26 @@ const idSchema = z.object({
 });
 
 const createProjectRequestSchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(1, {
+      message: 'Title must have at least 1 character',
+    })
+    .max(70, {
+      message: 'Title must have at most 70 characters',
+    }),
   idCompany: z.string().uuid({ message: 'Please provide valid UUID' }),
   category: z.nativeEnum(ProjectCategory),
   matter: z.string().optional(),
-  description: z.string().optional(),
+  description: z
+    .string()
+    .min(1, {
+      message: 'Description must have at least 1 character',
+    })
+    .max(256, {
+      message: 'Description must have at most 255 characters',
+    })
+    .optional(),
   status: z.nativeEnum(ProjectStatus),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable(),
