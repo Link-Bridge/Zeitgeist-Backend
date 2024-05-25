@@ -16,7 +16,7 @@ describe('NotificationService', () => {
     sinon.restore();
   });
 
-  it('should send a notification to the employee', async () => {
+  it('should send a notification with the assigned task to the employee', async () => {
     findById.resolves({
       id: faker.string.uuid(),
       firstName: faker.person.firstName(),
