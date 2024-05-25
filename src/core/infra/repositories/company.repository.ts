@@ -168,6 +168,13 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   }
 }
 
+/**
+ * @brief deletes a company by id
+ *
+ * @param id
+ * @returns {Promise<CompanyEntity>}
+ */
+
 async function deleteCompanytById(id: string): Promise<CompanyEntity> {
   try {
     const data = await Prisma.company.delete({

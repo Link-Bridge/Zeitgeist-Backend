@@ -103,6 +103,13 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
   }
 }
 
+/**
+ * @brief Delete a client
+ *
+ * @param id
+ * @param email
+ * @returns {Promise<CompanyEntity>}
+ */
 async function deleteCompanyById(id: string, email: string): Promise<CompanyEntity> {
   try {
     const role = await RoleRepository.findByEmail(email);

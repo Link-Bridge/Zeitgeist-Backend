@@ -94,6 +94,15 @@ async function create(req: Request, res: Response) {
   }
 }
 
+/**
+ * Finds deleteCompany
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<void>}
+ * @throws {Error}
+ */
+
 async function deleteCompany(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
