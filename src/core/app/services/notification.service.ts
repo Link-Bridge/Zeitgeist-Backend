@@ -1,13 +1,12 @@
+import { notifyAssignedTaskEmailBody } from '../../../utils/email/email.templates';
 import { Notification } from '../../domain/entities/notification.entity';
+import { Task } from '../../domain/entities/task.entity';
+import { EmailProvider } from '../../infra/providers/resend.provider';
+import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { NotificationRepository } from '../../infra/repositories/notification.repository';
 
 /**
- * @brief Interface for the userToken
- *
- * @param email: string
- * @param deviceToken: string
- *
- * @returns userToken
+ * @deprecated This interface is deprecated and should not be used.
  */
 export interface userToken {
   email: string;
@@ -15,11 +14,8 @@ export interface userToken {
 }
 
 /**
- * @brief Function that saves the token of the employee
- *
- * @param body: userToken
+ * @deprecated This function is deprecated and should not be used.
  */
-
 async function saveToken(body: userToken) {
   try {
     return await NotificationRepository.saveToken(body.email, body.deviceToken);
@@ -29,15 +25,8 @@ async function saveToken(body: userToken) {
 }
 
 /**
- * Creates notification data in the repository
- *
- * @param {Notification} notification - The notification entity
- *
- * @returns {Promise<Notification>} A promise that resolves to the created
- *
- * @throws {Error} If an unexpected error occurs
+ * @deprecated This function is deprecated and should not be used.
  */
-
 async function createNotification(notification: Notification): Promise<Notification> {
   try {
     const notificationRecord = await NotificationRepository.createNotification(notification);
@@ -48,14 +37,8 @@ async function createNotification(notification: Notification): Promise<Notificat
 }
 
 /**
- * Gets notification data from the repository
- *
- * @returns {Promise<Notification[]>} A promise that resolves to an array of
- *                                  notification entities
- *
- * @throws {Error} If an unexpected error occurs
+ * @deprecated This function is deprecated and should not be used.
  */
-
 async function getAllNotifications(): Promise<Notification[]> {
   try {
     const notificationRecords = await NotificationRepository.findAllNotifications();
@@ -65,4 +48,20 @@ async function getAllNotifications(): Promise<Notification[]> {
   }
 }
 
-export const NotificationService = { saveToken, getAllNotifications, createNotification };
+/**
+ * This method is used for sending a notification when the task is created and its assigned to the user.
+ * @param userId {string} - The user id to whom the task is assigned
+ * @param task {Task} - The task that is assigned to the user
+ */
+async function sendAssignedTaskNotification(userId: string, task: Task): Promise<void> {
+  const employee = await EmployeeRepository.findById(userId);
+  if (!employee) {
+    throw new Error('Employee not found');
+  }
+
+  const { subject, body } = notifyAssignedTaskEmailBody(employee.firstName, employee.lastName, task);
+
+  await EmailProvider.sendEmail([employee.email], subject, body);
+}
+
+export const NotificationService = { saveToken, getAllNotifications, createNotification, sendAssignedTaskNotification };

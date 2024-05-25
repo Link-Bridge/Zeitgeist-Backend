@@ -9,6 +9,7 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
+import { NotificationService } from './notification.service';
 
 /**
  * @description Validates that a start date should be before than an end date
@@ -91,22 +92,18 @@ async function getTasksFromProject(projectId: string, email: string): Promise<Pr
  * @throws {Error} - If the task already exists.
  * @throws {Error} - If an error occurs when assigning the task to the employee.
  */
-async function createTask(newTask: BareboneTask): Promise<Task | null> {
+async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): Promise<Task | null> {
   try {
-    if ((await ProjectRepository.findById(newTask.idProject)) === null) {
-      throw new NotFoundError('Project ID ');
+    const project = await ProjectRepository.findById(newTask.idProject);
+    if (!project) {
+      throw new NotFoundError('Invalid project ID');
     }
 
     const task: Task = {
       id: randomUUID(),
-      title: newTask.title,
-      description: newTask.description,
-      status: newTask.status,
-      startDate: newTask.startDate,
-      endDate: newTask.endDate,
+      ...newTask,
       workedHours: newTask.workedHours ?? undefined,
       createdAt: new Date(),
-      idProject: newTask.idProject,
     };
 
     if (task.endDate !== null && task.endDate !== undefined && !areDatesValid(task.startDate, task.endDate)) {
@@ -129,21 +126,27 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       if (!employee) {
         throw new NotFoundError('Employee');
       }
+
       const newEmployeeTask: EmployeeTask = {
         id: randomUUID(),
         createdAt: new Date(),
         idEmployee: employee.id,
         idTask: createdTask.id as string,
       };
+
       const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
       if (!assignedTask) {
         throw new Error('Error assigning a task to an employee');
+      }
+
+      if (employeeEmitterEmail !== employee.email) {
+        await NotificationService.sendAssignedTaskNotification(newTask.idEmployee, createdTask);
       }
     }
 
     return createdTask;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(`Error: ${error.message || error}`);
   }
 }
 
@@ -257,7 +260,8 @@ async function deleteTask(id: string): Promise<void> {
  */
 async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   try {
-    if ((await TaskRepository.findTaskById(idTask)) === null) {
+    const taskRecord = await TaskRepository.findTaskById(idTask);
+    if (!taskRecord) {
       throw new Error('Task ID is not valid');
     }
 

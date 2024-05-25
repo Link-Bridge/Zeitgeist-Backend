@@ -155,28 +155,31 @@ describe('Task Service', () => {
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves({ id: randomUUID() });
+      const emitterEmail = faker.internet.email();
 
-      const result = await TaskService.createTask(task);
+      const result = await TaskService.createTask(task, emitterEmail);
 
       expect(result).to.deep.equal(createdTask);
     });
 
     it('Should throw an error if the project ID is not valid', async () => {
       projectRepositoryStub.withArgs(projectID).resolves(null);
+      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task);
+        await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Project ID  was not found');
+        expect(error.message).to.equal('Error: Requested Invalid project ID was not found');
       }
     });
 
     it('Should throw an error if the task already exists', async () => {
       projectRepositoryStub.resolves({ id: projectID });
       taskRepositoryStub.resolves(null);
+      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task);
+        await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Task already exists');
       }
@@ -186,9 +189,10 @@ describe('Task Service', () => {
       projectRepositoryStub.resolves({ id: projectID });
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves(null);
+      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task);
+        await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Requested Employee was not found');
       }
@@ -199,9 +203,10 @@ describe('Task Service', () => {
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves(null);
+      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task);
+        await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
         expect(error.message).to.equal('Error: Error assigning a task to an employee');
       }
