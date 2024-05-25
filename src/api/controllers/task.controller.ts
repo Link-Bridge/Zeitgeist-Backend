@@ -30,7 +30,7 @@ const taskSchema = z.object({
       message: 'Description must have at least 1 character',
     })
     .max(256, {
-      message: 'Description must have at most 256 characters',
+      message: 'Description must have at most 255 characters',
     }),
   status: taskStatusSchema,
   startDate: z.coerce.date({ required_error: 'Start date is required' }),
@@ -56,11 +56,10 @@ const idProjectSchema = z.object({
  */
 function validateTaskData(data: BareboneTask) {
   const bodyTask = taskSchema.parse(data);
-  const status = data.status as TaskStatus;
 
   return {
     ...bodyTask,
-    status: status,
+    status: data.status as TaskStatus,
     workedHours: Number(bodyTask.workedHours) || 0.0,
     endDate: bodyTask.endDate || null,
     idEmployee: bodyTask.idEmployee,
@@ -81,10 +80,7 @@ function validateTaskData(data: BareboneTask) {
 async function createTask(req: Request, res: Response) {
   try {
     const validatedTaskData = validateTaskData(req.body);
-    const payloadTask = await TaskService.createTask({
-      ...validatedTaskData,
-      idEmployee: validatedTaskData.idEmployee || '',
-    });
+    const payloadTask = await TaskService.createTask(validatedTaskData, req.body.auth.email);
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });
@@ -228,7 +224,6 @@ async function updateTask(req: Request, res: Response) {
     const idTask = req.params.id;
 
     const validatedTaskData = validateUpdatedTaskData(idTask, req.body);
-    console.log(validatedTaskData);
     const data = await TaskService.updateTask(idTask, {
       ...validatedTaskData,
       idEmployee: validatedTaskData.idEmployee,

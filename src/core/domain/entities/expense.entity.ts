@@ -1,5 +1,6 @@
 import { employee, expense } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { ExpenseReportStatus } from '../../../utils/enums/index';
 
 /**
  * @brief This class is used to define the structure of the Expense entity
@@ -7,6 +8,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  * @param id: string - Unique identifier of the expense
  * @param title: string - Expense title
  * @param justification: string - Expense justification
+ ~ @param supplier: string - Expense supplier
  * @param totalAmount: Decimal - Expense amount
  + @param status?: string - Expense status (optional)
  * @param category?: string - Expense category (optional)
@@ -34,6 +36,10 @@ export interface ExpenseEntity {
    * @param justification: string - Expense justification
    */
   justification: string;
+  /**
+   * @param supplier: string - Expense supplier
+   */
+  supplier: string;
   /**
    * @param totalAmount: Decimal - Expense amount
    */
@@ -76,9 +82,10 @@ export interface ExpenseEntity {
  * @param description: string - Expense Report description
  * @param startDate: Date - Expense Report start date
  * @param endDate?: Date - Expense Report end date (optional)
- + @param status?: string - Expense Report status (optional)
+ + @param status?: ExpenseReportStatus - Expense Report status (optional)
  * @param createdAt?: Date - Expense Report creation date (optional)
  * @param updatedAt?: Date - Expense Report update date (optional)
+ * @param url_voucher?: string - URL of the voucher associated with the expense report (optional)
  * @param idEmployee: string - Unique identifier of the employee associated
  * @param employeeFirstName?: string - Employee first name (optional)
  * @param employeeLastName?: string - Employee last name (optional)
@@ -112,9 +119,9 @@ export interface ExpenseReport {
    */
   endDate?: Date | null;
   /**
-   * @param status: string - Expense report status
+   * @param status: ExpenseReportStatus - Expense report status
    */
-  status?: string | null;
+  status?: ExpenseReportStatus | null;
   /**
    * @param createdAt: Date - Expense report creation date
    */
@@ -123,6 +130,10 @@ export interface ExpenseReport {
    * @param updatedAt: Date - Expense report update date
    */
   updatedAt?: Date | null;
+  /**
+   * @param urlVoucher: string - URL of the voucher associated with the expense report
+   */
+  urlVoucher?: string | null;
   /**
    * @param idEmployee: string - Employee id
    */
@@ -157,6 +168,7 @@ export interface ExpenseReport {
  + @param status?: string - Expense Report status (optional)
  * @param createdAt: Date - Expense Report creation date
  * @param updatedAt?: Date - Expense Report update date (optional)
+ * @param url_voucher?: string - URL of the voucher associated with the expense report (optional)
  * @param id_employee: string - Unique identifier of the employee associated
  * @param employee?: employee - Employee information associated with the report (optional)
  * @param expense?: expense[] - Array of expenses associated with the report (optional)
@@ -200,6 +212,10 @@ export interface RawExpenseReport {
    * @param updatedAt: Date - Expense report update date
    */
   updatedAt?: Date | null;
+  /**
+   * @param url_voucher: string - URL of the voucher associated with the expense report
+   */
+  url_voucher?: string | null;
   /**
    * @param idEmployee: string - Employee id
    */
