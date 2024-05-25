@@ -82,7 +82,7 @@ export interface ExpenseEntity {
  * @param description: string - Expense Report description
  * @param startDate: Date - Expense Report start date
  * @param endDate?: Date - Expense Report end date (optional)
- + @param status?: string - Expense Report status (optional)
+ + @param status?: ExpenseReportStatus - Expense Report status (optional)
  * @param createdAt?: Date - Expense Report creation date (optional)
  * @param updatedAt?: Date - Expense Report update date (optional)
  * @param url_voucher?: string - URL of the voucher associated with the expense report (optional)
@@ -119,7 +119,7 @@ export interface ExpenseReport {
    */
   endDate?: Date | null;
   /**
-   * @param status: string - Expense report status
+   * @param status: ExpenseReportStatus - Expense report status
    */
   status?: ExpenseReportStatus | null;
   /**
