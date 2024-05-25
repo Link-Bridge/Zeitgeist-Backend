@@ -12,17 +12,18 @@ const resend = new Resend(process.env[EnvConfigKeys.RESEND_API_KEY]);
  * @param body string - Body of the email.
  * @returns data - The data returned from the email provider.
  */
-async function sendEmail(emailTo: [string], subject: string, body: string) {
+async function sendEmail(emailTo: string[], subject: string, body: string) {
   try {
+    const emailsFormatted = emailTo.join(', ');
     const { data, error } = await resend.emails.send({
-      from: `Zeitgeist <onboarding@resend.dev>`,
-      to: 'linkbridge2024@gmail.com',
+      from: `Link Bridge <${process.env[EnvConfigKeys.RESEND_EMAIL_FROM]}>`,
+      to: emailsFormatted,
       subject,
       html: body,
     });
 
     if (error) {
-      return console.error({ error });
+      return console.error(error);
     }
 
     return data;

@@ -1,4 +1,4 @@
-import { notifyAssignedTaskEmailBody } from '../../../utils/email.templates';
+import { notifyAssignedTaskEmailBody } from '../../../utils/email/email.templates';
 import { Notification } from '../../domain/entities/notification.entity';
 import { Task } from '../../domain/entities/task.entity';
 import { EmailProvider } from '../../infra/providers/resend.provider';

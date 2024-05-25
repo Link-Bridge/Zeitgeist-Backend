@@ -126,7 +126,7 @@ async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): 
 
     return createdTask;
   } catch (error: any) {
-    throw new Error(`Error creating task: ${error.message || error}`);
+    throw new Error(`Error: ${error.message || error}`);
   }
 }
 
@@ -242,7 +242,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   try {
     const taskRecord = await TaskRepository.findTaskById(idTask);
     if (!taskRecord) {
-      throw new NotFoundError('Task');
+      throw new Error('Task ID is not valid');
     }
 
     const status = task.status;
