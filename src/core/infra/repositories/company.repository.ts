@@ -168,4 +168,30 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById, update, create, archiveClient, getArchivedStatus };
+async function deleteCompanytById(id: string): Promise<CompanyEntity> {
+  try {
+    const data = await Prisma.company.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapCompanyEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const CompanyRepository = {
+  findAll,
+  findById,
+  update,
+  create,
+  archiveClient,
+  getArchivedStatus,
+  deleteCompanytById,
+};

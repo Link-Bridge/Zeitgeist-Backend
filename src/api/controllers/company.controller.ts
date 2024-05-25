@@ -4,7 +4,7 @@ import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema, updateCompanySchema } from '../validators/company.validator';
 
-const reportSchema = z.object({
+const idSchema = z.object({
   id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
 });
 
@@ -28,7 +28,7 @@ const reportSchema = z.object({
 
 async function getUnique(req: Request, res: Response) {
   try {
-    const { id } = reportSchema.parse({ id: req.params.id });
+    const { id } = idSchema.parse({ id: req.params.id });
 
     const data = await CompanyService.findById(id);
     res.status(200).json({ data });
@@ -93,4 +93,18 @@ async function create(req: Request, res: Response) {
     } else res.status(500).json({ error: error.message });
   }
 }
-export const CompanyController = { getUnique, getAll, create, updateClient };
+
+async function deleteCompany(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    await CompanyService.deleteCompanyById(id, req.body.auth.email);
+    res.status(200).send();
+  } catch (error: any) {
+    if (error.message === 'Unathorized Employee') {
+      res.status(403).json({ message: 'Internal server error occurred.' });
+    } else {
+      res.status(500).json({ message: 'Internal server error occurred.' });
+    }
+  }
+}
+export const CompanyController = { getUnique, getAll, create, updateClient, deleteCompany };

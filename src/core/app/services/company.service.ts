@@ -1,9 +1,10 @@
 import { randomUUID } from 'crypto';
+import { SupportedRoles } from '../../../utils/enums';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
+import { RoleRepository } from '../../infra/repositories/role.repository';
 import { UpdateCompanyBody } from '../interfaces/company.interface';
-
 /**
  * Gets all data from a unique company
  * @returns {Promise<CompanyEntity>} a promise that resolves a unique company entity
@@ -102,4 +103,30 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyService = { findAll, findById, update, create, archiveClient };
+async function deleteCompanyById(id: string, email: string): Promise<CompanyEntity> {
+  try {
+    const role = await RoleRepository.findByEmail(email);
+
+    if (!role) {
+      throw new Error('Employee not found');
+    }
+
+    if (role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase()) {
+      throw new Error('Unathorized Employee');
+    } else {
+      return await CompanyRepository.deleteCompanytById(id);
+    }
+  } catch (error: any) {
+    if (error.message === 'Employee not found') {
+      throw new Error('Employee not found');
+    } else if (error.message === 'Company not found') {
+      throw new Error('Company not found');
+    } else if (error.message === 'Unathorized Employee') {
+      throw new Error('Unathorized Employee');
+    } else {
+      throw new Error('An unexpected error occurred');
+    }
+  }
+}
+
+export const CompanyService = { findAll, findById, update, create, archiveClient, deleteCompanyById };

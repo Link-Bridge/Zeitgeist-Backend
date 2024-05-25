@@ -10,5 +10,6 @@ router.get('/', CompanyController.getAll);
 router.get('/:id', CompanyController.getUnique);
 router.post('/new', CompanyController.create);
 router.put('/:id', CompanyController.updateClient);
+router.delete('/delete/:id', CompanyController.deleteCompany);
 
 export { router as CompanyRouter };
