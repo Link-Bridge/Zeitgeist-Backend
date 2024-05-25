@@ -175,7 +175,7 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
  * @returns {Promise<CompanyEntity>}
  */
 
-async function deleteCompanytById(id: string): Promise<CompanyEntity> {
+async function deleteCompanyById(id: string): Promise<CompanyEntity> {
   try {
     const data = await Prisma.company.delete({
       where: {
@@ -200,5 +200,5 @@ export const CompanyRepository = {
   create,
   archiveClient,
   getArchivedStatus,
-  deleteCompanytById,
+  deleteCompanyById,
 };

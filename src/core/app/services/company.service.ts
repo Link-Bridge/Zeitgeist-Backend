@@ -121,7 +121,7 @@ async function deleteCompanyById(id: string, email: string): Promise<CompanyEnti
     if (role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase()) {
       throw new Error('Unathorized Employee');
     } else {
-      return await CompanyRepository.deleteCompanytById(id);
+      return await CompanyRepository.deleteCompanyById(id);
     }
   } catch (error: any) {
     if (error.message === 'Employee not found') {

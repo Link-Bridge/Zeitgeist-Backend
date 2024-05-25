@@ -3,7 +3,9 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
+import { SupportedRoles } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
+import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { CompanyService } from '../company.service';
 
 chai.use(chaiAsPromised);
@@ -14,6 +16,8 @@ describe('CompanyService', () => {
   let findCompanyByIdStub: sinon.SinonStub;
   let archiveClientdStub: sinon.SinonStub;
   let getArchivedStatusStub: sinon.SinonStub;
+  let deleteCompanyByIdStub: sinon.SinonStub;
+  let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
@@ -21,6 +25,8 @@ describe('CompanyService', () => {
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
     archiveClientdStub = sinon.stub(CompanyRepository, 'archiveClient');
     getArchivedStatusStub = sinon.stub(CompanyRepository, 'getArchivedStatus');
+    deleteCompanyByIdStub = sinon.stub(CompanyRepository, 'deleteCompanyById');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {
@@ -83,6 +89,46 @@ describe('CompanyService', () => {
 
     expect(archiveClientdStub.calledOnceWith(idCompany1, company.archived)).to.be.false;
     expect(updatedCompany.archived).to.be.true;
+  });
+
+  describe('deleteCompanyById', () => {
+    const companyId = randomUUID();
+    const adminEmail = faker.internet.email();
+    const nonAdminEmail = faker.internet.email();
+
+    it('should delete a company from the repository if user is an admin', async () => {
+      findRoleByEmailStub.withArgs(adminEmail).resolves({ title: SupportedRoles.ADMIN });
+      deleteCompanyByIdStub.resolves();
+
+      await CompanyService.deleteCompanyById(companyId, adminEmail);
+
+      expect(findRoleByEmailStub.calledOnceWith(adminEmail)).to.be.true;
+      expect(deleteCompanyByIdStub.calledOnceWith(companyId)).to.be.true;
+    });
+
+    it('should throw an error if the company does not exist', async () => {
+      const nonExistentCompanyId = randomUUID();
+      findRoleByEmailStub.withArgs(adminEmail).resolves({ title: SupportedRoles.ADMIN });
+      deleteCompanyByIdStub.rejects(new Error('Company not found'));
+
+      await expect(CompanyService.deleteCompanyById(nonExistentCompanyId, adminEmail)).to.be.rejectedWith(
+        'Company not found'
+      );
+
+      expect(findRoleByEmailStub.calledOnceWith(adminEmail)).to.be.true;
+      expect(deleteCompanyByIdStub.calledOnceWith(nonExistentCompanyId)).to.be.true;
+    });
+
+    it('should throw an error if user is not an admin', async () => {
+      findRoleByEmailStub.withArgs(nonAdminEmail).resolves({ title: 'User' });
+
+      await expect(CompanyService.deleteCompanyById(companyId, nonAdminEmail)).to.be.rejectedWith(
+        'Unathorized Employee'
+      );
+
+      expect(findRoleByEmailStub.calledOnceWith(nonAdminEmail)).to.be.true;
+      expect(deleteCompanyByIdStub.notCalled).to.be.true;
+    });
   });
 
   it('should get a single company', async () => {
