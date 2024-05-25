@@ -57,3 +57,10 @@ export enum ProjectPeriodicity {
   TWELVE_MONTHS = '12 months',
   WHEN_NEEDED = 'When needed',
 }
+
+export enum ExpenseReportStatus {
+  ACCEPTED = 'Accepted',
+  PAYED = 'Payed',
+  PENDING = 'Pending',
+  REJECTED = 'Rejected',
+}
