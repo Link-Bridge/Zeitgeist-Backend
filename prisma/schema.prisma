@@ -7,15 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model comment {
-  id          String    @id @db.Uuid
-  message     String    @db.VarChar(255)
-  created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @updatedAt @db.Timestamp(6)
-  id_employee String    @db.Uuid
-  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model company {
   id                        String                  @id @db.Uuid
   name                      String                  @db.VarChar(255)
@@ -64,23 +55,10 @@ model employee {
   updated_at            DateTime?               @updatedAt @db.Timestamp(6)
   id_department         String?                 @db.Uuid
   id_role               String                  @db.Uuid
-  device_token          String?                 @db.VarChar(255)
-  comment               comment[]
   department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  employee_notification employee_notification[]
   employee_task         employee_task[]
   expense_report        expense_report[]
-}
-
-model employee_notification {
-  id              String       @id @db.Uuid
-  created_at      DateTime     @default(now()) @db.Timestamp(6)
-  updated_at      DateTime?    @updatedAt @db.Timestamp(6)
-  id_employee     String       @db.Uuid
-  id_notification String       @db.Uuid
-  employee        employee     @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  notification    notification @relation(fields: [id_notification], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model employee_task {
@@ -187,15 +165,6 @@ model form {
   created_at                     DateTime  @default(now()) @db.Timestamp(6)
   updated_at                     DateTime? @updatedAt @db.Timestamp(6)
   company                        company[]
-}
-
-model notification {
-  id                    String                  @id @db.Uuid
-  title                 String                  @db.VarChar(70)
-  body                  String                  @db.VarChar(256)
-  created_at            DateTime                @default(now()) @db.Timestamp(6)
-  updated_at            DateTime?               @updatedAt @db.Timestamp(6)
-  employee_notification employee_notification[]
 }
 
 model project {
