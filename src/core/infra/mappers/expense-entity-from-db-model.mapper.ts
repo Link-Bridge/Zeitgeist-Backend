@@ -1,4 +1,5 @@
 import { expense } from '@prisma/client';
+import { ExpenseReportStatus } from '../../../utils/enums/index';
 import { ExpenseEntity, ExpenseReport, RawExpenseReport } from '../../domain/entities/expense.entity';
 
 export function mapExpenseEntityFromDbModel(model: expense): ExpenseEntity {
@@ -25,7 +26,7 @@ export function mapExpenseReportEntityFromDbModel(model: RawExpenseReport): Expe
     description: model.description,
     startDate: model.start_date,
     endDate: model.end_date ? model.end_date : undefined,
-    status: model.status ? model.status : undefined,
+    status: model.status as ExpenseReportStatus,
     urlVoucher: model.url_voucher ? model.url_voucher : '',
     idEmployee: model.id_employee,
     employeeFirstName: model.employee?.first_name ? model.employee.first_name : '',

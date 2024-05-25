@@ -1,5 +1,6 @@
 import { employee, expense } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { ExpenseReportStatus } from '../../../utils/enums/index';
 
 /**
  * @brief This class is used to define the structure of the Expense entity
@@ -120,7 +121,7 @@ export interface ExpenseReport {
   /**
    * @param status: string - Expense report status
    */
-  status?: string | null;
+  status?: ExpenseReportStatus | null;
   /**
    * @param createdAt: Date - Expense report creation date
    */
