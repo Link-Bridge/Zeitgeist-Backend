@@ -19,3 +19,17 @@ export interface UpdateProjectBody {
   createdAt: Date;
   updatedAt?: Date | null;
 }
+
+export interface CreateProjectData {
+  name: string;
+  matter: string | null;
+  description: string | null;
+  area: string;
+  status: string;
+  category: string;
+  endDate: Date | null;
+  idCompany: string;
+  isChargeable: boolean;
+  periodicity: string | null;
+  startDate: Date;
+}
