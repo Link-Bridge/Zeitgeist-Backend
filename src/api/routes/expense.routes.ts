@@ -5,6 +5,12 @@ import { checkAuthRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
 
+router.get(
+  '/',
+  checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL]),
+  ExpenseController.getExpenses
+);
+
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
 router.get('/report/:id', ExpenseController.getReportById);
 
