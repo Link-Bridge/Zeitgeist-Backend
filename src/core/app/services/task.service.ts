@@ -127,7 +127,13 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
     }
 
     if (newTask.endDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
-      throw new Error("Task's end date cannot be greater than the project's end date");
+      throw new Error("Task's end date cannot be after the project's end date");
+
+    if (newTask.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, newTask.startDate))
+      throw new Error("Task's start date cannot be before the project's start date");
+
+    if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.startDate))
+      throw new Error("Task's start date cannot be after the project's end date");
 
     if (newTask.idEmployee) {
       const employee = await EmployeeRepository.findById(newTask.idEmployee);
@@ -273,7 +279,13 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     }
 
     if (task.endDate && project.endDate && !dateSmallerOrEqualThanOther(task.endDate, project.endDate))
-      throw new Error("Task's end date cannot be greater than the project's end date");
+      throw new Error("Task's end date cannot be afer the project's end date");
+
+    if (task.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, task.startDate))
+      throw new Error("Task's start date cannot be before the project's start date");
+
+    if (task.startDate && project.endDate && !dateSmallerOrEqualThanOther(task.startDate, project.startDate))
+      throw new Error("Task's start date cannot be after the project's end date");
 
     const status = task.status;
     if (status === TaskStatus.DONE) {

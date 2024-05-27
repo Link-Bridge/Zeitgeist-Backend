@@ -8,7 +8,7 @@ export function dateSmallerOrEqualThanOther(
   date1: Date | string | null | undefined,
   date2: Date | string | null | undefined
 ): boolean {
-  if (date1 == undefined || date1 == null || date2 == undefined || date2 == null) throw new Error('Missing date');
+  if (!date1 || !date2) throw new Error('Missing date');
 
   const d1 = new Date(date1);
   const d2 = new Date(date2);
