@@ -167,7 +167,7 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Project ID  was not found');
+        expect(error.message).to.equal('Requested Project ID was not found');
       }
     });
 
@@ -178,7 +178,7 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Task already exists');
+        expect(error.message).to.equal('Task already exists');
       }
     });
 
@@ -190,7 +190,7 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Employee was not found');
+        expect(error.message).to.equal('Requested Employee was not found');
       }
     });
 
@@ -203,7 +203,7 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Error assigning a task to an employee');
+        expect(error.message).to.equal('Error assigning a task to an employee');
       }
     });
   });
@@ -299,7 +299,7 @@ describe('Task Service', () => {
       try {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Employee was not found');
+        expect(error.message).to.equal('Requested Employee was not found');
       }
     });
 
@@ -311,7 +311,7 @@ describe('Task Service', () => {
       try {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Task assigned to employee was not found');
+        expect(error.message).to.equal('Requested Task assigned to employee was not found');
       }
     });
 
@@ -340,7 +340,7 @@ describe('Task Service', () => {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
         expect(error).to.be.an('error');
-        expect(error.message).to.equal('Error: Could not fetch tasks');
+        expect(error.message).to.equal('Could not fetch tasks');
       }
     });
   });
@@ -362,7 +362,7 @@ describe('Task Service', () => {
       try {
         await TaskService.deleteTask(randomUUID());
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Task was not found');
+        expect(error.message).to.equal('Requested Task was not found');
       }
 
       expect(findTaskByIdStub.calledOnce).to.be.true;
@@ -376,7 +376,7 @@ describe('Task Service', () => {
         await TaskService.deleteTask(randomUUID());
       } catch (error: any) {
         expect(error).to.be.an('error');
-        expect(error.message).to.equal('Error: Could not delete task');
+        expect(error.message).to.equal('Could not delete task');
       }
 
       expect(deleteTaskStub.calledOnce).to.be.true;
@@ -403,7 +403,7 @@ describe('Task Service', () => {
       try {
         await TaskService.updateTask('', updatedTask);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Task ID is not valid');
+        expect(error.message).to.equal('Task ID is not valid');
       }
     });
 
@@ -415,7 +415,7 @@ describe('Task Service', () => {
       try {
         await TaskService.updateTask(createdTask.id, invalidEmployeeTask);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Error assigning a task to an employee');
+        expect(error.message).to.equal('Error assigning a task to an employee');
       }
     });
   });
