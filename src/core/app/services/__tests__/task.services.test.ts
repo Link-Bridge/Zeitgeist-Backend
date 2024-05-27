@@ -37,6 +37,7 @@ describe('Task Service', () => {
     status: ProjectStatus.ACCEPTED,
     category: 'Internal',
     startDate: new Date(),
+    endDate: new Date('05-01-2042'),
     area: 'Legal',
     createdAt: new Date(),
     idCompany: randomUUID(),
@@ -49,6 +50,7 @@ describe('Task Service', () => {
       description: 'Zombie',
       status: TaskStatus.DONE,
       startDate: new Date(),
+      endDate: new Date(),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
@@ -61,35 +63,13 @@ describe('Task Service', () => {
         'The Nether is a dimension that is supposedly located below the Mother Rock in Minecraft. Its appearance is similar to the idea of hell, with many dark rocks and lava and magma plaguing the entire setting.',
       status: TaskStatus.POSTPONED,
       startDate: new Date(),
+      endDate: new Date(),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
       employeeLastName: faker.person.lastName(),
     },
   ];
-
-  beforeEach(() => {
-    taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
-    projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
-    taskFetchRepositoryStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
-    employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
-    employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
-    employeeTaskFindByIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
-    fetchMultipleTasksByIdsStub = sinon.stub(TaskRepository, 'findTasksById');
-    deleteTaskStub = sinon.stub(TaskRepository, 'deleteTaskById');
-    findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
-    deleteEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'deleteByTaskId');
-    validateEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'validateEmployeeTask');
-    updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
-    updateTaskStatusRepositoryStub = sinon.stub(TaskRepository, 'updateTaskStatus');
-    updateTaskEndDateRepositoryStub = sinon.stub(TaskRepository, 'updateTaskEndDate');
-    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
-    findTasksByIdsStub = sinon.stub(EmployeeTaskRepository, 'findByTaskIds');
-  });
-
-  afterEach(() => {
-    sinon.restore();
-  });
   const idRole = randomUUID();
   const role = {
     id: idRole,
@@ -113,7 +93,7 @@ describe('Task Service', () => {
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
     startDate: faker.date.recent(),
-    endDate: faker.date.future(),
+    endDate: new Date(),
     workedHours: faker.number.int() % 1000,
     idProject: projectID,
     idEmployee: randomUUID(),
@@ -125,7 +105,7 @@ describe('Task Service', () => {
     description: task.description,
     status: task.status,
     startDate: task.startDate,
-    endDate: task.endDate ?? undefined,
+    endDate: new Date(),
     workedHours: task.workedHours ?? undefined,
     createdAt: new Date(),
     idProject: task.idProject,
@@ -137,7 +117,7 @@ describe('Task Service', () => {
     description: createdTask.description,
     status: createdTask.status,
     startDate: createdTask.startDate,
-    endDate: createdTask.endDate ?? undefined,
+    endDate: new Date(),
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
     idEmployee: randomUUID(),
@@ -149,9 +129,32 @@ describe('Task Service', () => {
     idTask: updatedTask.id,
   };
 
+  beforeEach(() => {
+    taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
+    projectRepositoryStub = sinon.stub(ProjectRepository, 'findById');
+    taskFetchRepositoryStub = sinon.stub(TaskRepository, 'findTasksByProjectId');
+    employeeRepositoryStub = sinon.stub(EmployeeRepository, 'findById');
+    employeeTaskRepositoryStub = sinon.stub(EmployeeTaskRepository, 'create');
+    employeeTaskFindByIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
+    fetchMultipleTasksByIdsStub = sinon.stub(TaskRepository, 'findTasksById');
+    deleteTaskStub = sinon.stub(TaskRepository, 'deleteTaskById');
+    findTaskByIdStub = sinon.stub(TaskRepository, 'findTaskById');
+    deleteEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'deleteByTaskId');
+    validateEmployeeTaskStub = sinon.stub(EmployeeTaskRepository, 'validateEmployeeTask');
+    updateTaskRepositoryStub = sinon.stub(TaskRepository, 'updateTask');
+    updateTaskStatusRepositoryStub = sinon.stub(TaskRepository, 'updateTaskStatus');
+    updateTaskEndDateRepositoryStub = sinon.stub(TaskRepository, 'updateTaskEndDate');
+    findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
+    findTasksByIdsStub = sinon.stub(EmployeeTaskRepository, 'findByTaskIds');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
   describe('createTask', () => {
     it('Should create missing attributes and send them to the repository', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves({ id: randomUUID() });
@@ -172,7 +175,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if the task already exists', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(null);
 
       try {
@@ -183,7 +186,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if the employee is not found', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves(null);
 
@@ -195,7 +198,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if an error occurs when assigning the task to the employee', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves(null);
@@ -389,7 +392,7 @@ describe('Task Service', () => {
       validateEmployeeTaskStub.resolves({ idEmployee: randomUUID(), idTask: randomUUID() });
       employeeTaskRepositoryStub.resolves(updatedEmployeeTask);
       deleteEmployeeTaskStub.resolves({ idTask: createdTask.id });
-      projectRepositoryStub.resolves({ id: createdTask.idProject });
+      projectRepositoryStub.resolves(project);
       updateTaskRepositoryStub.resolves(updatedTask);
       employeeRepositoryStub.resolves({ id: randomUUID() });
 
