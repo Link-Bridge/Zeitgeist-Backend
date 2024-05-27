@@ -67,7 +67,11 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
       ExpenseRepository.findById(reportId),
     ]);
 
-    if (role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() && expenseReport.idEmployee != employee?.id) {
+    if (
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() != SupportedRoles.ACCOUNTING.toUpperCase() &&
+      expenseReport.idEmployee != employee?.id
+    ) {
       throw new Error('Unauthorized employee');
     }
 
