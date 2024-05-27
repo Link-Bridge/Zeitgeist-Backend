@@ -92,7 +92,6 @@ async function createTask(req: Request, res: Response) {
 
     res.status(201).json(payloadTask);
   } catch (error: any) {
-    console.log(error.message);
     res.status(500).json({ message: error.message });
   }
 }
