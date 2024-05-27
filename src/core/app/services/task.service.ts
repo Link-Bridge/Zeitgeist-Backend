@@ -126,7 +126,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Task already exists');
     }
 
-    if (newTask.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
+    if (newTask.endDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
       throw new Error("Task's end date cannot be greater than the project's end date");
 
     if (newTask.idEmployee) {
@@ -272,7 +272,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
       throw new NotFoundError('Project ID');
     }
 
-    if (task.endDate && !dateSmallerOrEqualThanOther(task.endDate, project.endDate))
+    if (task.endDate && project.endDate && !dateSmallerOrEqualThanOther(task.endDate, project.endDate))
       throw new Error("Task's end date cannot be greater than the project's end date");
 
     const status = task.status;
