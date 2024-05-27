@@ -5,17 +5,8 @@ import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema, updateCompanySchema } from '../validators/company.validator';
 
 const idSchema = z.object({
-  id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
+  id: z.string().uuid(),
 });
-
-/**
- * Finds all companies
- *
- * @param {Request} req
- * @param {Response} res
- * @returns {Promise<void>}
- * @throws {Error}
- */
 
 /**
  * Finds all companies
