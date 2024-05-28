@@ -189,6 +189,7 @@ async function deleteCompanyById(id: string): Promise<CompanyEntity> {
 
     return mapCompanyEntityFromDbModel(data);
   } catch (error: unknown) {
+    console.error(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }

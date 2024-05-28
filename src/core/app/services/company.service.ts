@@ -113,7 +113,7 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
 async function deleteCompanyById(id: string, email: string): Promise<CompanyEntity> {
   try {
     const role = await RoleRepository.findByEmail(email);
-
+    console.log(role);
     if (!role) {
       throw new Error('Employee not found');
     }
