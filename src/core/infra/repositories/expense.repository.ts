@@ -99,7 +99,6 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
         status: status,
       },
     });
-    console.log(data);
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
@@ -112,4 +111,31 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId, updateStatusById };
+/**
+ * Updates a expense's payment url (url_voucher)
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport>} a promise that resolves in a expense
+ */
+async function updatePaymentFileById(id: string, urlVoucher: string): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.update({
+      where: {
+        id: id,
+      },
+      data: {
+        url_voucher: urlVoucher,
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapExpenseReportEntityFromDbModel(data);
+  } catch (error: any) {
+    if (error.code == 'P2025' && error.meta.cause == 'Record to update not found.')
+      throw new Error('Expense not found');
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const ExpenseRepository = { findAll, findById, findByEmployeeId, updateStatusById, updatePaymentFileById };

@@ -67,4 +67,25 @@ async function updateStatusById(req: Request, res: Response) {
   }
 }
 
-export const ExpenseController = { getExpenses, getReportById, updateStatusById };
+/**
+ * @description A function that updates the expense payment file (url_voucher)
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updatePaymentFileById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const { url_voucher } = req.body;
+
+    const updatedExpense = await ExpenseService.updatePaymentFileById(id, url_voucher);
+    res.status(200).json(updatedExpense);
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
+  }
+}
+
+export const ExpenseController = { getExpenses, getReportById, updateStatusById, updatePaymentFileById };

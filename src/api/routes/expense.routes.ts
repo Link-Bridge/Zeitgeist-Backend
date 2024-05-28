@@ -17,6 +17,12 @@ router.put(
   ExpenseController.updateStatusById
 );
 
+router.put(
+  '/:id/payment',
+  checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
+  ExpenseController.updatePaymentFileById
+);
+
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
 router.get('/report/:id', ExpenseController.getReportById);
 

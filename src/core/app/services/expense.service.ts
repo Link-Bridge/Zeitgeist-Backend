@@ -113,4 +113,22 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById, updateStatusById };
+/**
+ * @param id The id of the expense to be updated
+ * @param urlVoucher The voucher url for the payment file
+ * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
+ * @throws {Error} if an unexpected error occurs
+ */
+async function updatePaymentFileById(id: string, urlVoucher: string): Promise<ExpenseReport> {
+  try {
+    const updatedExpense = await ExpenseRepository.updatePaymentFileById(id, urlVoucher);
+    return updatedExpense;
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
+    throw new Error(error.message);
+  }
+}
+
+export const ExpenseService = { getExpenses, getReportById, updateStatusById, updatePaymentFileById };
