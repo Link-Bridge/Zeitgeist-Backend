@@ -113,13 +113,12 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
 async function deleteCompanyById(id: string, email: string): Promise<CompanyEntity> {
   try {
     const role = await RoleRepository.findByEmail(email);
-    console.log(role);
     if (!role) {
       throw new Error('Employee not found');
     }
 
     if (role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase()) {
-      throw new Error('Unathorized Employee');
+      throw new Error('Unauthorized Employee');
     } else {
       return await CompanyRepository.deleteCompanyById(id);
     }
@@ -128,8 +127,8 @@ async function deleteCompanyById(id: string, email: string): Promise<CompanyEnti
       throw new Error('Employee not found');
     } else if (error.message === 'Company not found') {
       throw new Error('Company not found');
-    } else if (error.message === 'Unathorized Employee') {
-      throw new Error('Unathorized Employee');
+    } else if (error.message === 'Unauthorized Employee') {
+      throw new Error('Unauthorized Employee');
     } else {
       throw new Error('An unexpected error occurred');
     }

@@ -123,7 +123,7 @@ describe('CompanyService', () => {
       findRoleByEmailStub.withArgs(nonAdminEmail).resolves({ title: 'User' });
 
       await expect(CompanyService.deleteCompanyById(companyId, nonAdminEmail)).to.be.rejectedWith(
-        'Unathorized Employee'
+        'Unauthorized Employee'
       );
 
       expect(findRoleByEmailStub.calledOnceWith(nonAdminEmail)).to.be.true;

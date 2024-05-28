@@ -100,8 +100,8 @@ async function deleteCompany(req: Request, res: Response) {
     await CompanyService.deleteCompanyById(id, req.body.auth.email);
     res.status(200).send();
   } catch (error: any) {
-    if (error.message === 'Unathorized Employee') {
-      res.status(403).json({ message: 'Internal server error occurred.' });
+    if (error.message === 'Unauthorized Employee') {
+      res.status(403).json({ message: 'Unauthorized Employee.' });
     } else {
       res.status(500).json({ message: 'Internal server error occurred.' });
     }
