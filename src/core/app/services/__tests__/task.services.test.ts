@@ -166,6 +166,7 @@ describe('Task Service', () => {
 
     it('Should throw an error if the project ID is not valid', async () => {
       projectRepositoryStub.withArgs(idProject).resolves(null);
+      const emitterEmail = faker.internet.email();
 
       try {
         await TaskService.createTask(task, emitterEmail);
