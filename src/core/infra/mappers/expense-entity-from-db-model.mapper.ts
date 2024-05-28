@@ -27,6 +27,7 @@ export function mapExpenseReportEntityFromDbModel(model: RawExpenseReport): Expe
     startDate: model.start_date,
     endDate: model.end_date ? model.end_date : undefined,
     status: model.status as ExpenseReportStatus,
+    urlVoucher: model.url_voucher ? model.url_voucher : '',
     idEmployee: model.id_employee,
     employeeFirstName: model.employee?.first_name ? model.employee.first_name : '',
     employeeLastName: model.employee?.last_name ? model.employee.last_name : '',

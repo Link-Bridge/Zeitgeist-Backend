@@ -92,28 +92,4 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
   }
 }
 
-/**
- * Function that handles the request to create a new expense report
- *
- * @param {object} body - The request body
- * @returns {Promise<ExpenseReport>} - The created expense report
- * @throws {Error} - If an unexpected error occurs
- *
- */
-
-async function createExpenseReport(body: any): Promise<ExpenseReport> {
-  try {
-    const employee = await EmployeeRepository.findByEmail(body.auth.email);
-    if (!employee) {
-      throw new Error('Employee not found');
-    }
-    const idEmployee = employee.id;
-    
-    const expenseReport = await ExpenseRepository.createExpenseReport(body, idEmployee);
-    return expenseReport;
-  } catch (error: any) {
-    throw new Error('An unexpected error occurred');
-  }
-}
-
-export const ExpenseService = { getExpenses, getReportById, createExpenseReport };
+export const ExpenseService = { getExpenses, getReportById };
