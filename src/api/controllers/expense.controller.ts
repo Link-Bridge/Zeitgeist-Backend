@@ -46,22 +46,4 @@ async function getReportById(req: Request, res: Response) {
   }
 }
 
-/**
- * A function that handles the request to create a new expense report
- *
- * @param req HTTP Request
- * @param res Server response
- *
- * @returns {Promise<void>}
- */
-
-async function createExpenseReport(req: Request, res: Response) {
-  try {
-    const data = await ExpenseService.createExpenseReport(req.body);
-    res.status(200).json(data);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-export const ExpenseController = { getExpenses, getReportById, createExpenseReport };
+export const ExpenseController = { getExpenses, getReportById };

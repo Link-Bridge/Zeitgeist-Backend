@@ -36,7 +36,8 @@ describe('Task Service', () => {
     name: 'Project',
     status: ProjectStatus.ACCEPTED,
     category: 'Internal',
-    startDate: new Date(),
+    startDate: new Date('05-01-2021'),
+    endDate: new Date('05-01-2042'),
     area: 'Legal',
     createdAt: new Date(),
     idCompany: randomUUID(),
@@ -48,7 +49,8 @@ describe('Task Service', () => {
       title: 'Zombie',
       description: 'Zombie',
       status: TaskStatus.DONE,
-      startDate: new Date(),
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
@@ -60,13 +62,71 @@ describe('Task Service', () => {
       description:
         'The Nether is a dimension that is supposedly located below the Mother Rock in Minecraft. Its appearance is similar to the idea of hell, with many dark rocks and lava and magma plaguing the entire setting.',
       status: TaskStatus.POSTPONED,
-      startDate: new Date(),
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
       employeeLastName: faker.person.lastName(),
     },
   ];
+  const idRole = randomUUID();
+  const role = {
+    id: idRole,
+    title: SupportedRoles.ADMIN,
+    createdAr: new Date(),
+  };
+
+  const employee = {
+    id: randomUUID(),
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'joe.doe@email.com',
+    imageUrl: 'http://example.com/john.jpg',
+    createdAt: new Date(),
+    idRole: idRole,
+  };
+
+  const task: BareboneTask = {
+    title: faker.lorem.words(3),
+    description: faker.lorem.words(10),
+    status: faker.helpers.arrayElement(Object.values(TaskStatus)),
+    startDate: new Date('05-01-2021'),
+    endDate: new Date('05-01-2042'),
+    workedHours: faker.number.int() % 1000,
+    idProject: idProject,
+    idEmployee: randomUUID(),
+  };
+
+  const createdTask: Task = {
+    id: randomUUID(),
+    title: task.title,
+    description: task.description,
+    status: task.status,
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
+    workedHours: task.workedHours ?? undefined,
+    createdAt: new Date(),
+    idProject: task.idProject,
+  };
+
+  const updatedTask: UpdatedTask = {
+    id: createdTask.id,
+    title: createdTask.title,
+    description: createdTask.description,
+    status: createdTask.status,
+    startDate: new Date('05-01-2023'),
+    endDate: new Date('05-02-2024'),
+    workedHours: createdTask.workedHours,
+    idProject: createdTask.idProject,
+    idEmployee: randomUUID(),
+  };
+
+  const updatedEmployeeTask = {
+    id: randomUUID(),
+    idEmployee: updatedTask.idEmployee,
+    idTask: updatedTask.id,
+  };
 
   beforeEach(() => {
     taskRepositoryStub = sinon.stub(TaskRepository, 'createTask');
@@ -90,68 +150,10 @@ describe('Task Service', () => {
   afterEach(() => {
     sinon.restore();
   });
-  const idRole = randomUUID();
-  const role = {
-    id: idRole,
-    title: SupportedRoles.ADMIN,
-    createdAr: new Date(),
-  };
-
-  const employee = {
-    id: randomUUID(),
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'joe.doe@email.com',
-    imageUrl: 'http://example.com/john.jpg',
-    createdAt: new Date(),
-    idRole: idRole,
-  };
-
-  const projectID = randomUUID();
-  const task: BareboneTask = {
-    title: faker.lorem.words(3),
-    description: faker.lorem.words(10),
-    status: faker.helpers.arrayElement(Object.values(TaskStatus)),
-    startDate: faker.date.recent(),
-    endDate: faker.date.future(),
-    workedHours: faker.number.int() % 1000,
-    idProject: projectID,
-    idEmployee: randomUUID(),
-  };
-
-  const createdTask: Task = {
-    id: randomUUID(),
-    title: task.title,
-    description: task.description,
-    status: task.status,
-    startDate: task.startDate,
-    endDate: task.endDate ?? undefined,
-    workedHours: task.workedHours ?? undefined,
-    createdAt: new Date(),
-    idProject: task.idProject,
-  };
-
-  const updatedTask: UpdatedTask = {
-    id: createdTask.id,
-    title: createdTask.title,
-    description: createdTask.description,
-    status: createdTask.status,
-    startDate: createdTask.startDate,
-    endDate: createdTask.endDate ?? undefined,
-    workedHours: createdTask.workedHours,
-    idProject: createdTask.idProject,
-    idEmployee: randomUUID(),
-  };
-
-  const updatedEmployeeTask = {
-    id: randomUUID(),
-    idEmployee: updatedTask.idEmployee,
-    idTask: updatedTask.id,
-  };
 
   describe('createTask', () => {
     it('Should create missing attributes and send them to the repository', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves({ id: randomUUID() });
@@ -163,30 +165,30 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if the project ID is not valid', async () => {
-      projectRepositoryStub.withArgs(projectID).resolves(null);
+      projectRepositoryStub.withArgs(idProject).resolves(null);
       const emitterEmail = faker.internet.email();
 
       try {
         await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Invalid project ID was not found');
+        expect(error.message).to.equal('Requested Project ID was not found');
       }
     });
 
     it('Should throw an error if the task already exists', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(null);
       const emitterEmail = faker.internet.email();
 
       try {
         await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Task already exists');
+        expect(error.message).to.equal('Task already exists');
       }
     });
 
     it('Should throw an error if the employee is not found', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves(null);
       const emitterEmail = faker.internet.email();
@@ -194,12 +196,12 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Employee was not found');
+        expect(error.message).to.equal('Requested Employee was not found');
       }
     });
 
     it('Should throw an error if an error occurs when assigning the task to the employee', async () => {
-      projectRepositoryStub.resolves({ id: projectID });
+      projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves(null);
@@ -208,7 +210,7 @@ describe('Task Service', () => {
       try {
         await TaskService.createTask(task, emitterEmail);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Error assigning a task to an employee');
+        expect(error.message).to.equal('Error assigning a task to an employee');
       }
     });
   });
@@ -283,7 +285,7 @@ describe('Task Service', () => {
         endDate: faker.date.future(),
         workedHours: faker.number.int(),
         createdAt: new Date(),
-        idProject: projectID,
+        idProject: idProject,
       }));
 
       employeeRepositoryStub.resolves({ id: employeeId });
@@ -304,7 +306,7 @@ describe('Task Service', () => {
       try {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Employee was not found');
+        expect(error.message).to.equal('Requested Employee was not found');
       }
     });
 
@@ -316,7 +318,7 @@ describe('Task Service', () => {
       try {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Task assigned to employee was not found');
+        expect(error.message).to.equal('Requested Task assigned to employee was not found');
       }
     });
 
@@ -345,7 +347,7 @@ describe('Task Service', () => {
         await TaskService.getTasksAssignedToEmployee(employeeId);
       } catch (error: any) {
         expect(error).to.be.an('error');
-        expect(error.message).to.equal('Error: Could not fetch tasks');
+        expect(error.message).to.equal('Could not fetch tasks');
       }
     });
   });
@@ -367,7 +369,7 @@ describe('Task Service', () => {
       try {
         await TaskService.deleteTask(randomUUID());
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Requested Task was not found');
+        expect(error.message).to.equal('Requested Task was not found');
       }
 
       expect(findTaskByIdStub.calledOnce).to.be.true;
@@ -381,7 +383,7 @@ describe('Task Service', () => {
         await TaskService.deleteTask(randomUUID());
       } catch (error: any) {
         expect(error).to.be.an('error');
-        expect(error.message).to.equal('Error: Could not delete task');
+        expect(error.message).to.equal('Could not delete task');
       }
 
       expect(deleteTaskStub.calledOnce).to.be.true;
@@ -394,7 +396,7 @@ describe('Task Service', () => {
       validateEmployeeTaskStub.resolves({ idEmployee: randomUUID(), idTask: randomUUID() });
       employeeTaskRepositoryStub.resolves(updatedEmployeeTask);
       deleteEmployeeTaskStub.resolves({ idTask: createdTask.id });
-      projectRepositoryStub.resolves({ id: createdTask.idProject });
+      projectRepositoryStub.resolves(project);
       updateTaskRepositoryStub.resolves(updatedTask);
       employeeRepositoryStub.resolves({ id: randomUUID() });
 
@@ -408,7 +410,7 @@ describe('Task Service', () => {
       try {
         await TaskService.updateTask('', updatedTask);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Task ID is not valid');
+        expect(error.message).to.equal('Task ID is not valid');
       }
     });
 
@@ -420,7 +422,7 @@ describe('Task Service', () => {
       try {
         await TaskService.updateTask(createdTask.id, invalidEmployeeTask);
       } catch (error: any) {
-        expect(error.message).to.equal('Error: Error assigning a task to an employee');
+        expect(error.message).to.equal('Error assigning a task to an employee');
       }
     });
   });
@@ -488,7 +490,7 @@ describe('TaskService', () => {
         id: employeeId,
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
+        email: 'john.doe@outlook.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
         idRole: roleId,
