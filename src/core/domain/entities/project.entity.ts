@@ -70,7 +70,7 @@ export interface ProjectEntity {
   /**
    * @param isChargeable: boolean - Determines whether the project is chargeable or not
    */
-  isChargeable?: boolean | null;
+  isChargeable: boolean;
   /**
    * @param isArchived: boolean - Determines whether the project is chargeable or not
    */

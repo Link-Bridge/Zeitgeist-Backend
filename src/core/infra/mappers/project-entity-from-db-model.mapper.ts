@@ -13,7 +13,7 @@ export function mapProjectEntityFromDbModel(model: project): ProjectEntity {
     endDate: model.end_date ? model.end_date : null,
     totalHours: model.total_hours ? model.total_hours : null,
     periodicity: model.periodicity ? model.periodicity : null,
-    isChargeable: model.is_chargeable ? model.is_chargeable : null,
+    isChargeable: model.is_chargeable,
     area: model.area ?? '',
     createdAt: model.created_at,
     updatedAt: model.updated_at ? model.updated_at : null,
