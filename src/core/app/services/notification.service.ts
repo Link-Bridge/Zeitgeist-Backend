@@ -1,7 +1,12 @@
-import { notifyAssignedTaskEmailBody } from '../../../utils/email/email.templates';
+import {
+  notifyAssignedTaskEmailTemplate,
+  notifyOtherDeparmentEmailTemplate,
+} from '../../../utils/email/email.templates';
+import { SupportedDepartments } from '../../../utils/enums';
 import { Task } from '../../domain/entities/task.entity';
 import { EmailProvider } from '../../infra/providers/resend.provider';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
+import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 /**
  * This method is used for sending a notification when the task is created and its assigned to the user.
@@ -14,9 +19,32 @@ async function sendAssignedTaskNotification(userId: string, task: Task): Promise
     throw new Error('Employee not found');
   }
 
-  const { subject, body } = notifyAssignedTaskEmailBody(employee.firstName, employee.lastName, task);
+  const { subject, body } = notifyAssignedTaskEmailTemplate(employee.firstName, employee.lastName, task);
 
   await EmailProvider.sendEmail([employee.email], subject, body);
 }
 
-export const NotificationService = { sendAssignedTaskNotification };
+/**
+ * This method is used for sending a notification to another department when the project status is updated.
+ * @param departmentTitle {SupportedDepartments} - The department to which the notification is to be sent
+ * @param projectId {string} - The project id for which the status is updated
+ */
+async function sendProjectStatusUpdateNotification(departmentTitle: SupportedDepartments, projectId: string) {
+  const project = await ProjectRepository.findById(projectId);
+  if (!project) {
+    throw new Error('Project not found');
+  }
+
+  const employees = await EmployeeRepository.findByDepartment(departmentTitle);
+  if (!employees) {
+    throw new Error('Employees not found');
+  }
+
+  const emailList = employees.map(employee => employee.email);
+
+  const { subject, body } = notifyOtherDeparmentEmailTemplate(departmentTitle, project);
+
+  await EmailProvider.sendEmail(emailList, subject, body);
+}
+
+export const NotificationService = { sendAssignedTaskNotification, sendProjectStatusUpdateNotification };
