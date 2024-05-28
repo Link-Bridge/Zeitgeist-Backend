@@ -11,6 +11,12 @@ router.get(
   ExpenseController.getExpenses
 );
 
+router.put(
+  '/:id/status',
+  checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
+  ExpenseController.updateStatusById
+);
+
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
 router.get('/report/:id', ExpenseController.getReportById);
 

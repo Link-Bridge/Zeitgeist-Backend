@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { SupportedRoles } from '../../../utils/enums';
+import { ExpenseReportStatus, SupportedRoles } from '../../../utils/enums';
 import { ExpenseReport } from '../../domain/entities/expense.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ExpenseRepository } from '../../infra/repositories/expense.repository';
@@ -92,4 +92,25 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById };
+/**
+ * @param id The id of the expense to be updated
+ * @param status The new status
+ * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
+ * @throws {Error} if an unexpected error occurs
+ */
+async function updateStatusById(id: string, status: ExpenseReportStatus): Promise<ExpenseReport> {
+  try {
+    const expenseReportStatus = Object.values(ExpenseReportStatus) as string[];
+    if (!expenseReportStatus.includes(status)) throw new Error('Invalid status');
+
+    const updatedExpense = await ExpenseRepository.updateStatusById(id, status);
+    return updatedExpense;
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      throw error;
+    }
+    throw new Error(error.message);
+  }
+}
+
+export const ExpenseService = { getExpenses, getReportById, updateStatusById };
