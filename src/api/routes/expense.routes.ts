@@ -20,7 +20,7 @@ router.put(
 router.put(
   '/:id/payment',
   checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
-  ExpenseController.updatePaymentFileById
+  ExpenseController.updatePaymentFileUrlById
 );
 
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));

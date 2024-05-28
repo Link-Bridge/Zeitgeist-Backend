@@ -17,6 +17,7 @@ describe('ExpenseService', () => {
   let findExpenseByEmployeeIdStub: Sinon.SinonStub;
   let findAllExpensesStub: Sinon.SinonStub;
   let updateStatusByIdStub: Sinon.SinonStub;
+  let updatePaymentFileUrlByIdStub: Sinon.SinonStub;
 
   beforeEach(() => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
@@ -25,6 +26,7 @@ describe('ExpenseService', () => {
     findExpenseByEmployeeIdStub = sinon.stub(ExpenseRepository, 'findByEmployeeId');
     findAllExpensesStub = sinon.stub(ExpenseRepository, 'findAll');
     updateStatusByIdStub = sinon.stub(ExpenseRepository, 'updateStatusById');
+    updatePaymentFileUrlByIdStub = sinon.stub(ExpenseRepository, 'updatePaymentFileUrlById');
   });
 
   afterEach(() => {
@@ -303,15 +305,15 @@ describe('ExpenseService', () => {
 
   describe('updateStatusById', () => {
     it('Should update the status to Payed', async () => {
+      const employeeId = randomUUID();
       const reportId = randomUUID();
       const updatedExpense = {
         id: reportId,
         title: faker.lorem.words(3),
-        justification: faker.lorem.words(10),
-        totalAmount: faker.number.float(),
-        date: new Date(),
+        description: faker.lorem.words(10),
+        startDate: new Date(),
         createdAt: new Date(),
-        idReport: reportId,
+        idEmployee: employeeId,
         status: ExpenseReportStatus.PAYED,
       };
 
@@ -326,15 +328,15 @@ describe('ExpenseService', () => {
     });
 
     it('Should throw an error if the status is not valid', async () => {
+      const employeeId = randomUUID();
       const reportId = randomUUID();
       const updatedExpense = {
         id: reportId,
         title: faker.lorem.words(3),
-        justification: faker.lorem.words(10),
-        totalAmount: faker.number.float(),
-        date: new Date(),
+        description: faker.lorem.words(10),
+        startDate: new Date(),
         createdAt: new Date(),
-        idReport: reportId,
+        idEmployee: employeeId,
         status: ExpenseReportStatus.PAYED,
       };
 
@@ -345,6 +347,33 @@ describe('ExpenseService', () => {
       } catch (error: any) {
         expect(error.message).to.equal('Invalid status');
       }
+    });
+  });
+
+  describe('updatePaymentFileUrlByIdStub', () => {
+    it('Should update the url voucher', async () => {
+      const employeeId = randomUUID();
+      const reportId = randomUUID();
+      const url = 'https://drive.google.com';
+      const updatedExpense = {
+        id: reportId,
+        title: faker.lorem.words(3),
+        description: faker.lorem.words(10),
+        startDate: new Date(),
+        createdAt: new Date(),
+        idEmployee: employeeId,
+        status: ExpenseReportStatus.PAYED,
+        urlVoucher: url,
+      };
+
+      updatePaymentFileUrlByIdStub.resolves(updatedExpense);
+
+      const res = await ExpenseService.updatePaymentFileUrlById(reportId, url);
+
+      expect(res).to.exist;
+      expect(res).to.be.equal(updatedExpense);
+      expect(res.id).to.be.equal(reportId);
+      expect(res.urlVoucher).to.be.equal(url);
     });
   });
 });

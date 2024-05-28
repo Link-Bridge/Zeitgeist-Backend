@@ -119,9 +119,9 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
  * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
  * @throws {Error} if an unexpected error occurs
  */
-async function updatePaymentFileById(id: string, urlVoucher: string): Promise<ExpenseReport> {
+async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise<ExpenseReport> {
   try {
-    const updatedExpense = await ExpenseRepository.updatePaymentFileById(id, urlVoucher);
+    const updatedExpense = await ExpenseRepository.updatePaymentFileUrlById(id, urlVoucher);
     return updatedExpense;
   } catch (error: any) {
     if (error.message === 'Unauthorized employee') {
@@ -131,4 +131,4 @@ async function updatePaymentFileById(id: string, urlVoucher: string): Promise<Ex
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById, updateStatusById, updatePaymentFileById };
+export const ExpenseService = { getExpenses, getReportById, updateStatusById, updatePaymentFileUrlById };

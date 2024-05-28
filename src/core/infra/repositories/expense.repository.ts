@@ -116,7 +116,7 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
  * @version 1.0.0
  * @returns {Promise<ExpenseReport>} a promise that resolves in a expense
  */
-async function updatePaymentFileById(id: string, urlVoucher: string): Promise<ExpenseReport> {
+async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise<ExpenseReport> {
   try {
     const data = await Prisma.expense_report.update({
       where: {
@@ -138,4 +138,4 @@ async function updatePaymentFileById(id: string, urlVoucher: string): Promise<Ex
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId, updateStatusById, updatePaymentFileById };
+export const ExpenseRepository = { findAll, findById, findByEmployeeId, updateStatusById, updatePaymentFileUrlById };

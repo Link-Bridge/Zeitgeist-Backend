@@ -72,12 +72,12 @@ async function updateStatusById(req: Request, res: Response) {
  * @param req HTTP Request
  * @param res Server response
  */
-async function updatePaymentFileById(req: Request, res: Response) {
+async function updatePaymentFileUrlById(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
     const { url_voucher } = req.body;
 
-    const updatedExpense = await ExpenseService.updatePaymentFileById(id, url_voucher);
+    const updatedExpense = await ExpenseService.updatePaymentFileUrlById(id, url_voucher);
     res.status(200).json(updatedExpense);
   } catch (error: any) {
     if (error.message === 'Unauthorized employee') {
@@ -88,4 +88,4 @@ async function updatePaymentFileById(req: Request, res: Response) {
   }
 }
 
-export const ExpenseController = { getExpenses, getReportById, updateStatusById, updatePaymentFileById };
+export const ExpenseController = { getExpenses, getReportById, updateStatusById, updatePaymentFileUrlById };
