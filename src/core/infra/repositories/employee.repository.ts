@@ -65,7 +65,7 @@ async function updateRoleById(id: string, roleId: string): Promise<EmployeeEntit
  * @returns {Promise<EmployeeEntity>} The deleted employee
  * @throws If the employee is not found
  * @throws If an unexpected error occurs
- * 
+ *
  */
 
 async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
