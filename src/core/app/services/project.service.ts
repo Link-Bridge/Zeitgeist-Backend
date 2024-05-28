@@ -190,6 +190,27 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
   }
 }
 
+/**
+ * @description Function to delete a project by id
+ * @param id
+ * @returns {ProjectEntity} - Deleted project
+ * @throws {Error} - If the project is not found
+ * @throws {Error} - If an unexpected error occurs
+ */
+
+async function deleteProjectById(id: string): Promise<ProjectEntity> {
+  try {
+    const project = await ProjectRepository.findById(id);
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    return await ProjectRepository.deleteProjectById(id);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
 export const ProjectService = {
   createProject,
   findProjectsClient,
@@ -197,4 +218,5 @@ export const ProjectService = {
   updateProject,
   updateProjectStatus,
   getDepartmentProjects,
+  deleteProjectById,
 };
