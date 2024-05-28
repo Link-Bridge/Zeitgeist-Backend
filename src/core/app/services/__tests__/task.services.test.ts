@@ -36,7 +36,7 @@ describe('Task Service', () => {
     name: 'Project',
     status: ProjectStatus.ACCEPTED,
     category: 'Internal',
-    startDate: new Date(),
+    startDate: new Date('05-01-2021'),
     endDate: new Date('05-01-2042'),
     area: 'Legal',
     createdAt: new Date(),
@@ -49,8 +49,8 @@ describe('Task Service', () => {
       title: 'Zombie',
       description: 'Zombie',
       status: TaskStatus.DONE,
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
@@ -62,8 +62,8 @@ describe('Task Service', () => {
       description:
         'The Nether is a dimension that is supposedly located below the Mother Rock in Minecraft. Its appearance is similar to the idea of hell, with many dark rocks and lava and magma plaguing the entire setting.',
       status: TaskStatus.POSTPONED,
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
@@ -87,15 +87,14 @@ describe('Task Service', () => {
     idRole: idRole,
   };
 
-  const projectID = randomUUID();
   const task: BareboneTask = {
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
-    startDate: faker.date.recent(),
-    endDate: new Date(),
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
     workedHours: faker.number.int() % 1000,
-    idProject: projectID,
+    idProject: idProject,
     idEmployee: randomUUID(),
   };
 
@@ -104,8 +103,8 @@ describe('Task Service', () => {
     title: task.title,
     description: task.description,
     status: task.status,
-    startDate: task.startDate,
-    endDate: new Date(),
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
     workedHours: task.workedHours ?? undefined,
     createdAt: new Date(),
     idProject: task.idProject,
@@ -116,8 +115,8 @@ describe('Task Service', () => {
     title: createdTask.title,
     description: createdTask.description,
     status: createdTask.status,
-    startDate: createdTask.startDate,
-    endDate: new Date(),
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
     idEmployee: randomUUID(),
@@ -165,7 +164,7 @@ describe('Task Service', () => {
     });
 
     it('Should throw an error if the project ID is not valid', async () => {
-      projectRepositoryStub.withArgs(projectID).resolves(null);
+      projectRepositoryStub.withArgs(idProject).resolves(null);
 
       try {
         await TaskService.createTask(task);
@@ -281,7 +280,7 @@ describe('Task Service', () => {
         endDate: faker.date.future(),
         workedHours: faker.number.int(),
         createdAt: new Date(),
-        idProject: projectID,
+        idProject: idProject,
       }));
 
       employeeRepositoryStub.resolves({ id: employeeId });

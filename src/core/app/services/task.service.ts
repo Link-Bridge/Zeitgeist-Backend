@@ -132,7 +132,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
     if (newTask.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, newTask.startDate))
       throw new Error("Task's start date cannot be before the project's start date");
 
-    if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.startDate))
+    if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.endDate))
       throw new Error("Task's start date cannot be after the project's end date");
 
     if (newTask.idEmployee) {
@@ -284,7 +284,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     if (task.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, task.startDate))
       throw new Error("Task's start date cannot be before the project's start date");
 
-    if (task.startDate && project.endDate && !dateSmallerOrEqualThanOther(task.startDate, project.startDate))
+    if (task.startDate && project.endDate && !dateSmallerOrEqualThanOther(task.startDate, project.endDate))
       throw new Error("Task's start date cannot be after the project's end date");
 
     const status = task.status;
