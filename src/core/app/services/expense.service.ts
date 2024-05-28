@@ -108,7 +108,7 @@ async function createExpenseReport(body: any): Promise<ExpenseReport> {
       throw new Error('Employee not found');
     }
     const idEmployee = employee.id;
-    
+
     const expenseReport = await ExpenseRepository.createExpenseReport(body, idEmployee);
     return expenseReport;
   } catch (error: any) {
