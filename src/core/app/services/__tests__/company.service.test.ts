@@ -3,7 +3,6 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { SupportedRoles } from '../../../../utils/enums';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { CompanyService } from '../company.service';
@@ -93,41 +92,22 @@ describe('CompanyService', () => {
 
   describe('deleteCompanyById', () => {
     const companyId = randomUUID();
-    const adminEmail = faker.internet.email();
-    const nonAdminEmail = faker.internet.email();
+    const nonExistentCompanyId = randomUUID();
 
-    it('should delete a company from the repository if user is an admin', async () => {
-      findRoleByEmailStub.withArgs(adminEmail).resolves({ title: SupportedRoles.ADMIN });
-      deleteCompanyByIdStub.resolves();
+    it('should delete a company from the repository', async () => {
+      deleteCompanyByIdStub.withArgs(companyId).resolves();
 
-      await CompanyService.deleteCompanyById(companyId, adminEmail);
+      await CompanyService.deleteCompanyById(companyId);
 
-      expect(findRoleByEmailStub.calledOnceWith(adminEmail)).to.be.true;
       expect(deleteCompanyByIdStub.calledOnceWith(companyId)).to.be.true;
     });
 
     it('should throw an error if the company does not exist', async () => {
-      const nonExistentCompanyId = randomUUID();
-      findRoleByEmailStub.withArgs(adminEmail).resolves({ title: SupportedRoles.ADMIN });
-      deleteCompanyByIdStub.rejects(new Error('Company not found'));
+      deleteCompanyByIdStub.withArgs(nonExistentCompanyId).rejects(new Error('Company not found'));
 
-      await expect(CompanyService.deleteCompanyById(nonExistentCompanyId, adminEmail)).to.be.rejectedWith(
-        'Company not found'
-      );
+      await expect(CompanyService.deleteCompanyById(nonExistentCompanyId)).to.be.rejectedWith('Company not found');
 
-      expect(findRoleByEmailStub.calledOnceWith(adminEmail)).to.be.true;
       expect(deleteCompanyByIdStub.calledOnceWith(nonExistentCompanyId)).to.be.true;
-    });
-
-    it('should throw an error if user is not an admin', async () => {
-      findRoleByEmailStub.withArgs(nonAdminEmail).resolves({ title: 'User' });
-
-      await expect(CompanyService.deleteCompanyById(companyId, nonAdminEmail)).to.be.rejectedWith(
-        'Unauthorized Employee'
-      );
-
-      expect(findRoleByEmailStub.calledOnceWith(nonAdminEmail)).to.be.true;
-      expect(deleteCompanyByIdStub.notCalled).to.be.true;
     });
   });
 

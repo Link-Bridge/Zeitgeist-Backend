@@ -97,14 +97,10 @@ async function create(req: Request, res: Response) {
 async function deleteCompany(req: Request, res: Response) {
   try {
     const { id } = idSchema.parse({ id: req.params.id });
-    await CompanyService.deleteCompanyById(id, req.body.auth.email);
+    await CompanyService.deleteCompanyById(id);
     res.status(200).send();
   } catch (error: any) {
-    if (error.message === 'Unauthorized Employee') {
-      res.status(403).json({ message: 'Unauthorized Employee.' });
-    } else {
-      res.status(500).json({ message: 'Internal server error occurred.' });
-    }
+    res.status(500).json({ message: 'Internal server error occurred.' });
   }
 }
 export const CompanyController = { getUnique, getAll, create, updateClient, deleteCompany };
