@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { ExpenseReportStatus } from '../../../utils/enums/index';
 import { ExpenseReport } from '../../domain/entities/expense.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapExpenseReportEntityFromDbModel } from '../mappers/expense-entity-from-db-model.mapper';
@@ -83,4 +84,32 @@ async function findByEmployeeId(id: string): Promise<ExpenseReport[]> {
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId };
+/**
+ * Creates a expense report in the database
+ *
+ * @param {ExpenseReport} expenseReport - The expense report to be created
+ * @returns {Promise<ExpenseReport>} - The created expense report
+ *
+ * @throws {Error} - If an unexpected error occurs
+ */
+async function createExpenseReport(expenseReport: ExpenseReport, idEmployee: string): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.create({
+      data: {
+        id: expenseReport.id,
+        title: expenseReport.title,
+        description: expenseReport.description,
+        start_date: expenseReport.startDate,
+        end_date: expenseReport.endDate,
+        status: expenseReport.status ?? ExpenseReportStatus.PENDING,
+        id_employee: idEmployee,
+      },
+    });
+
+    return mapExpenseReportEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const ExpenseRepository = { findAll, findById, findByEmployeeId, createExpenseReport };
