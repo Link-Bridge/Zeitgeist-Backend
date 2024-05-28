@@ -103,7 +103,7 @@ async function findByDepartment(departmentId: string): Promise<EmployeeEntity[]>
       },
     });
 
-    if (!data) {
+    if (data.length === 0) {
       throw new NotFoundError(RESOURCE_NAME);
     }
 

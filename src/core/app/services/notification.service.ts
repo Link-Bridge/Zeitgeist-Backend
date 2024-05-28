@@ -5,6 +5,7 @@ import {
 import { SupportedDepartments } from '../../../utils/enums';
 import { Task } from '../../domain/entities/task.entity';
 import { EmailProvider } from '../../infra/providers/resend.provider';
+import { DepartmentRepository } from '../../infra/repositories/department.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 
@@ -35,14 +36,17 @@ async function sendProjectStatusUpdateNotification(departmentTitle: SupportedDep
     throw new Error('Project not found');
   }
 
-  const employees = await EmployeeRepository.findByDepartment(departmentTitle);
+  const deparment = await DepartmentRepository.findByTitle(departmentTitle);
+  const employees = await EmployeeRepository.findByDepartment(deparment.id);
   if (!employees) {
     throw new Error('Employees not found');
   }
 
   const emailList = employees.map(employee => employee.email);
 
-  const { subject, body } = notifyOtherDeparmentEmailTemplate(departmentTitle, project);
+  const deparmentSubject =
+    departmentTitle === SupportedDepartments.ACCOUNTING ? SupportedDepartments.LEGAL : SupportedDepartments.ACCOUNTING;
+  const { subject, body } = notifyOtherDeparmentEmailTemplate(deparmentSubject, project);
 
   await EmailProvider.sendEmail(emailList, subject, body);
 }
