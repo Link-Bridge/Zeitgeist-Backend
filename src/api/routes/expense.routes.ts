@@ -12,13 +12,13 @@ router.get(
 );
 
 router.put(
-  '/:id/status',
+  '/status/:id',
   checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
   ExpenseController.updateStatusById
 );
 
 router.put(
-  '/:id/payment',
+  '/payment/:id',
   checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
   ExpenseController.updatePaymentFileUrlById
 );
