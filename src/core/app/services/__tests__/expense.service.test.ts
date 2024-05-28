@@ -16,6 +16,7 @@ describe('ExpenseService', () => {
   let findExpenseByIdStub: Sinon.SinonStub;
   let findExpenseByEmployeeIdStub: Sinon.SinonStub;
   let findAllExpensesStub: Sinon.SinonStub;
+  let updateStatusByIdStub: Sinon.SinonStub;
 
   beforeEach(() => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
@@ -23,6 +24,7 @@ describe('ExpenseService', () => {
     findExpenseByIdStub = sinon.stub(ExpenseRepository, 'findById');
     findExpenseByEmployeeIdStub = sinon.stub(ExpenseRepository, 'findByEmployeeId');
     findAllExpensesStub = sinon.stub(ExpenseRepository, 'findAll');
+    updateStatusByIdStub = sinon.stub(ExpenseRepository, 'updateStatusById');
   });
 
   afterEach(() => {
@@ -296,6 +298,53 @@ describe('ExpenseService', () => {
       expect(res).to.be.equal(existingReport);
       expect(res.id).to.equal(reportId);
       expect(res.expenses?.length).to.equal(expenses.length);
+    });
+  });
+
+  describe('updateStatusById', () => {
+    it('Should update the status to Payed', async () => {
+      const reportId = randomUUID();
+      const updatedExpense = {
+        id: reportId,
+        title: faker.lorem.words(3),
+        justification: faker.lorem.words(10),
+        totalAmount: faker.number.float(),
+        date: new Date(),
+        createdAt: new Date(),
+        idReport: reportId,
+        status: ExpenseReportStatus.PAYED,
+      };
+
+      updateStatusByIdStub.resolves(updatedExpense);
+
+      const res = await ExpenseService.updateStatusById(reportId, ExpenseReportStatus.PAYED);
+
+      expect(res).to.exist;
+      expect(res).to.be.equal(updatedExpense);
+      expect(res.id).to.be.equal(reportId);
+      expect(res.status).to.be.equal(ExpenseReportStatus.PAYED);
+    });
+
+    it('Should throw an error if the status is not valid', async () => {
+      const reportId = randomUUID();
+      const updatedExpense = {
+        id: reportId,
+        title: faker.lorem.words(3),
+        justification: faker.lorem.words(10),
+        totalAmount: faker.number.float(),
+        date: new Date(),
+        createdAt: new Date(),
+        idReport: reportId,
+        status: ExpenseReportStatus.PAYED,
+      };
+
+      updateStatusByIdStub.resolves(updatedExpense);
+
+      try {
+        await ExpenseService.updateStatusById(reportId, 'mystatus' as ExpenseReportStatus);
+      } catch (error: any) {
+        expect(error.message).to.equal('Invalid status');
+      }
     });
   });
 });

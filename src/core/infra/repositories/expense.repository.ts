@@ -99,13 +99,15 @@ async function updateStatusById(id: string, status: ExpenseReportStatus): Promis
         status: status,
       },
     });
+    console.log(data);
     if (!data) {
       throw new NotFoundError(RESOURCE_NAME);
     }
 
     return mapExpenseReportEntityFromDbModel(data);
-  } catch (error: unknown) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.code == 'P2025' && error.meta.cause == 'Record to update not found.')
+      throw new Error('Expense not found');
     throw new Error('An unexpected error occurred');
   }
 }
