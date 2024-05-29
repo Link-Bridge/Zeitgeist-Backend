@@ -3,7 +3,6 @@ import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { UpdateCompanyBody } from '../interfaces/company.interface';
-
 /**
  * Gets all data from a unique company
  * @returns {Promise<CompanyEntity>} a promise that resolves a unique company entity
@@ -102,4 +101,22 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyService = { findAll, findById, update, create, archiveClient };
+/**
+ * @brief Delete a client
+ *
+ * @param id
+ * @param email
+ * @returns {Promise<CompanyEntity>}
+ */
+async function deleteCompanyById(id: string): Promise<CompanyEntity> {
+  try {
+    return await CompanyRepository.deleteCompanyById(id);
+  } catch (error: any) {
+    if (error.message === 'Company not found') {
+      throw new Error('Company not found');
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const CompanyService = { findAll, findById, update, create, archiveClient, deleteCompanyById };
