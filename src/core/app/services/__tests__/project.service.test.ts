@@ -392,6 +392,7 @@ function prepareMockProject() {
     startDate: faker.date.recent(),
     createdAt: faker.date.recent(),
     idCompany: companyId,
+    isChargeable: false,
   };
 
   const updatedProject = {
