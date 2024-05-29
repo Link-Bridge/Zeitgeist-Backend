@@ -30,7 +30,10 @@ async function sendAssignedTaskNotification(userId: string, task: Task): Promise
  * @param departmentTitle {SupportedDepartments} - The department to which the notification is to be sent
  * @param projectId {string} - The project id for which the status is updated
  */
-async function sendProjectStatusUpdateNotification(departmentTitle: SupportedDepartments, projectId: string) {
+async function sendProjectStatusUpdateNotification(
+  departmentTitle: SupportedDepartments,
+  projectId: string
+): Promise<string> {
   const project = await ProjectRepository.findById(projectId);
   if (!project) {
     throw new Error('Project not found');
@@ -48,7 +51,13 @@ async function sendProjectStatusUpdateNotification(departmentTitle: SupportedDep
     departmentTitle === SupportedDepartments.ACCOUNTING ? SupportedDepartments.LEGAL : SupportedDepartments.ACCOUNTING;
   const { subject, body } = notifyOtherDeparmentEmailTemplate(deparmentSubject, project);
 
-  await EmailProvider.sendEmail(emailList, subject, body);
+  const response = await EmailProvider.sendEmail(emailList, subject, body);
+
+  if (!response.error) {
+    return 'Email sent successfully';
+  }
+
+  return 'Failed to send email';
 }
 
 export const NotificationService = { sendAssignedTaskNotification, sendProjectStatusUpdateNotification };

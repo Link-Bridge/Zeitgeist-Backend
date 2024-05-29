@@ -1,6 +1,16 @@
 import { Resend } from 'resend';
 import { EnvConfigKeys } from '../../../utils/constants';
 
+interface ResendApiResponse {
+  data: CreateEmailResponseSuccess | null;
+  error: string | null;
+}
+
+interface CreateEmailResponseSuccess {
+  /** The ID of the newly created email. */
+  id: string;
+}
+
 const resend = new Resend(process.env[EnvConfigKeys.RESEND_API_KEY]);
 
 /**
@@ -13,7 +23,7 @@ const resend = new Resend(process.env[EnvConfigKeys.RESEND_API_KEY]);
  * @warining There's a max of 50 emails per request and 100 emails per day.
  * @returns data - The data returned from the email provider.
  */
-async function sendEmail(emailTo: string[], subject: string, body: string) {
+async function sendEmail(emailTo: string[], subject: string, body: string): Promise<ResendApiResponse> {
   try {
     const emailsFormatted = emailTo.map(email => `${email}`);
     const { data, error } = await resend.emails.send({
@@ -24,12 +34,12 @@ async function sendEmail(emailTo: string[], subject: string, body: string) {
     });
 
     if (error) {
-      return console.error(error);
+      return { data: null, error: error.message };
     }
 
-    return data;
-  } catch (error) {
-    console.error({ error });
+    return { data, error: null };
+  } catch (error: unknown) {
+    return { data: null, error: 'An unexpected error occurred' };
   }
 }
 
