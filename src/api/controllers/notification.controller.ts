@@ -16,6 +16,12 @@ const notificationSchema = z.object({
   projectId: zodValidUuid,
 });
 
+/**
+ * Method in charge of sending a notification to a department when the event is trigger.
+ * @param req {Request} - The request object
+ * @param res {Response} - The response object
+ * @returns
+ */
 async function sendNotificationToDepartment(req: Request, res: Response) {
   try {
     const parsed = notificationSchema.parse(req.body);
