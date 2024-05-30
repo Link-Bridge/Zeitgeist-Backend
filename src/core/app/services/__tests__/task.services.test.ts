@@ -286,7 +286,6 @@ describe('Task Service', () => {
         workedHours: faker.number.int(),
         createdAt: new Date(),
         idProject: idProject,
-        idProject: idProject,
       }));
 
       employeeRepositoryStub.resolves({ id: employeeId });
