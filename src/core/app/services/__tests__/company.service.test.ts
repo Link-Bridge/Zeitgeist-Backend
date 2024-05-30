@@ -4,7 +4,6 @@ import chaiAsPromised from 'chai-as-promised';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
-// import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { CompanyService } from '../company.service';
 
 chai.use(chaiAsPromised);
@@ -16,7 +15,6 @@ describe('CompanyService', () => {
   let archiveClientdStub: sinon.SinonStub;
   let getArchivedStatusStub: sinon.SinonStub;
   let deleteCompanyByIdStub: sinon.SinonStub;
-  // let findRoleByEmailStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
@@ -25,7 +23,6 @@ describe('CompanyService', () => {
     archiveClientdStub = sinon.stub(CompanyRepository, 'archiveClient');
     getArchivedStatusStub = sinon.stub(CompanyRepository, 'getArchivedStatus');
     deleteCompanyByIdStub = sinon.stub(CompanyRepository, 'deleteCompanyById');
-    // findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
   });
 
   afterEach(() => {

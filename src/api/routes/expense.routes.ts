@@ -11,6 +11,18 @@ router.get(
   ExpenseController.getExpenses
 );
 
+router.put(
+  '/report/status/:id',
+  checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
+  ExpenseController.updateStatusById
+);
+
+router.put(
+  '/report/payment/:id',
+  checkAuthRole([SupportedRoles.ADMIN, SupportedRoles.ACCOUNTING]),
+  ExpenseController.updatePaymentFileUrlById
+);
+
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
 router.get('/report/:id', ExpenseController.getReportById);
 router.delete('/delete/:id', ExpenseController.deleteExpenseReport);
