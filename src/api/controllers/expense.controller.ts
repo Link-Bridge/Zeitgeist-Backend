@@ -47,7 +47,6 @@ async function getReportById(req: Request, res: Response) {
 }
 
 /**
-<<<<<<< HEAD
  * A function to delete an expense report
  * @param req HTTP Request
  * @param res Server response
@@ -64,8 +63,7 @@ async function deleteExpenseReport(req: Request, res: Response) {
   }
 }
 
-export const ExpenseController = { getExpenses, getReportById, deleteExpenseReport };
-=======
+/**
  * @description A function that updates the expense status
  * @param req HTTP Request
  * @param res Server response
@@ -107,5 +105,10 @@ async function updatePaymentFileUrlById(req: Request, res: Response) {
   }
 }
 
-export const ExpenseController = { getExpenses, getReportById, updateStatusById, updatePaymentFileUrlById };
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
+export const ExpenseController = {
+  getExpenses,
+  getReportById,
+  deleteExpenseReport,
+  updateStatusById,
+  updatePaymentFileUrlById,
+};

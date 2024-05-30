@@ -16,12 +16,9 @@ describe('ExpenseService', () => {
   let findExpenseByIdStub: Sinon.SinonStub;
   let findExpenseByEmployeeIdStub: Sinon.SinonStub;
   let findAllExpensesStub: Sinon.SinonStub;
-<<<<<<< HEAD
   let deleteExpenseReportStub: Sinon.SinonStub;
-=======
   let updateStatusByIdStub: Sinon.SinonStub;
   let updatePaymentFileUrlByIdStub: Sinon.SinonStub;
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
 
   beforeEach(() => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
@@ -29,12 +26,9 @@ describe('ExpenseService', () => {
     findExpenseByIdStub = sinon.stub(ExpenseRepository, 'findById');
     findExpenseByEmployeeIdStub = sinon.stub(ExpenseRepository, 'findByEmployeeId');
     findAllExpensesStub = sinon.stub(ExpenseRepository, 'findAll');
-<<<<<<< HEAD
     deleteExpenseReportStub = sinon.stub(ExpenseRepository, 'deleteExpenseReport');
-=======
     updateStatusByIdStub = sinon.stub(ExpenseRepository, 'updateStatusById');
     updatePaymentFileUrlByIdStub = sinon.stub(ExpenseRepository, 'updatePaymentFileUrlById');
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
   });
 
   afterEach(() => {
@@ -311,7 +305,6 @@ describe('ExpenseService', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('deleteExpenseReport', () => {
     const reportId = randomUUID();
 
@@ -323,7 +316,9 @@ describe('ExpenseService', () => {
 
       expect(result).to.eql(null);
       expect(deleteExpenseReportStub.calledOnce).to.be.true;
-=======
+    });
+  });
+
   describe('updateStatusById', () => {
     it('Should update the status to Payed', async () => {
       const employeeId = randomUUID();
@@ -395,7 +390,6 @@ describe('ExpenseService', () => {
       expect(res).to.be.equal(updatedExpense);
       expect(res.id).to.be.equal(reportId);
       expect(res.urlVoucher).to.be.equal(url);
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
     });
   });
 });

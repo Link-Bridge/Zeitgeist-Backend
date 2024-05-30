@@ -93,7 +93,6 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
 }
 
 /**
-<<<<<<< HEAD
  * @description Function to delete an expense by id
  * @param id
  * @param returns {ExpenseEntity} - Deleted expense
@@ -115,13 +114,14 @@ async function deleteExpenseReport(reportId: string): Promise<ExpenseReport> {
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById, deleteExpenseReport };
-=======
+/**
  * @param id The id of the expense to be updated
  * @param status The new status
  * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
  * @throws {Error} if an unexpected error occurs
+ *
  */
+
 async function updateStatusById(id: string, status: ExpenseReportStatus): Promise<ExpenseReport> {
   try {
     const expenseReportStatus = Object.values(ExpenseReportStatus) as string[];
@@ -155,5 +155,10 @@ async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById, updateStatusById, updatePaymentFileUrlById };
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
+export const ExpenseService = {
+  getExpenses,
+  getReportById,
+  deleteExpenseReport,
+  updateStatusById,
+  updatePaymentFileUrlById,
+};

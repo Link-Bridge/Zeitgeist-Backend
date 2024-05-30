@@ -96,13 +96,8 @@ describe('Task Service', () => {
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
-<<<<<<< HEAD
-    startDate: new Date('05-01-2021'),
-    endDate: new Date('05-01-2042'),
-=======
     startDate: new Date('05-01-2024'),
     endDate: new Date('05-02-2024'),
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
     workedHours: faker.number.int() % 1000,
     idProject: idProject,
     idProject: idProject,
@@ -128,11 +123,7 @@ describe('Task Service', () => {
     title: createdTask.title,
     description: createdTask.description,
     status: createdTask.status,
-<<<<<<< HEAD
-    startDate: new Date('05-01-2023'),
-=======
     startDate: new Date('05-01-2024'),
->>>>>>> 912f138368676a8d3ea39b65681953d1d5587851
     endDate: new Date('05-02-2024'),
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
