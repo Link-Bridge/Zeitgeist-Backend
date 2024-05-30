@@ -37,6 +37,7 @@ describe('Task Service', () => {
     status: ProjectStatus.ACCEPTED,
     category: 'Internal',
     startDate: new Date('05-01-2021'),
+    startDate: new Date('05-01-2021'),
     endDate: new Date('05-01-2042'),
     area: 'Legal',
     createdAt: new Date(),
@@ -51,6 +52,8 @@ describe('Task Service', () => {
       status: TaskStatus.DONE,
       startDate: new Date('05-01-2024'),
       endDate: new Date('05-02-2024'),
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       createdAt: new Date(),
       idProject: idProject,
       employeeFirstName: faker.person.firstName(),
@@ -62,6 +65,8 @@ describe('Task Service', () => {
       description:
         'The Nether is a dimension that is supposedly located below the Mother Rock in Minecraft. Its appearance is similar to the idea of hell, with many dark rocks and lava and magma plaguing the entire setting.',
       status: TaskStatus.POSTPONED,
+      startDate: new Date('05-01-2024'),
+      endDate: new Date('05-02-2024'),
       startDate: new Date('05-01-2024'),
       endDate: new Date('05-02-2024'),
       createdAt: new Date(),
@@ -95,6 +100,7 @@ describe('Task Service', () => {
     endDate: new Date('05-01-2042'),
     workedHours: faker.number.int() % 1000,
     idProject: idProject,
+    idProject: idProject,
     idEmployee: randomUUID(),
   };
 
@@ -103,6 +109,8 @@ describe('Task Service', () => {
     title: task.title,
     description: task.description,
     status: task.status,
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
     startDate: new Date('05-01-2024'),
     endDate: new Date('05-02-2024'),
     workedHours: task.workedHours ?? undefined,
@@ -285,6 +293,7 @@ describe('Task Service', () => {
         endDate: faker.date.future(),
         workedHours: faker.number.int(),
         createdAt: new Date(),
+        idProject: idProject,
         idProject: idProject,
       }));
 
