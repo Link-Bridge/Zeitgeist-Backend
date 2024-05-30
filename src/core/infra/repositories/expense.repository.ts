@@ -102,6 +102,9 @@ async function createExpenseReport(data: ExpenseReport): Promise<ExpenseReport> 
         status: data.status,
         id_employee: data.idEmployee,
       },
+      include: {
+        employee: true,
+      },
     });
 
     return mapExpenseReportEntityFromDbModel(expenseReport);
@@ -123,10 +126,13 @@ async function createExpense(data: ExpenseEntity): Promise<ExpenseEntity> {
         id: data.id,
         title: data.title,
         justification: data.justification,
+        supplier: data.supplier,
         total_amount: data.totalAmount,
         status: data.status,
+        category: data.category,
         date: data.date,
         id_report: data.idReport,
+        url_file: data.urlFile,
       },
     });
 
