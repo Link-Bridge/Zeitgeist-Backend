@@ -92,4 +92,26 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
   }
 }
 
-export const ExpenseService = { getExpenses, getReportById };
+/**
+ * @description Function to delete an expense by id
+ * @param id
+ * @param returns {ExpenseEntity} - Deleted expense
+ * @throws {Error} - If the expense is not found
+ * @throws {Error} - If an unexpected error occurs
+ *
+ */
+
+async function deleteExpenseReport(reportId: string): Promise<ExpenseReport> {
+  try {
+    const expenseReport = await ExpenseRepository.findById(reportId);
+    if (!expenseReport) {
+      throw new Error('Expense report not found');
+    }
+
+    return await ExpenseRepository.deleteExpenseReport(reportId);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const ExpenseService = { getExpenses, getReportById, deleteExpenseReport };

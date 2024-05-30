@@ -83,4 +83,29 @@ async function findByEmployeeId(id: string): Promise<ExpenseReport[]> {
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId };
+/**
+ * Deletes a expense report
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport>}
+ */
+
+async function deleteExpenseReport(reportId: string): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.delete({
+      where: {
+        id: reportId,
+      },
+      include: { expense: true, employee: true },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapExpenseReportEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const ExpenseRepository = { findAll, findById, findByEmployeeId, deleteExpenseReport };
