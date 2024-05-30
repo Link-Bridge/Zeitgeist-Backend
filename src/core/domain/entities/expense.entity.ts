@@ -229,3 +229,46 @@ export interface RawExpenseReport {
    */
   expense?: expense[] | null;
 }
+
+/**
+ * @brief This class is used to define the structure of the New Expense entity
+ *
+ * @param title: string - Expense title
+ * @param justification: string - Expense justification
+ * @param supplier: string - Expense supplier
+ * @param totalAmount: Decimal - Expense amount
+ * @param date: Date - Expense date
+ * @param urlFile: string - URL of the file associated with the expense
+ *
+ * @return void
+ *
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
+ */
+
+export interface NewExpenseEntity {
+  title: string;
+  justification: string;
+  supplier: string;
+  totalAmount: Decimal;
+  date: Date;
+  urlFile: string;
+}
+
+/**
+ * @brief This class is used to define the structure of the New Expense Report entity
+ *
+ * @param title: string - Expense Report title
+ * @param description: string - Expense Report description
+ * @param startDate: Date - Expense Report start date
+ * @param expenses: NewExpenseEntity[] - Array of expenses associated with the report
+ *
+ * @return void
+ *
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
+ */
+export interface NewExpenseReport {
+  title: string;
+  description: string;
+  startDate: Date;
+  expenses: NewExpenseEntity[];
+}

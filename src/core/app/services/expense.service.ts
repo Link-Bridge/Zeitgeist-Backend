@@ -1,6 +1,8 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 import { SupportedRoles } from '../../../utils/enums';
-import { ExpenseReport } from '../../domain/entities/expense.entity';
+import { ExpenseReportStatus } from '../../../utils/enums/index';
+import { ExpenseReport, NewExpenseReport } from '../../domain/entities/expense.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ExpenseRepository } from '../../infra/repositories/expense.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
@@ -101,17 +103,51 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
  *
  */
 
-async function createExpenseReport(body: any): Promise<ExpenseReport> {
+async function createExpenseReport(userEmail: string, data: NewExpenseReport): Promise<ExpenseReport> {
   try {
-    const employee = await EmployeeRepository.findByEmail(body.auth.email);
+    const employee = await EmployeeRepository.findByEmail(userEmail);
     if (!employee) {
       throw new Error('Employee not found');
     }
     const idEmployee = employee.id;
 
-    const expenseReport = await ExpenseRepository.createExpenseReport(body, idEmployee);
-    return expenseReport;
+    const expenseReport = await ExpenseRepository.createExpenseReport({
+      id: randomUUID(),
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      status: ExpenseReportStatus.PENDING,
+      idEmployee: idEmployee,
+    });
+
+    // Create an expense for each item in data.expenses
+    const promiseExpenses = data.expenses.map(expense =>
+      ExpenseRepository.createExpense({
+        id: randomUUID(),
+        title: expense.title,
+        justification: expense.justification,
+        supplier: expense.supplier,
+        totalAmount: expense.totalAmount,
+        status: ExpenseReportStatus.PAYED,
+        category: 'viatico',
+        date: expense.date,
+        createdAt: new Date(),
+        idReport: expenseReport.id,
+        urlFile: expense.urlFile,
+      })
+    );
+
+    // Wait for all expenses to be created
+    const expenses = await Promise.all(promiseExpenses);
+
+    const createdExpenseReport = {
+      ...expenseReport,
+      expenses,
+    };
+
+    return createdExpenseReport;
   } catch (error: any) {
+    //console.log(error)
     throw new Error('An unexpected error occurred');
   }
 }

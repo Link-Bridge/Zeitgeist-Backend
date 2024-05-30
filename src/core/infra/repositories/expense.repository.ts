@@ -1,8 +1,10 @@
 import { Prisma } from '../../..';
-import { ExpenseReportStatus } from '../../../utils/enums/index';
-import { ExpenseReport } from '../../domain/entities/expense.entity';
+import { ExpenseEntity, ExpenseReport } from '../../domain/entities/expense.entity';
 import { NotFoundError } from '../../errors/not-found.error';
-import { mapExpenseReportEntityFromDbModel } from '../mappers/expense-entity-from-db-model.mapper';
+import {
+  mapExpenseEntityFromDbModel,
+  mapExpenseReportEntityFromDbModel,
+} from '../mappers/expense-entity-from-db-model.mapper';
 
 const RESOURCE_NAME = 'Expense report';
 
@@ -89,7 +91,7 @@ async function findByEmployeeId(id: string): Promise<ExpenseReport[]> {
  * @version 1.0.0
  * @returns {Promise<ExpenseReport>} a promise that resolves in a expense report entity.
  */
-async function createExpenseReport(data: ExpenseReport, idEmployee: string): Promise<ExpenseReport> {
+async function createExpenseReport(data: ExpenseReport): Promise<ExpenseReport> {
   try {
     const expenseReport = await Prisma.expense_report.create({
       data: {
@@ -97,9 +99,8 @@ async function createExpenseReport(data: ExpenseReport, idEmployee: string): Pro
         title: data.title,
         description: data.description,
         start_date: data.startDate,
-        end_date: data.endDate,
-        status: data.status ?? ExpenseReportStatus.PENDING,
-        id_employee: idEmployee,
+        status: data.status,
+        id_employee: data.idEmployee,
       },
     });
 
@@ -109,4 +110,30 @@ async function createExpenseReport(data: ExpenseReport, idEmployee: string): Pro
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId, createExpenseReport };
+/**
+ * Creates a new expense in the database and associates it with an expense report
+ * @version 1.0.0
+ * @returns {Promise<ExpenseEntity>} a promise that resolves in a expense entity.
+ */
+
+async function createExpense(data: ExpenseEntity): Promise<ExpenseEntity> {
+  try {
+    const expense = await Prisma.expense.create({
+      data: {
+        id: data.id,
+        title: data.title,
+        justification: data.justification,
+        total_amount: data.totalAmount,
+        status: data.status,
+        date: data.date,
+        id_report: data.idReport,
+      },
+    });
+
+    return mapExpenseEntityFromDbModel(expense);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const ExpenseRepository = { findAll, findById, findByEmployeeId, createExpenseReport, createExpense };
