@@ -97,9 +97,10 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
 /**
  * Function that handles the request to create a new expense report
  *
- * @param {object} body - The request body
- * @returns {Promise<ExpenseReport>} - The created expense report
- * @throws {Error} - If an unexpected error occurs
+ * @param userEmail the email of the user
+ * @param data the data of the new expense report
+ * @returns {Promise<ExpenseReport>} a promise that resolves the created expense report
+ * @throws {Error} if an unexpected error occurs
  *
  */
 
@@ -120,7 +121,6 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
       idEmployee: idEmployee,
     });
 
-    // Create an expense for each item in data.expenses
     const promiseExpenses = data.expenses.map(expense =>
       ExpenseRepository.createExpense({
         id: randomUUID(),
@@ -137,7 +137,6 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
       })
     );
 
-    // Wait for all expenses to be created
     const expenses = await Promise.all(promiseExpenses);
 
     const createdExpenseReport = {
@@ -147,7 +146,6 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
 
     return createdExpenseReport;
   } catch (error: any) {
-    //console.log(error)
     throw new Error('An unexpected error occurred');
   }
 }
