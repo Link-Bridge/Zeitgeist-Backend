@@ -39,7 +39,7 @@ export interface ExpenseEntity {
   /**
    * @param supplier: string - Expense supplier
    */
-  supplier: string;
+  supplier: string | null;
   /**
    * @param totalAmount: Decimal - Expense amount
    */
@@ -248,10 +248,10 @@ export interface RawExpenseReport {
 export interface NewExpenseEntity {
   title: string;
   justification: string;
-  supplier: string;
+  supplier: string | null;
   totalAmount: Decimal;
   date: Date;
-  urlFile: string;
+  urlFile: string | null;
 }
 
 /**
