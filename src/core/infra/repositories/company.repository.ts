@@ -64,7 +64,10 @@ async function create(company: CompanyEntity, uuid: string, date: Date): Promise
     return mapCompanyEntityFromDbModel(res);
   } catch (error: any) {
     // P2002 = Prisma Error code for unique constraints
-    if (error.code == 'P2002' && error.meta.target[0] == 'email') throw new Error('Email already registered.');
+    if (error.code == 'P2002') {
+      if (error.meta.target[0] == 'email') throw new Error('Email already registered.');
+    }
+    if (error.meta.target[0] == 'rfc') throw new Error('RFC already registered.');
     throw new Error(error);
   }
 }
@@ -168,4 +171,38 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyRepository = { findAll, findById, update, create, archiveClient, getArchivedStatus };
+/**
+ * @brief deletes a company by id
+ *
+ * @param id
+ * @returns {Promise<CompanyEntity>}
+ */
+
+async function deleteCompanyById(id: string): Promise<CompanyEntity> {
+  try {
+    const data = await Prisma.company.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapCompanyEntityFromDbModel(data);
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+export const CompanyRepository = {
+  findAll,
+  findById,
+  update,
+  create,
+  archiveClient,
+  getArchivedStatus,
+  deleteCompanyById,
+};

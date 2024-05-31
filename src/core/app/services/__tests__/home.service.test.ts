@@ -82,6 +82,7 @@ describe('HomeService', () => {
         startDate: faker.date.recent(),
         createdAt: faker.date.recent(),
         idCompany: companies[index % companies.length].id,
+        isChargeable: false,
       }));
 
       const tasks: Task[] = Array.from({ length: projects.length * MIN_TASKS_PER_PROJECT }, (_, index) => ({

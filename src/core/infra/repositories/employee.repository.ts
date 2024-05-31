@@ -33,7 +33,6 @@ async function findById(id: string): Promise<EmployeeEntity> {
 
     return mapEmployeeEntityFromDbModel(data);
   } catch (error: unknown) {
-    console.log(error);
     throw new Error('Employee repository error');
   }
 }
