@@ -125,7 +125,7 @@ export function notifyAssignedTaskEmailTemplate(firstName: string, lastName: str
 }
 
 export function notifyOtherDeparmentEmailTemplate(deparmentTitle: string, project: ProjectEntity): EmailPayload {
-  const subject = `📚 The ${deparmentTitle} deparment have finish!`;
+  const subject = `📚 The ${deparmentTitle} deparment has finish!`;
   const body = `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
