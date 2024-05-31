@@ -64,7 +64,10 @@ async function create(company: CompanyEntity, uuid: string, date: Date): Promise
     return mapCompanyEntityFromDbModel(res);
   } catch (error: any) {
     // P2002 = Prisma Error code for unique constraints
-    if (error.code == 'P2002' && error.meta.target[0] == 'email') throw new Error('Email already registered.');
+    if (error.code == 'P2002') {
+      if (error.meta.target[0] == 'email') throw new Error('Email already registered.');
+    }
+    if (error.meta.target[0] == 'rfc') throw new Error('RFC already registered.');
     throw new Error(error);
   }
 }

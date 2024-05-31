@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { SupportedRoles, TaskStatus } from '../../../utils/enums';
+import { dateSmallerOrEqualThanOther } from '../../../utils/methods';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
 import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
 import { NotFoundError } from '../../errors/not-found.error';
@@ -93,8 +94,9 @@ async function getTasksFromProject(projectId: string, email: string): Promise<Pr
  */
 async function createTask(newTask: BareboneTask): Promise<Task | null> {
   try {
-    if ((await ProjectRepository.findById(newTask.idProject)) === null) {
-      throw new NotFoundError('Project ID ');
+    const project = await ProjectRepository.findById(newTask.idProject);
+    if (project === null) {
+      throw new NotFoundError('Project ID');
     }
 
     const task: Task = {
@@ -124,6 +126,15 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Task already exists');
     }
 
+    if (newTask.endDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
+      throw new Error("Task's end date cannot be after the project's end date");
+
+    if (newTask.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, newTask.startDate))
+      throw new Error("Task's start date cannot be before the project's start date");
+
+    if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.endDate))
+      throw new Error("Task's start date cannot be after the project's end date");
+
     if (newTask.idEmployee) {
       const employee = await EmployeeRepository.findById(newTask.idEmployee);
       if (!employee) {
@@ -143,7 +154,7 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
 
     return createdTask;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -219,7 +230,7 @@ async function getTasksAssignedToEmployee(employeeId: string): Promise<Task[]> {
 
     return tasks;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -241,7 +252,7 @@ async function deleteTask(id: string): Promise<void> {
     await EmployeeTaskRepository.deleteByTaskId(id);
     await TaskRepository.deleteTaskById(id);
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -257,9 +268,24 @@ async function deleteTask(id: string): Promise<void> {
  */
 async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
   try {
-    if ((await TaskRepository.findTaskById(idTask)) === null) {
+    const prevTask = await TaskRepository.findTaskById(idTask);
+    if (prevTask === null) {
       throw new Error('Task ID is not valid');
     }
+
+    const project = await ProjectRepository.findById(prevTask.idProject);
+    if (project === null) {
+      throw new NotFoundError('Project ID');
+    }
+
+    if (task.endDate && project.endDate && !dateSmallerOrEqualThanOther(task.endDate, project.endDate))
+      throw new Error("Task's end date cannot be afer the project's end date");
+
+    if (task.startDate && project.startDate && !dateSmallerOrEqualThanOther(project.startDate, task.startDate))
+      throw new Error("Task's start date cannot be before the project's start date");
+
+    if (task.startDate && project.endDate && !dateSmallerOrEqualThanOther(task.startDate, project.endDate))
+      throw new Error("Task's start date cannot be after the project's end date");
 
     const status = task.status;
     if (status === TaskStatus.DONE) {
@@ -310,7 +336,7 @@ async function updateTask(idTask: string, task: UpdatedTask): Promise<boolean> {
     const updatedTask = await TaskRepository.updateTask(idTask, task);
     return updatedTask;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -333,7 +359,7 @@ async function updateTaskStatus(idTask: string, status: TaskStatus): Promise<boo
     await TaskRepository.updateTaskStatus(idTask, status);
     return true;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
