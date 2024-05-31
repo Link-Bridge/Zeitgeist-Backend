@@ -18,9 +18,6 @@ ALTER TABLE "employee_notification" DROP CONSTRAINT "employee_notification_id_em
 -- DropForeignKey
 ALTER TABLE "employee_notification" DROP CONSTRAINT "employee_notification_id_notification_fkey";
 
--- DropForeignKey
-ALTER TABLE "expense" DROP CONSTRAINT "expense_id_file_fkey";
-
 -- AlterTable
 ALTER TABLE "employee" DROP COLUMN "device_token";
 
