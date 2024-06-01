@@ -137,7 +137,7 @@ export interface ExpenseReport {
   /**
    * @param idEmployee: string - Employee id
    */
-  idEmployee: string;
+  idEmployee: string | null;
   /**
    * @param employeeFirstName: string - Employee first name
    */
@@ -219,7 +219,7 @@ export interface RawExpenseReport {
   /**
    * @param idEmployee: string - Employee id
    */
-  id_employee: string;
+  id_employee: string | null;
   /**
    * @param employee: employee - Employee information associated with the report
    */
