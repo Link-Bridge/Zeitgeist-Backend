@@ -53,10 +53,10 @@ async function getReportById(req: Request, res: Response) {
  *
  */
 
-async function deleteExpenseReport(req: Request, res: Response) {
+async function deleteReport(req: Request, res: Response) {
   try {
-    const id = req.params.id;
-    const expenseReport = await ExpenseService.deleteExpenseReport(id);
+    const { id } = idSchema.parse({ id: req.params.id });
+    const expenseReport = await ExpenseService.deleteReport(id);
     res.status(200).json({ data: expenseReport });
   } catch (error: any) {
     res.status(500).json({ message: 'Internal server error occurred' });
@@ -108,7 +108,7 @@ async function updatePaymentFileUrlById(req: Request, res: Response) {
 export const ExpenseController = {
   getExpenses,
   getReportById,
-  deleteExpenseReport,
+  deleteReport,
   updateStatusById,
   updatePaymentFileUrlById,
 };

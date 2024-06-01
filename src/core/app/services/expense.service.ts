@@ -101,14 +101,14 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
  *
  */
 
-async function deleteExpenseReport(reportId: string): Promise<ExpenseReport> {
+async function deleteReport(reportId: string): Promise<ExpenseReport> {
   try {
     const expenseReport = await ExpenseRepository.findById(reportId);
     if (!expenseReport) {
       throw new Error('Expense report not found');
     }
 
-    return await ExpenseRepository.deleteExpenseReport(reportId);
+    return await ExpenseRepository.deleteReport(reportId);
   } catch (error: unknown) {
     throw new Error('An unexpected error occurred');
   }
@@ -158,7 +158,7 @@ async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise
 export const ExpenseService = {
   getExpenses,
   getReportById,
-  deleteExpenseReport,
+  deleteReport,
   updateStatusById,
   updatePaymentFileUrlById,
 };

@@ -26,7 +26,7 @@ describe('ExpenseService', () => {
     findExpenseByIdStub = sinon.stub(ExpenseRepository, 'findById');
     findExpenseByEmployeeIdStub = sinon.stub(ExpenseRepository, 'findByEmployeeId');
     findAllExpensesStub = sinon.stub(ExpenseRepository, 'findAll');
-    deleteExpenseReportStub = sinon.stub(ExpenseRepository, 'deleteExpenseReport');
+    deleteExpenseReportStub = sinon.stub(ExpenseRepository, 'deleteReport');
     updateStatusByIdStub = sinon.stub(ExpenseRepository, 'updateStatusById');
     updatePaymentFileUrlByIdStub = sinon.stub(ExpenseRepository, 'updatePaymentFileUrlById');
   });
@@ -312,7 +312,7 @@ describe('ExpenseService', () => {
       findExpenseByIdStub.resolves(reportId);
       deleteExpenseReportStub.resolves(null);
 
-      const result = await ExpenseService.deleteExpenseReport(reportId);
+      const result = await ExpenseService.deleteReport(reportId);
 
       expect(result).to.eql(null);
       expect(deleteExpenseReportStub.calledOnce).to.be.true;

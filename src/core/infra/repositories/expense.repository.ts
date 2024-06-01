@@ -90,7 +90,7 @@ async function findByEmployeeId(id: string): Promise<ExpenseReport[]> {
  * @returns {Promise<ExpenseReport>}
  */
 
-async function deleteExpenseReport(reportId: string): Promise<ExpenseReport> {
+async function deleteReport(reportId: string): Promise<ExpenseReport> {
   try {
     const data = await Prisma.expense_report.delete({
       where: {
@@ -166,7 +166,7 @@ export const ExpenseRepository = {
   findAll,
   findById,
   findByEmployeeId,
-  deleteExpenseReport,
+  deleteReport,
   updateStatusById,
   updatePaymentFileUrlById,
 };
