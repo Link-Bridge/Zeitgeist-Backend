@@ -25,6 +25,6 @@ router.put(
 
 router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, SupportedRoles.ADMIN]));
 router.get('/report/:id', ExpenseController.getReportById);
-router.delete('/delete/:id', ExpenseController.deleteReport);
+router.delete('/report/delete/:id', ExpenseController.deleteReport);
 
 export { router as ExpenseRouter };
