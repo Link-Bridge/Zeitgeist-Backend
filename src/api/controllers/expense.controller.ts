@@ -12,15 +12,17 @@ const createExpenseReportSchema = z.object({
   title: z.string().max(70).min(1),
   status: z.nativeEnum(ExpenseReportStatus),
   startDate: z.coerce.date(),
-  expenses: z.array(
-    z.object({
-      title: z.string().max(70).min(1),
-      supplier: z.string().max(70).min(1).nullable(),
-      totalAmount: z.number().transform(value => new Decimal(value)),
-      date: z.coerce.date(),
-      urlFile: z.string().max(512).min(1).nullable(),
-    })
-  ),
+  expenses: z
+    .array(
+      z.object({
+        title: z.string().max(70).min(1),
+        supplier: z.string().max(70).min(1).nullable(),
+        totalAmount: z.number().transform(value => new Decimal(value)),
+        date: z.coerce.date(),
+        urlFile: z.string().max(512).min(1).nullable(),
+      })
+    )
+    .max(30),
 });
 
 /**
