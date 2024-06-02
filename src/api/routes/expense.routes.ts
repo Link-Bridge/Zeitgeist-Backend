@@ -9,5 +9,7 @@ router.use(checkAuthRole([SupportedRoles.ACCOUNTING, SupportedRoles.LEGAL, Suppo
 router.get('/', ExpenseController.getExpenses);
 router.get('/report/:id', ExpenseController.getReportById);
 router.post('/create', ExpenseController.createExpenseReport);
+router.put('/report/status/:id', ExpenseController.updateStatusById);
+router.put('/report/payment/:id', ExpenseController.updatePaymentFileUrlById);
 
 export { router as ExpenseRouter };

@@ -64,6 +64,48 @@ async function getReportById(req: Request, res: Response) {
 }
 
 /**
+ * @description A function that updates the expense status
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updateStatusById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const { status } = req.body;
+
+    const updatedExpense = await ExpenseService.updateStatusById(id, status);
+    res.status(200).json(updatedExpense);
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
+  }
+}
+
+/**
+ * @description A function that updates the expense payment file (url_voucher)
+ * @param req HTTP Request
+ * @param res Server response
+ */
+async function updatePaymentFileUrlById(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const { urlVoucher } = req.body;
+
+    const updatedExpense = await ExpenseService.updatePaymentFileUrlById(id, urlVoucher);
+    res.status(200).json(updatedExpense);
+  } catch (error: any) {
+    if (error.message === 'Unauthorized employee') {
+      res.status(403).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: error.message });
+    }
+  }
+}
+
+/**
  * A function that handles the request to create a new expense report
  *
  * @param req HTTP Request
@@ -82,4 +124,10 @@ async function createExpenseReport(req: Request, res: Response) {
   }
 }
 
-export const ExpenseController = { getExpenses, getReportById, createExpenseReport };
+export const ExpenseController = {
+  getExpenses,
+  getReportById,
+  createExpenseReport,
+  updateStatusById,
+  updatePaymentFileUrlById,
+};

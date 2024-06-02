@@ -1,4 +1,5 @@
 import { Prisma } from '../../..';
+import { ExpenseReportStatus } from '../../../utils/enums';
 import { ExpenseEntity, ExpenseReport } from '../../domain/entities/expense.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import {
@@ -138,4 +139,66 @@ async function createExpense(data: ExpenseEntity): Promise<ExpenseEntity> {
   }
 }
 
-export const ExpenseRepository = { findAll, findById, findByEmployeeId, createExpenseReport, createExpense };
+/**
+ * Updates a expense's status
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport>} a promise that resolves in a expense
+ */
+async function updateStatusById(id: string, status: ExpenseReportStatus): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapExpenseReportEntityFromDbModel(data);
+  } catch (error: any) {
+    if (error.code == 'P2025' && error.meta.cause == 'Record to update not found.')
+      throw new Error('Expense not found');
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+/**
+ * Updates a expense's payment url (url_voucher)
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport>} a promise that resolves in a expense
+ */
+async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.update({
+      where: {
+        id: id,
+      },
+      data: {
+        url_voucher: urlVoucher,
+      },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapExpenseReportEntityFromDbModel(data);
+  } catch (error: any) {
+    if (error.code == 'P2025' && error.meta.cause == 'Record to update not found.')
+      throw new Error('Expense not found');
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const ExpenseRepository = {
+  findAll,
+  findById,
+  findByEmployeeId,
+  createExpenseReport,
+  createExpense,
+  updateStatusById,
+  updatePaymentFileUrlById,
+};
