@@ -2,10 +2,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { ExpenseService } from '../../core/app/services/expense.service';
-
-const isDecimal = (value: any) => {
-  return !isNaN(value) && value.toString().includes('.');
-};
+import { ExpenseReportStatus } from '../../utils/enums';
 
 const idSchema = z.object({
   id: z.string().uuid(),
@@ -13,19 +10,13 @@ const idSchema = z.object({
 
 const createExpenseReportSchema = z.object({
   title: z.string().max(70).min(1),
-  description: z.string().max(255).min(1),
+  status: z.nativeEnum(ExpenseReportStatus),
   startDate: z.coerce.date(),
   expenses: z.array(
     z.object({
       title: z.string().max(70).min(1),
-      justification: z.string().max(255).min(1),
       supplier: z.string().max(70).min(1).nullable(),
-      totalAmount: z
-        .number()
-        .refine(isDecimal, {
-          message: 'totalAmount must be a decimal',
-        })
-        .transform(value => new Decimal(value)),
+      totalAmount: z.number().transform(value => new Decimal(value)),
       date: z.coerce.date(),
       urlFile: z.string().max(512).min(1).nullable(),
     })

@@ -115,9 +115,8 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
     const expenseReport = await ExpenseRepository.createExpenseReport({
       id: randomUUID(),
       title: data.title,
-      description: data.description,
-      startDate: data.startDate,
       status: ExpenseReportStatus.PENDING,
+      startDate: data.startDate,
       idEmployee: idEmployee,
     });
 
@@ -125,11 +124,8 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
       ExpenseRepository.createExpense({
         id: randomUUID(),
         title: expense.title,
-        justification: expense.justification,
         supplier: expense.supplier,
         totalAmount: expense.totalAmount,
-        status: ExpenseReportStatus.PAYED,
-        category: 'viatico',
         date: expense.date,
         createdAt: new Date(),
         idReport: expenseReport.id,

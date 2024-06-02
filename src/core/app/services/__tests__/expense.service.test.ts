@@ -316,13 +316,12 @@ describe('ExpenseService', () => {
   const newExpenseReport = {
     id: randomUUID(),
     title: faker.lorem.words(3),
-    description: faker.lorem.words(10),
+    status: ExpenseReportStatus.PENDING,
     startDate: new Date(),
     expenses: [
       {
         id: randomUUID(),
         title: faker.lorem.words(3),
-        justification: faker.lorem.words(10),
         supplier: faker.lorem.words(2),
         totalAmount: new Decimal(10.005),
         date: new Date(),
@@ -332,7 +331,6 @@ describe('ExpenseService', () => {
       {
         id: randomUUID(),
         title: faker.lorem.words(3),
-        justification: faker.lorem.words(10),
         supplier: faker.lorem.words(2),
         totalAmount: new Decimal(10.005),
         date: new Date(),
@@ -345,7 +343,6 @@ describe('ExpenseService', () => {
   const createdExpenseReport = {
     id: newExpenseReport.id,
     title: newExpenseReport.title,
-    description: newExpenseReport.description,
     startDate: newExpenseReport.startDate,
     status: ExpenseReportStatus.PENDING,
     idEmployee: userId,
@@ -353,11 +350,8 @@ describe('ExpenseService', () => {
       {
         id: newExpenseReport.expenses[0].id,
         title: newExpenseReport.expenses[0].title,
-        justification: newExpenseReport.expenses[0].justification,
         supplier: newExpenseReport.expenses[0].supplier,
         totalAmount: new Decimal(newExpenseReport.expenses[0].totalAmount),
-        status: ExpenseReportStatus.PAYED,
-        category: 'viatico',
         date: newExpenseReport.expenses[0].date,
         createdAt: newExpenseReport.expenses[0].createdAt,
         idReport: newExpenseReport.id,
@@ -366,11 +360,8 @@ describe('ExpenseService', () => {
       {
         id: newExpenseReport.expenses[1].id,
         title: newExpenseReport.expenses[1].title,
-        justification: newExpenseReport.expenses[1].justification,
         supplier: newExpenseReport.expenses[1].supplier,
         totalAmount: new Decimal(newExpenseReport.expenses[1].totalAmount),
-        status: ExpenseReportStatus.PAYED,
-        category: 'viatico',
         date: newExpenseReport.expenses[1].date,
         createdAt: newExpenseReport.expenses[1].createdAt,
         idReport: newExpenseReport.id,
@@ -394,11 +385,8 @@ describe('ExpenseService', () => {
       res.expenses?.forEach((expense, index) => {
         expect(expense.id).to.equal(createdExpenseReport.expenses[index].id);
         expect(expense.title).to.equal(createdExpenseReport.expenses[index].title);
-        expect(expense.justification).to.equal(createdExpenseReport.expenses[index].justification);
         expect(expense.supplier).to.equal(createdExpenseReport.expenses[index].supplier);
         expect(expense.totalAmount.toString()).to.equal(createdExpenseReport.expenses[index].totalAmount.toString());
-        expect(expense.status).to.equal(createdExpenseReport.expenses[index].status);
-        expect(expense.category).to.equal(createdExpenseReport.expenses[index].category);
         expect(expense.date).to.deep.equal(createdExpenseReport.expenses[index].date);
         expect(expense.createdAt).to.deep.equal(createdExpenseReport.expenses[index].createdAt);
         expect(expense.idReport).to.equal(createdExpenseReport.expenses[index].idReport);

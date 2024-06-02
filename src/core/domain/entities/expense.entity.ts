@@ -7,11 +7,8 @@ import { ExpenseReportStatus } from '../../../utils/enums/index';
  *
  * @param id: string - Unique identifier of the expense
  * @param title: string - Expense title
- * @param justification: string - Expense justification
  ~ @param supplier: string - Expense supplier
  * @param totalAmount: Decimal - Expense amount
- + @param status?: string - Expense status (optional)
- * @param category?: string - Expense category (optional)
  * @param date: Date - Expense date
  * @param createdAt: Date - Expense creation date
  * @param updatedAt?: Date - Expense update date (optional)
@@ -33,10 +30,6 @@ export interface ExpenseEntity {
    */
   title: string;
   /**
-   * @param justification: string - Expense justification
-   */
-  justification: string;
-  /**
    * @param supplier: string - Expense supplier
    */
   supplier: string | null;
@@ -44,14 +37,6 @@ export interface ExpenseEntity {
    * @param totalAmount: Decimal - Expense amount
    */
   totalAmount: Decimal;
-  /**
-   * @param status: string - Expense status
-   */
-  status?: string | null;
-  /**
-   * @param category: string - Expense category (optional)
-   */
-  category?: string | null;
   /**
    * @param date: Date - Expense date
    */
@@ -79,7 +64,6 @@ export interface ExpenseEntity {
  *
  * @param id: string - Unique identifier of the expense report
  * @param title: string - Expense Report title
- * @param description: string - Expense Report description
  * @param startDate: Date - Expense Report start date
  * @param endDate?: Date - Expense Report end date (optional)
  + @param status?: ExpenseReportStatus - Expense Report status (optional)
@@ -106,10 +90,6 @@ export interface ExpenseReport {
    * @param title: string - Expense report title
    */
   title: string;
-  /**
-   * @param description: string - Expense report description
-   */
-  description: string;
   /**
    * @param startDate: Date - Expense report start date
    */
@@ -189,10 +169,6 @@ export interface RawExpenseReport {
    */
   title: string;
   /**
-   * @param description: string - Expense report description
-   */
-  description: string;
-  /**
    * @param startDate: Date - Expense report start date
    */
   start_date: Date;
@@ -234,7 +210,6 @@ export interface RawExpenseReport {
  * @brief This class is used to define the structure of the New Expense entity
  *
  * @param title: string - Expense title
- * @param justification: string - Expense justification
  * @param supplier: string - Expense supplier
  * @param totalAmount: Decimal - Expense amount
  * @param date: Date - Expense date
@@ -247,7 +222,6 @@ export interface RawExpenseReport {
 
 export interface NewExpenseEntity {
   title: string;
-  justification: string;
   supplier: string | null;
   totalAmount: Decimal;
   date: Date;
@@ -258,7 +232,7 @@ export interface NewExpenseEntity {
  * @brief This class is used to define the structure of the New Expense Report entity
  *
  * @param title: string - Expense Report title
- * @param description: string - Expense Report description
+ * @param status: ExpenseReportStatus - Expense Report status
  * @param startDate: Date - Expense Report start date
  * @param expenses: NewExpenseEntity[] - Array of expenses associated with the report
  *
@@ -268,7 +242,7 @@ export interface NewExpenseEntity {
  */
 export interface NewExpenseReport {
   title: string;
-  description: string;
+  status: ExpenseReportStatus;
   startDate: Date;
   expenses: NewExpenseEntity[];
 }
