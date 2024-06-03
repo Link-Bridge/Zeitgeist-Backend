@@ -59,25 +59,29 @@ async function findAll(): Promise<CompanyEntity[]> {
  * @returns {Promise<CompanyEntity>} a promise that resolves to the updated company entity
  */
 async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
-  const company = await CompanyRepository.findById(body.id);
+  try {
+    const company = await CompanyRepository.findById(body.id);
 
-  if (!company) throw new NotFoundError('Company not found');
+    if (!company) throw new NotFoundError('Company not found');
 
-  return await CompanyRepository.update({
-    id: company.id,
-    name: body.name ?? company.name,
-    email: body.email,
-    phoneNumber: body.phoneNumber,
-    landlinePhone: body.landlinePhone,
-    archived: body.archived,
-    constitutionDate: body.constitutionDate,
-    rfc: body.rfc,
-    taxResidence: body.taxResidence,
-    idCompanyDirectContact: company.idCompanyDirectContact,
-    idForm: company.idForm,
-    createdAt: company.createdAt,
-    updatedAt: new Date(),
-  });
+    return await CompanyRepository.update({
+      id: company.id,
+      name: body.name ?? company.name,
+      email: body.email,
+      phoneNumber: body.phoneNumber,
+      landlinePhone: body.landlinePhone,
+      archived: body.archived,
+      constitutionDate: body.constitutionDate,
+      rfc: body.rfc,
+      taxResidence: body.taxResidence,
+      idCompanyDirectContact: company.idCompanyDirectContact,
+      idForm: company.idForm,
+      createdAt: company.createdAt,
+      updatedAt: new Date(),
+    });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 /**
