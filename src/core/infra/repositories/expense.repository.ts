@@ -100,7 +100,7 @@ async function createExpenseReport(data: ExpenseReport): Promise<ExpenseReport> 
         title: data.title,
         status: data.status,
         start_date: data.startDate,
-        id_employee: data.idEmployee,
+        id_employee: data.idEmployee!,
       },
       include: {
         employee: true,
