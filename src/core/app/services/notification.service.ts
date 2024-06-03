@@ -10,6 +10,23 @@ import { EmployeeRepository } from '../../infra/repositories/employee.repository
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 /**
+ * This method is used to validate if the sender is from the same department.
+ * @param email - Emitter email
+ * @param departmentTitle - Department title
+ * @returns boolean
+ */
+async function validateSenderDepartment(email: string, departmentTitle: SupportedDepartments): Promise<boolean> {
+  const employee = await EmployeeRepository.findByEmail(email);
+  const department = await DepartmentRepository.findByTitle(departmentTitle);
+
+  if (employee?.idDepartment === department.id) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * This method is used for sending a notification when the task is created and its assigned to the user.
  * @param userId {string} - The user id to whom the task is assigned
  * @param task {Task} - The task that is assigned to the user
@@ -31,9 +48,15 @@ async function sendAssignedTaskNotification(userId: string, task: Task): Promise
  * @param projectId {string} - The project id for which the status is updated
  */
 async function sendProjectStatusUpdateNotification(
+  emitterEmail: string,
   departmentTitle: SupportedDepartments,
   projectId: string
 ): Promise<string> {
+  const isSenderValid = await validateSenderDepartment(emitterEmail, departmentTitle);
+  if (!isSenderValid) {
+    return 'Cannot send email to the same department';
+  }
+
   const project = await ProjectRepository.findById(projectId);
   if (!project) {
     throw new Error('Project not found');

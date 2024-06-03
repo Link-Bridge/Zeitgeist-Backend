@@ -27,9 +27,14 @@ async function sendNotificationToDepartment(req: Request, res: Response) {
     const parsed = notificationSchema.parse(req.body);
 
     const response = await NotificationService.sendProjectStatusUpdateNotification(
+      req.body.auth.email,
       parsed.departmentTitle,
       parsed.projectId
     );
+
+    if (response === 'Cannot send email to the same department') {
+      return res.status(400).json({ message: 'Cannot send email to the same department' });
+    }
 
     if (response === 'Failed to send email') {
       return res.status(400).json({ message: 'Failed to send email' });
