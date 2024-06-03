@@ -490,7 +490,7 @@ describe('TaskService', () => {
         id: employeeId,
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
+        email: 'john.doe@outlook.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
         idRole: roleId,

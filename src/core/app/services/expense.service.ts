@@ -1,6 +1,7 @@
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 import { ExpenseReportStatus, SupportedRoles } from '../../../utils/enums';
-import { ExpenseReport } from '../../domain/entities/expense.entity';
+import { ExpenseReport, NewExpenseReport } from '../../domain/entities/expense.entity';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
 import { ExpenseRepository } from '../../infra/repositories/expense.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
@@ -115,6 +116,62 @@ async function deleteReport(reportId: string): Promise<ExpenseReport> {
 }
 
 /**
+ * Function that handles the request to create a new expense report
+ *
+ * @param userEmail the email of the user
+ * @param data the data of the new expense report
+ * @returns {Promise<ExpenseReport>} a promise that resolves the created expense report
+ * @throws {Error} if an unexpected error occurs
+ *
+ */
+
+async function createExpenseReport(userEmail: string, data: NewExpenseReport): Promise<ExpenseReport> {
+  try {
+    const employee = await EmployeeRepository.findByEmail(userEmail);
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
+    const idEmployee = employee.id;
+
+    const expenseReport = await ExpenseRepository.createExpenseReport({
+      id: randomUUID(),
+      title: data.title,
+      status: ExpenseReportStatus.PENDING,
+      startDate: data.startDate,
+      idEmployee: idEmployee,
+    });
+
+    const promiseExpenses = data.expenses.map(expense =>
+      ExpenseRepository.createExpense({
+        id: randomUUID(),
+        title: expense.title,
+        supplier: expense.supplier,
+        totalAmount: expense.totalAmount,
+        date: expense.date,
+        createdAt: new Date(),
+        idReport: expenseReport.id,
+        urlFile: expense.urlFile,
+      })
+    );
+
+    const expenses = await Promise.all(promiseExpenses);
+
+    const createdExpenseReport = {
+      ...expenseReport,
+      expenses,
+    };
+
+    return createdExpenseReport;
+  } catch (error: any) {
+    if (error.message === 'Employee not found') {
+      throw error;
+    } else {
+      throw new Error('An unexpected error occurred');
+    }
+  }
+}
+
+/**
  * @param id The id of the expense to be updated
  * @param status The new status
  * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
@@ -159,6 +216,7 @@ export const ExpenseService = {
   getExpenses,
   getReportById,
   deleteReport,
+  createExpenseReport,
   updateStatusById,
   updatePaymentFileUrlById,
 };
