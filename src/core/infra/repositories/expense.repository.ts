@@ -100,7 +100,7 @@ async function createExpenseReport(data: ExpenseReport): Promise<ExpenseReport> 
         title: data.title,
         status: data.status,
         start_date: data.startDate,
-        id_employee: data.idEmployee,
+        id_employee: data.idEmployee!,
       },
       include: {
         employee: true,
@@ -134,6 +134,30 @@ async function createExpense(data: ExpenseEntity): Promise<ExpenseEntity> {
     });
 
     return mapExpenseEntityFromDbModel(expense);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME} repository error`);
+  }
+}
+
+/**
+ * Deletes a expense report
+ * @version 1.0.0
+ * @returns {Promise<ExpenseReport>}
+ */
+
+async function deleteReport(reportId: string): Promise<ExpenseReport> {
+  try {
+    const data = await Prisma.expense_report.delete({
+      where: {
+        id: reportId,
+      },
+      include: { expense: true, employee: true },
+    });
+    if (!data) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return mapExpenseReportEntityFromDbModel(data);
   } catch (error: unknown) {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
@@ -201,4 +225,5 @@ export const ExpenseRepository = {
   createExpense,
   updateStatusById,
   updatePaymentFileUrlById,
+  deleteReport,
 };

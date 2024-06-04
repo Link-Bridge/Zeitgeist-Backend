@@ -66,6 +66,23 @@ async function getReportById(req: Request, res: Response) {
 }
 
 /**
+ * A function to delete an expense report
+ * @param req HTTP Request
+ * @param res Server response
+ *
+ */
+
+async function deleteReport(req: Request, res: Response) {
+  try {
+    const { id } = idSchema.parse({ id: req.params.id });
+    const expenseReport = await ExpenseService.deleteReport(id);
+    res.status(200).json({ data: expenseReport });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Internal server error occurred' });
+  }
+}
+
+/**
  * @description A function that updates the expense status
  * @param req HTTP Request
  * @param res Server response
@@ -132,4 +149,5 @@ export const ExpenseController = {
   createExpenseReport,
   updateStatusById,
   updatePaymentFileUrlById,
+  deleteReport,
 };

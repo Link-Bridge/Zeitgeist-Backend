@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
@@ -82,21 +82,21 @@ model expense {
   updated_at     DateTime?      @updatedAt @db.Timestamp(6)
   id_report      String         @db.Uuid
   url_file       String?        @db.VarChar(512)
-  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model expense_report {
-  id           String    @id @db.Uuid
-  title        String    @db.VarChar(70)
-  start_date   DateTime  @db.Date
-  end_date     DateTime? @db.Date
-  status       String?   @db.VarChar(256)
-  created_at   DateTime  @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @updatedAt @db.Timestamp(6)
-  id_employee  String    @db.Uuid
-  url_voucher  String?   @db.VarChar(512)
-  expense      expense[]
-  employee     employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id          String    @id @db.Uuid
+  title       String    @db.VarChar(70)
+  start_date  DateTime  @db.Date
+  end_date    DateTime? @db.Date
+  status      String?   @db.VarChar(256)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
+  id_employee String?   @db.Uuid
+  url_voucher String?   @db.VarChar(512)
+  expense     expense[]
+  employee    employee?  @relation(fields: [id_employee], references: [id], onDelete: SetNull, onUpdate: NoAction)
 }
 
 model form {

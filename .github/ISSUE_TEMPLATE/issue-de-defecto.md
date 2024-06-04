@@ -1,14 +1,10 @@
 ---
 name: Issue de Defecto
 about: Registrar un defecto encontrado
-title: Modulo/RFXX/Detalle
+title: Módulo/RFXX/Detalle
 labels: ''
 assignees: ''
 ---
-
-# Contenido
-
-## Test ID
 
 ## Descripción de la tarea
 

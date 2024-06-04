@@ -16,6 +16,7 @@ describe('ExpenseService', () => {
   let findExpenseByIdStub: Sinon.SinonStub;
   let findExpenseByEmployeeIdStub: Sinon.SinonStub;
   let findAllExpensesStub: Sinon.SinonStub;
+  let deleteExpenseReportStub: Sinon.SinonStub;
   let createExpenseReportStub: Sinon.SinonStub;
   let createExpenseStub: Sinon.SinonStub;
   let updateStatusByIdStub: Sinon.SinonStub;
@@ -27,6 +28,7 @@ describe('ExpenseService', () => {
     findExpenseByIdStub = sinon.stub(ExpenseRepository, 'findById');
     findExpenseByEmployeeIdStub = sinon.stub(ExpenseRepository, 'findByEmployeeId');
     findAllExpensesStub = sinon.stub(ExpenseRepository, 'findAll');
+    deleteExpenseReportStub = sinon.stub(ExpenseRepository, 'deleteReport');
     createExpenseReportStub = sinon.stub(ExpenseRepository, 'createExpenseReport');
     createExpenseStub = sinon.stub(ExpenseRepository, 'createExpense');
     updateStatusByIdStub = sinon.stub(ExpenseRepository, 'updateStatusById');
@@ -304,6 +306,29 @@ describe('ExpenseService', () => {
       expect(res).to.be.equal(existingReport);
       expect(res.id).to.equal(reportId);
       expect(res.expenses?.length).to.equal(expenses.length);
+    });
+  });
+
+  describe('deleteExpenseReport', () => {
+    const reportId = randomUUID();
+
+    it('Should throw an error if expense report is not deleted', async () => {
+      findExpenseByIdStub.resolves(reportId);
+      deleteExpenseReportStub.resolves(null);
+
+      const result = await ExpenseService.deleteReport(reportId);
+
+      expect(result).to.eql(null);
+      expect(deleteExpenseReportStub.calledOnce).to.be.true;
+    });
+
+    it('Should delete the expense report', async () => {
+      findExpenseByIdStub.resolves(reportId);
+      deleteExpenseReportStub.resolves(reportId);
+
+      await ExpenseService.deleteReport(reportId);
+
+      expect(deleteExpenseReportStub.calledOnceWith(reportId)).to.be.true;
     });
   });
 

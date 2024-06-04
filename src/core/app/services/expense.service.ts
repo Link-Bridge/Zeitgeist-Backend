@@ -94,6 +94,28 @@ async function getReportById(reportId: string, email: string): Promise<ExpenseRe
 }
 
 /**
+ * @description Function to delete an expense by id
+ * @param id
+ * @param returns {ExpenseEntity} - Deleted expense
+ * @throws {Error} - If the expense is not found
+ * @throws {Error} - If an unexpected error occurs
+ *
+ */
+
+async function deleteReport(reportId: string): Promise<ExpenseReport> {
+  try {
+    const expenseReport = await ExpenseRepository.findById(reportId);
+    if (!expenseReport) {
+      throw new Error('Expense report not found');
+    }
+
+    return await ExpenseRepository.deleteReport(reportId);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+/**
  * Function that handles the request to create a new expense report
  *
  * @param userEmail the email of the user
@@ -154,7 +176,9 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
  * @param status The new status
  * @returns {Promise<ExpenseReport>} a promise that resolves the details of the expense report
  * @throws {Error} if an unexpected error occurs
+ *
  */
+
 async function updateStatusById(id: string, status: ExpenseReportStatus): Promise<ExpenseReport> {
   try {
     const expenseReportStatus = Object.values(ExpenseReportStatus) as string[];
@@ -191,6 +215,7 @@ async function updatePaymentFileUrlById(id: string, urlVoucher: string): Promise
 export const ExpenseService = {
   getExpenses,
   getReportById,
+  deleteReport,
   createExpenseReport,
   updateStatusById,
   updatePaymentFileUrlById,
