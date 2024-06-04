@@ -1,51 +1,29 @@
-import { notifyAssignedTaskEmailBody } from '../../../utils/email/email.templates';
-import { Notification } from '../../domain/entities/notification.entity';
+import {
+  notifyAssignedTaskEmailTemplate,
+  notifyOtherDeparmentEmailTemplate,
+} from '../../../utils/email/email.templates';
+import { SupportedDepartments } from '../../../utils/enums';
 import { Task } from '../../domain/entities/task.entity';
 import { EmailProvider } from '../../infra/providers/resend.provider';
+import { DepartmentRepository } from '../../infra/repositories/department.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
-import { NotificationRepository } from '../../infra/repositories/notification.repository';
+import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 /**
- * @deprecated This interface is deprecated and should not be used.
+ * This method is used to validate if the sender is from the same department.
+ * @param email - Emitter email
+ * @param departmentTitle - Department title
+ * @returns boolean
  */
-export interface userToken {
-  email: string;
-  deviceToken: string;
-}
+async function validateSenderDepartment(email: string, departmentTitle: SupportedDepartments): Promise<boolean> {
+  const employee = await EmployeeRepository.findByEmail(email);
+  const department = await DepartmentRepository.findByTitle(departmentTitle);
 
-/**
- * @deprecated This function is deprecated and should not be used.
- */
-async function saveToken(body: userToken) {
-  try {
-    return await NotificationRepository.saveToken(body.email, body.deviceToken);
-  } catch (error) {
-    throw new Error('Error saving token.' + error);
+  if (employee?.idDepartment === department.id) {
+    return false;
   }
-}
 
-/**
- * @deprecated This function is deprecated and should not be used.
- */
-async function createNotification(notification: Notification): Promise<Notification> {
-  try {
-    const notificationRecord = await NotificationRepository.createNotification(notification);
-    return notificationRecord;
-  } catch (error: any) {
-    throw new Error('Error creating notification.' + error);
-  }
-}
-
-/**
- * @deprecated This function is deprecated and should not be used.
- */
-async function getAllNotifications(): Promise<Notification[]> {
-  try {
-    const notificationRecords = await NotificationRepository.findAllNotifications();
-    return notificationRecords;
-  } catch (error: any) {
-    throw new Error('Error getting notifications.' + error);
-  }
+  return true;
 }
 
 /**
@@ -59,9 +37,50 @@ async function sendAssignedTaskNotification(userId: string, task: Task): Promise
     throw new Error('Employee not found');
   }
 
-  const { subject, body } = notifyAssignedTaskEmailBody(employee.firstName, employee.lastName, task);
+  const { subject, body } = notifyAssignedTaskEmailTemplate(employee.firstName, employee.lastName, task);
 
   await EmailProvider.sendEmail([employee.email], subject, body);
 }
 
-export const NotificationService = { saveToken, getAllNotifications, createNotification, sendAssignedTaskNotification };
+/**
+ * This method is used for sending a notification to another department when the project status is updated.
+ * @param departmentTitle {SupportedDepartments} - The department to which the notification is to be sent
+ * @param projectId {string} - The project id for which the status is updated
+ */
+async function sendProjectStatusUpdateNotification(
+  emitterEmail: string,
+  departmentTitle: SupportedDepartments,
+  projectId: string
+): Promise<string> {
+  const isSenderValid = await validateSenderDepartment(emitterEmail, departmentTitle);
+  if (!isSenderValid) {
+    return 'Cannot send email to the same department';
+  }
+
+  const project = await ProjectRepository.findById(projectId);
+  if (!project) {
+    throw new Error('Project not found');
+  }
+
+  const deparment = await DepartmentRepository.findByTitle(departmentTitle);
+  const employees = await EmployeeRepository.findByDepartment(deparment.id);
+  if (!employees) {
+    throw new Error('Employees not found');
+  }
+
+  const emailList = employees.map(employee => employee.email);
+
+  const deparmentSubject =
+    departmentTitle === SupportedDepartments.ACCOUNTING ? SupportedDepartments.LEGAL : SupportedDepartments.ACCOUNTING;
+  const { subject, body } = notifyOtherDeparmentEmailTemplate(deparmentSubject, project);
+
+  const response = await EmailProvider.sendEmail(emailList, subject, body);
+
+  if (!response.error) {
+    return 'Email sent successfully';
+  }
+
+  return 'Failed to send email';
+}
+
+export const NotificationService = { sendAssignedTaskNotification, sendProjectStatusUpdateNotification };

@@ -14,6 +14,9 @@ const baseRouter = Router();
 
 const V1_PATH = '/api/v1';
 
+// Health check
+baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
+
 baseRouter.use(checkAuthToken);
 
 //Auth
@@ -42,8 +45,5 @@ baseRouter.use(`${V1_PATH}/notification`, NotificationRouter);
 
 // Expense
 baseRouter.use(`${V1_PATH}/expense`, ExpenseRouter);
-
-// Health check
-baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
 
 export { baseRouter };
