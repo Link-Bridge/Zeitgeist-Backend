@@ -159,7 +159,6 @@ async function deleteReport(reportId: string): Promise<ExpenseReport> {
 
     return mapExpenseReportEntityFromDbModel(data);
   } catch (error: unknown) {
-    console.log(error);
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }

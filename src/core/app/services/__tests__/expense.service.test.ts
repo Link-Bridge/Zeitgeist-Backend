@@ -321,6 +321,15 @@ describe('ExpenseService', () => {
       expect(result).to.eql(null);
       expect(deleteExpenseReportStub.calledOnce).to.be.true;
     });
+
+    it('Should delete the expense report', async () => {
+      findExpenseByIdStub.resolves(reportId);
+      deleteExpenseReportStub.resolves(reportId);
+
+      await ExpenseService.deleteReport(reportId);
+
+      expect(deleteExpenseReportStub.calledOnceWith(reportId)).to.be.true;
+    });
   });
 
   const userEmail = faker.internet.email();
