@@ -108,8 +108,8 @@ async function createExpenseReport(data: ExpenseReport): Promise<ExpenseReport> 
     });
 
     return mapExpenseReportEntityFromDbModel(expenseReport);
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 }
 
@@ -134,8 +134,8 @@ async function createExpense(data: ExpenseEntity): Promise<ExpenseEntity> {
     });
 
     return mapExpenseEntityFromDbModel(expense);
-  } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 }
 

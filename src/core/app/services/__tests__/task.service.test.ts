@@ -476,6 +476,7 @@ describe('TaskService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         idCompany: randomUUID(),
+        area: 'Legal',
       };
 
       const roleId = randomUUID();
