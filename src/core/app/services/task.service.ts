@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
-import { SupportedRoles, TaskStatus } from '../../../utils/enums';
+import { TaskStatus } from '../../../utils/enums';
+import { isAuthorized } from '../../../utils/is-authorize-deparment';
 import { dateSmallerOrEqualThanOther } from '../../../utils/methods';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
 import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
@@ -40,11 +41,7 @@ async function getTasksFromProject(projectId: string, email: string): Promise<Pr
       TaskRepository.findTasksByProjectId(projectId),
     ]);
 
-    if (
-      project.area &&
-      role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase() &&
-      role.title.toUpperCase() !== project.area.toUpperCase()
-    ) {
+    if (!isAuthorized(role.title, project.area!)) {
       throw new Error('Unauthorized employee');
     }
 
@@ -175,7 +172,7 @@ async function findUnique(id: string, email: string): Promise<TaskDetail> {
     const employeeTask = await EmployeeTaskRepository.findAll();
     const role = await RoleRepository.findByEmail(email);
 
-    if (role.title != SupportedRoles.ADMIN && role.title != project.area) {
+    if (!isAuthorized(role.title, project.area!)) {
       throw new Error('Unauthorized employee');
     }
 

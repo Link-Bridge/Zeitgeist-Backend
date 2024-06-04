@@ -7,11 +7,8 @@ import { ExpenseReportStatus } from '../../../utils/enums/index';
  *
  * @param id: string - Unique identifier of the expense
  * @param title: string - Expense title
- * @param justification: string - Expense justification
  ~ @param supplier: string - Expense supplier
  * @param totalAmount: Decimal - Expense amount
- + @param status?: string - Expense status (optional)
- * @param category?: string - Expense category (optional)
  * @param date: Date - Expense date
  * @param createdAt: Date - Expense creation date
  * @param updatedAt?: Date - Expense update date (optional)
@@ -33,25 +30,13 @@ export interface ExpenseEntity {
    */
   title: string;
   /**
-   * @param justification: string - Expense justification
-   */
-  justification: string;
-  /**
    * @param supplier: string - Expense supplier
    */
-  supplier: string;
+  supplier: string | null;
   /**
    * @param totalAmount: Decimal - Expense amount
    */
   totalAmount: Decimal;
-  /**
-   * @param status: string - Expense status
-   */
-  status?: string | null;
-  /**
-   * @param category: string - Expense category (optional)
-   */
-  category?: string | null;
   /**
    * @param date: Date - Expense date
    */
@@ -79,7 +64,6 @@ export interface ExpenseEntity {
  *
  * @param id: string - Unique identifier of the expense report
  * @param title: string - Expense Report title
- * @param description: string - Expense Report description
  * @param startDate: Date - Expense Report start date
  * @param endDate?: Date - Expense Report end date (optional)
  + @param status?: ExpenseReportStatus - Expense Report status (optional)
@@ -107,10 +91,6 @@ export interface ExpenseReport {
    */
   title: string;
   /**
-   * @param description: string - Expense report description
-   */
-  description: string;
-  /**
    * @param startDate: Date - Expense report start date
    */
   startDate: Date;
@@ -137,7 +117,7 @@ export interface ExpenseReport {
   /**
    * @param idEmployee: string - Employee id
    */
-  idEmployee: string;
+  idEmployee: string | null;
   /**
    * @param employeeFirstName: string - Employee first name
    */
@@ -189,10 +169,6 @@ export interface RawExpenseReport {
    */
   title: string;
   /**
-   * @param description: string - Expense report description
-   */
-  description: string;
-  /**
    * @param startDate: Date - Expense report start date
    */
   start_date: Date;
@@ -219,7 +195,7 @@ export interface RawExpenseReport {
   /**
    * @param idEmployee: string - Employee id
    */
-  id_employee: string;
+  id_employee: string | null;
   /**
    * @param employee: employee - Employee information associated with the report
    */
@@ -228,4 +204,45 @@ export interface RawExpenseReport {
    * @param expense: expense[] - Array of expenses associated with the report
    */
   expense?: expense[] | null;
+}
+
+/**
+ * @brief This class is used to define the structure of the New Expense entity
+ *
+ * @param title: string - Expense title
+ * @param supplier: string - Expense supplier
+ * @param totalAmount: Decimal - Expense amount
+ * @param date: Date - Expense date
+ * @param urlFile: string - URL of the file associated with the expense
+ *
+ * @return void
+ *
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
+ */
+
+export interface NewExpenseEntity {
+  title: string;
+  supplier: string | null;
+  totalAmount: Decimal;
+  date: Date;
+  urlFile: string | null;
+}
+
+/**
+ * @brief This class is used to define the structure of the New Expense Report entity
+ *
+ * @param title: string - Expense Report title
+ * @param status: ExpenseReportStatus - Expense Report status
+ * @param startDate: Date - Expense Report start date
+ * @param expenses: NewExpenseEntity[] - Array of expenses associated with the report
+ *
+ * @return void
+ *
+ * @description The structure is based on the MER, and there's the idea of using custom data types, like UUID.
+ */
+export interface NewExpenseReport {
+  title: string;
+  status: ExpenseReportStatus;
+  startDate: Date;
+  expenses: NewExpenseEntity[];
 }

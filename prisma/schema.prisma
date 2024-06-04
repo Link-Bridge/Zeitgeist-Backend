@@ -1,20 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model comment {
-  id          String    @id @db.Uuid
-  message     String    @db.VarChar(255)
-  created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @updatedAt @db.Timestamp(6)
-  id_employee String    @db.Uuid
-  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model company {
@@ -65,23 +56,10 @@ model employee {
   updated_at            DateTime?               @updatedAt @db.Timestamp(6)
   id_department         String?                 @db.Uuid
   id_role               String                  @db.Uuid
-  device_token          String?                 @db.VarChar(255)
-  comment               comment[]
   department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  employee_notification employee_notification[]
   employee_task         employee_task[]
   expense_report        expense_report[]
-}
-
-model employee_notification {
-  id              String       @id @db.Uuid
-  created_at      DateTime     @default(now()) @db.Timestamp(6)
-  updated_at      DateTime?    @updatedAt @db.Timestamp(6)
-  id_employee     String       @db.Uuid
-  id_notification String       @db.Uuid
-  employee        employee     @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  notification    notification @relation(fields: [id_notification], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model employee_task {
@@ -97,32 +75,28 @@ model employee_task {
 model expense {
   id             String         @id @db.Uuid
   title          String         @db.VarChar(70)
-  justification  String         @db.VarChar(255)
   supplier       String?        @db.VarChar(70)
   total_amount   Decimal        @db.Decimal(18, 2)
-  status         String?        @db.VarChar(256)
-  category       String?        @db.VarChar(70)
   date           DateTime       @db.Date
   created_at     DateTime       @default(now()) @db.Timestamp(6)
   updated_at     DateTime?      @updatedAt @db.Timestamp(6)
   id_report      String         @db.Uuid
   url_file       String?        @db.VarChar(512)
-  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model expense_report {
-  id           String    @id @db.Uuid
-  title        String    @db.VarChar(70)
-  description  String    @db.VarChar(255)
-  start_date   DateTime  @db.Date
-  end_date     DateTime? @db.Date
-  status       String?   @db.VarChar(256)
-  created_at   DateTime  @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @updatedAt @db.Timestamp(6)
-  id_employee  String    @db.Uuid
-  url_voucher  String?   @db.VarChar(512)
-  expense      expense[]
-  employee     employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id          String    @id @db.Uuid
+  title       String    @db.VarChar(70)
+  start_date  DateTime  @db.Date
+  end_date    DateTime? @db.Date
+  status      String?   @db.VarChar(256)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
+  id_employee String?   @db.Uuid
+  url_voucher String?   @db.VarChar(512)
+  expense     expense[]
+  employee    employee?  @relation(fields: [id_employee], references: [id], onDelete: SetNull, onUpdate: NoAction)
 }
 
 model form {
@@ -179,15 +153,6 @@ model form {
   created_at                     DateTime  @default(now()) @db.Timestamp(6)
   updated_at                     DateTime? @updatedAt @db.Timestamp(6)
   company                        company[]
-}
-
-model notification {
-  id                    String                  @id @db.Uuid
-  title                 String                  @db.VarChar(70)
-  body                  String                  @db.VarChar(256)
-  created_at            DateTime                @default(now()) @db.Timestamp(6)
-  updated_at            DateTime?               @updatedAt @db.Timestamp(6)
-  employee_notification employee_notification[]
 }
 
 model project {

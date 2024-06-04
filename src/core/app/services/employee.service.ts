@@ -110,6 +110,15 @@ async function getAllEmployees(): Promise<EmployeeEntity[]> {
   return await EmployeeRepository.findAll();
 }
 
+async function getAllEmployeesByDepartment(department: SupportedDepartments): Promise<EmployeeEntity[]> {
+  const departmentEntity = await DepartmentRepository.findByTitle(department);
+  if (!departmentEntity) {
+    throw new NotFoundError(`Department '${department}' not found`);
+  }
+
+  return await EmployeeRepository.findByDepartment(departmentEntity.id);
+}
+
 /**
  * Function for finding the role of the employee by email, used in the middleware
  *
@@ -156,4 +165,10 @@ async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
   }
 }
 
-export const EmployeeService = { signIn, getAllEmployees, findRoleByEmail, deleteEmployeeById };
+export const EmployeeService = {
+  signIn,
+  getAllEmployees,
+  getAllEmployeesByDepartment,
+  findRoleByEmail,
+  deleteEmployeeById,
+};

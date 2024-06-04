@@ -91,8 +91,8 @@ describe('Task Service', () => {
     title: faker.lorem.words(3),
     description: faker.lorem.words(10),
     status: faker.helpers.arrayElement(Object.values(TaskStatus)),
-    startDate: new Date('05-01-2021'),
-    endDate: new Date('05-01-2042'),
+    startDate: new Date('05-01-2024'),
+    endDate: new Date('05-02-2024'),
     workedHours: faker.number.int() % 1000,
     idProject: idProject,
     idEmployee: randomUUID(),
@@ -115,7 +115,7 @@ describe('Task Service', () => {
     title: createdTask.title,
     description: createdTask.description,
     status: createdTask.status,
-    startDate: new Date('05-01-2023'),
+    startDate: new Date('05-01-2024'),
     endDate: new Date('05-02-2024'),
     workedHours: createdTask.workedHours,
     idProject: createdTask.idProject,
@@ -476,6 +476,7 @@ describe('TaskService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         idCompany: randomUUID(),
+        area: 'Legal',
       };
 
       const roleId = randomUUID();
@@ -490,7 +491,7 @@ describe('TaskService', () => {
         id: employeeId,
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@example.com',
+        email: 'john.doe@outlook.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
         idRole: roleId,

@@ -6,11 +6,8 @@ export function mapExpenseEntityFromDbModel(model: expense): ExpenseEntity {
   return {
     id: model.id,
     title: model.title,
-    justification: model.justification,
     supplier: model.supplier ? model.supplier : '',
     totalAmount: model.total_amount,
-    status: model.status ? model.status : '',
-    category: model.category ? model.category : '',
     date: model.date,
     createdAt: model.created_at,
     updatedAt: model.updated_at ? model.updated_at : undefined,
@@ -23,7 +20,6 @@ export function mapExpenseReportEntityFromDbModel(model: RawExpenseReport): Expe
   return {
     id: model.id,
     title: model.title,
-    description: model.description,
     startDate: model.start_date,
     endDate: model.end_date ? model.end_date : undefined,
     status: model.status as ExpenseReportStatus,

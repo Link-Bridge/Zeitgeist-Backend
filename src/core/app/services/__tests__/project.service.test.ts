@@ -220,7 +220,7 @@ describe('ProjectService', () => {
     it('Should return the project information and client name acording its id', async () => {
       const role = {
         title: SupportedRoles.ADMIN,
-        createdAr: new Date(),
+        createdAt: new Date(),
       };
 
       const employee = {
@@ -244,6 +244,7 @@ describe('ProjectService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         totalHours: 20,
+        area: 'Legal',
       };
 
       findProjectByIdStub.resolves(existingProject);
@@ -262,7 +263,7 @@ describe('ProjectService', () => {
     it('Should return the project information acording its id', async () => {
       const role = {
         title: SupportedRoles.ADMIN,
-        createdAr: new Date(),
+        createdAt: new Date(),
       };
 
       const employee = {
@@ -294,10 +295,12 @@ describe('ProjectService', () => {
         createdAt: new Date(),
         totalHours: 28,
         idCompany: companyId,
+        area: 'Legal',
       };
 
       findProjectByIdStub.resolves(existingProject);
       findCompanyByIdStub.resolves(existingCompany);
+      findRoleByEmailStub.resolves(role);
 
       const res = await ProjectService.getProjectById(projectId, employee.email);
       const res2 = await CompanyService.findById(companyId);

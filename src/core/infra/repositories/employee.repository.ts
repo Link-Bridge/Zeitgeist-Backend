@@ -103,6 +103,24 @@ async function findByEmail(email: string): Promise<EmployeeEntity | null> {
   }
 }
 
+async function findByDepartment(departmentId: string): Promise<EmployeeEntity[]> {
+  try {
+    const data = await Prisma.employee.findMany({
+      where: {
+        id_department: departmentId,
+      },
+    });
+
+    if (data.length === 0) {
+      throw new NotFoundError(RESOURCE_NAME);
+    }
+
+    return data.map(mapEmployeeEntityFromDbModel);
+  } catch (error: unknown) {
+    throw new Error(`Failed to fetch employees by department: ${error}`);
+  }
+}
+
 async function existByEmail(email: string): Promise<boolean> {
   try {
     const data = await Prisma.employee.findUnique({
@@ -144,6 +162,7 @@ export const EmployeeRepository = {
   findAll,
   findByEmail,
   findById,
+  findByDepartment,
   existByEmail,
   updateRoleById,
   deleteEmployeeById,
