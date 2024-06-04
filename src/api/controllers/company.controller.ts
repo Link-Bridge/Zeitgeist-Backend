@@ -50,7 +50,9 @@ async function updateClient(req: Request, res: Response) {
 
     res.status(200).json(updatedCompany);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof z.ZodError) {
+      res.status(500).json({ error: error.errors[0].message });
+    } else res.status(500).json({ error: error.message });
   }
 }
 

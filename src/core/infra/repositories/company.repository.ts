@@ -167,6 +167,7 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   } catch (error: any) {
     if (error.code == 'P2002' && (error.meta?.target as string[])[0] === 'email')
       throw new Error('Email already registered.');
+    if (error.meta.target[0] == 'rfc') throw new Error('RFC already registered.');
     throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
   }
 }
