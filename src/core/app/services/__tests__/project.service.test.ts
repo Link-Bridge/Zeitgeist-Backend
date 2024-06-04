@@ -354,7 +354,7 @@ describe('ProjectService', () => {
   });
 
   describe('deleteProjectByID', () => {
-    it('it should trhow an error if project is not deleted from DB', async () => {
+    it('it should throw an error if project is not deleted from DB', async () => {
       const mockProject = prepareMockProject();
 
       beforeEach(() => {
@@ -371,6 +371,28 @@ describe('ProjectService', () => {
       const res = await ProjectService.deleteProjectById(mockProject.original.id);
 
       expect(res).to.eql(null);
+      expect(deleteProjectByIdStub.calledOnce);
+    });
+  });
+
+  describe('deleteProjectByID', () => {
+    it('it should throw succes is project is successfully deleted from DB', async () => {
+      const mockProject = prepareMockProject();
+
+      beforeEach(() => {
+        updateProjectStatusStub = sinon.stub(ProjectRepository, 'deleteProjectById');
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      findProjectByIdStub.resolves(mockProject.original.id);
+      deleteProjectByIdStub.resolves(mockProject.original.id);
+
+      const res = await ProjectService.deleteProjectById(mockProject.original.id);
+
+      expect(res).to.eql(mockProject.original.id);
       expect(deleteProjectByIdStub.calledOnce);
     });
   });
