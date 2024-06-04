@@ -28,6 +28,7 @@ describe('ProjectService', () => {
   let findEmployeeByEmailStub: sinon.SinonStub;
   let findRoleByIdStub: sinon.SinonStub;
   let findRoleByEmailStub: sinon.SinonStub;
+  let deleteProjectByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     createProjectStub = sinon.stub(ProjectRepository, 'createProject');
@@ -38,6 +39,7 @@ describe('ProjectService', () => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     findRoleByIdStub = sinon.stub(RoleRepository, 'findById');
     findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
+    deleteProjectByIdStub = sinon.stub(ProjectRepository, 'deleteProjectById');
   });
 
   afterEach(() => {
@@ -352,6 +354,39 @@ describe('ProjectService', () => {
 
       expect(res).to.equal(mockProject.updateProjectStatus.status);
     });
+  });
+
+  describe('deleteProjectByID', () => {
+    it('it should throw an error if project is not deleted from DB', async () => {
+      const mockProject = prepareMockProject();
+
+      beforeEach(() => {
+        updateProjectStatusStub = sinon.stub(ProjectRepository, 'deleteProjectById');
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      findProjectByIdStub.resolves(mockProject.original.id);
+      deleteProjectByIdStub.resolves(null);
+
+      const res = await ProjectService.deleteProjectById(mockProject.original.id);
+
+      expect(res).to.eql(null);
+      expect(deleteProjectByIdStub.calledOnce);
+    });
+  });
+
+  it('it should delete project by ID', async () => {
+    const mockProject2 = prepareMockProject();
+
+    findProjectByIdStub.resolves(mockProject2.original.id);
+    deleteProjectByIdStub.resolves(mockProject2.original.id);
+
+    await ProjectService.deleteProjectById(mockProject2.original.id);
+
+    expect(deleteProjectByIdStub.calledOnceWith(mockProject2.original.id)).to.be.true;
   });
 });
 

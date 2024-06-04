@@ -206,6 +206,33 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
   }
 }
 
+/**
+ * A function that deletes a project from the database
+ * @param id ID of the project to delete
+ * @returns {Promise<ProjectEntity>} the deleted project
+ * @throws {Error} if the project is not found
+ * @throws {Error} if an unexpected error occurs
+ *
+ */
+
+async function deleteProjectById(id: string): Promise<ProjectEntity> {
+  try {
+    const data = await Prisma.project.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(`${RESOURCE_NAME}`);
+    }
+
+    return mapProjectEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME}An unexpected error occurred`);
+  }
+}
+
 export const ProjectRepository = {
   findProjectStatusById,
   findById,
@@ -214,4 +241,5 @@ export const ProjectRepository = {
   updateProject,
   updateProjectStatus,
   findAllByRole,
+  deleteProjectById,
 };
