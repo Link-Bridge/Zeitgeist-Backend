@@ -166,7 +166,7 @@ async function createExpenseReport(userEmail: string, data: NewExpenseReport): P
     if (error.message === 'Employee not found') {
       throw error;
     } else {
-      throw new Error('An unexpected error occurred');
+      throw new Error(error.message);
     }
   }
 }
