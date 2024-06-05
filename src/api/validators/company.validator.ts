@@ -19,7 +19,13 @@ const companySchema = z.object({
     .max(15, { message: 'Landlinephone number must be between 10 and 15 digits long' })
     .optional()
     .nullable(),
-  archived: z.boolean().optional().nullable(),
+  archived: z
+    .boolean()
+    .optional()
+    .nullable()
+    .refine(value => value === false, {
+      message: 'Cannot create a project for an archived company.',
+    }),
   constitutionDate: z.string().optional().nullable(),
   rfc: zodValidRfc.optional().nullable(),
   taxResidence: z
