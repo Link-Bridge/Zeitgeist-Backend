@@ -211,21 +211,6 @@ async function updateProjectStatus(req: Request, res: Response) {
   }
 }
 
-/** A function that deletes a project
- * @param req HTTP Request
- * @param res Server response
- */
-
-async function deleteProject(req: Request, res: Response) {
-  try {
-    const id = req.params.id;
-    const project = await ProjectService.deleteProjectById(id);
-    res.status(200).json({ data: project });
-  } catch (error: any) {
-    res.status(500).json({ message: 'Internal server error occurred.' });
-  }
-}
-
 export const ProjectController = {
   getReportData,
   createProject,
@@ -234,5 +219,4 @@ export const ProjectController = {
   updateProject,
   updateProjectStatus,
   getDepartmentProjects,
-  deleteProject,
 };

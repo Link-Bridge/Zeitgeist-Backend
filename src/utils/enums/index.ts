@@ -9,7 +9,6 @@ export enum SupportedDepartments {
   WITHOUT_DEPARTMENT = 'Without department',
   LEGAL = 'Legal',
   ACCOUNTING = 'Accounting',
-  LEGAL_AND_ACCOUNTING = 'Legal and accounting',
 }
 
 export enum TaskStatus {
@@ -57,11 +56,4 @@ export enum ProjectPeriodicity {
   SIX_MONTHS = '6 months',
   TWELVE_MONTHS = '12 months',
   WHEN_NEEDED = 'When needed',
-}
-
-export enum ExpenseReportStatus {
-  ACCEPTED = 'Accepted',
-  PAYED = 'Payed',
-  PENDING = 'Pending',
-  REJECTED = 'Rejected',
 }

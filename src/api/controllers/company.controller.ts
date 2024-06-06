@@ -4,8 +4,8 @@ import { CompanyService } from '../../core/app/services/company.service';
 import { CompanyEntity } from '../../core/domain/entities/company.entity';
 import { companySchema, updateCompanySchema } from '../validators/company.validator';
 
-const idSchema = z.object({
-  id: z.string().uuid(),
+const reportSchema = z.object({
+  id: z.string().uuid().min(1, { message: 'clientId cannot be empty' }),
 });
 
 /**
@@ -19,7 +19,7 @@ const idSchema = z.object({
 
 async function getUnique(req: Request, res: Response) {
   try {
-    const { id } = idSchema.parse({ id: req.params.id });
+    const { id } = reportSchema.parse({ id: req.params.id });
 
     const data = await CompanyService.findById(id);
     res.status(200).json({ data });
@@ -112,22 +112,4 @@ async function getUnarchived(_: Request, res: Response) {
   }
 }
 
-/**
- * Finds deleteCompany
- *
- * @param {Request} req
- * @param {Response} res
- * @returns {Promise<void>}
- * @throws {Error}
- */
-
-async function deleteCompany(req: Request, res: Response) {
-  try {
-    const { id } = idSchema.parse({ id: req.params.id });
-    await CompanyService.deleteCompanyById(id);
-    res.status(200).send();
-  } catch (error: any) {
-    res.status(500).json({ message: 'Internal server error occurred.' });
-  }
-}
-export const CompanyController = { getUnique, getAll, create, updateClient, getUnarchived, deleteCompany };
+export const CompanyController = { getUnique, getAll, create, updateClient, getUnarchived };

@@ -1,6 +1,5 @@
 import { randomUUID } from 'crypto';
-import { TaskStatus } from '../../../utils/enums';
-import { isAuthorized } from '../../../utils/is-authorize-deparment';
+import { SupportedRoles, TaskStatus } from '../../../utils/enums';
 import { dateSmallerOrEqualThanOther } from '../../../utils/methods';
 import { EmployeeTask } from '../../domain/entities/employee-task.entity';
 import { BareboneTask, ProjectDetailsTask, Task, UpdatedTask } from '../../domain/entities/task.entity';
@@ -11,7 +10,6 @@ import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
 import { TaskRepository } from '../../infra/repositories/tasks.repository';
 import { TaskDetail } from '../interfaces/task.interface';
-import { NotificationService } from './notification.service';
 
 /**
  * @description Validates that a start date should be before than an end date
@@ -41,7 +39,11 @@ async function getTasksFromProject(projectId: string, email: string): Promise<Pr
       TaskRepository.findTasksByProjectId(projectId),
     ]);
 
-    if (!isAuthorized(role.title, project.area!)) {
+    if (
+      project.area &&
+      role.title.toUpperCase() !== SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() !== project.area.toUpperCase()
+    ) {
       throw new Error('Unauthorized employee');
     }
 
@@ -90,7 +92,7 @@ async function getTasksFromProject(projectId: string, email: string): Promise<Pr
  * @throws {Error} - If the task already exists.
  * @throws {Error} - If an error occurs when assigning the task to the employee.
  */
-async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): Promise<Task | null> {
+async function createTask(newTask: BareboneTask): Promise<Task | null> {
   try {
     const project = await ProjectRepository.findById(newTask.idProject);
     if (project === null) {
@@ -99,9 +101,14 @@ async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): 
 
     const task: Task = {
       id: randomUUID(),
-      ...newTask,
+      title: newTask.title,
+      description: newTask.description,
+      status: newTask.status,
+      startDate: newTask.startDate,
+      endDate: newTask.endDate,
       workedHours: newTask.workedHours ?? undefined,
       createdAt: new Date(),
+      idProject: newTask.idProject,
     };
 
     if (task.endDate !== null && task.endDate !== undefined && !areDatesValid(task.startDate, task.endDate)) {
@@ -114,11 +121,6 @@ async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): 
       throw new Error('Worked hours must be lower than or equal to 1000');
     }
 
-    const createdTask = await TaskRepository.createTask(task);
-    if (!createdTask) {
-      throw new Error('Task already exists');
-    }
-
     if (newTask.endDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
       throw new Error("Task's end date cannot be after the project's end date");
 
@@ -128,26 +130,25 @@ async function createTask(newTask: BareboneTask, employeeEmitterEmail: string): 
     if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.endDate))
       throw new Error("Task's start date cannot be after the project's end date");
 
+    const createdTask = await TaskRepository.createTask(task);
+    if (!createdTask) {
+      throw new Error('Task already exists');
+    }
+
     if (newTask.idEmployee) {
       const employee = await EmployeeRepository.findById(newTask.idEmployee);
       if (!employee) {
         throw new NotFoundError('Employee');
       }
-
       const newEmployeeTask: EmployeeTask = {
         id: randomUUID(),
         createdAt: new Date(),
         idEmployee: employee.id,
         idTask: createdTask.id as string,
       };
-
       const assignedTask = await EmployeeTaskRepository.create(newEmployeeTask);
       if (!assignedTask) {
         throw new Error('Error assigning a task to an employee');
-      }
-
-      if (employeeEmitterEmail !== employee.email) {
-        await NotificationService.sendAssignedTaskNotification(newTask.idEmployee, createdTask);
       }
     }
 
@@ -172,7 +173,7 @@ async function findUnique(id: string, email: string): Promise<TaskDetail> {
     const employeeTask = await EmployeeTaskRepository.findAll();
     const role = await RoleRepository.findByEmail(email);
 
-    if (!isAuthorized(role.title, project.area!)) {
+    if (role.title != SupportedRoles.ADMIN && role.title != project.area) {
       throw new Error('Unauthorized employee');
     }
 

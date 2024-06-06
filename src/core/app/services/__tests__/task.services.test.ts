@@ -157,19 +157,17 @@ describe('Task Service', () => {
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves({ id: randomUUID() });
-      const emitterEmail = faker.internet.email();
 
-      const result = await TaskService.createTask(task, emitterEmail);
+      const result = await TaskService.createTask(task);
 
       expect(result).to.deep.equal(createdTask);
     });
 
     it('Should throw an error if the project ID is not valid', async () => {
       projectRepositoryStub.withArgs(idProject).resolves(null);
-      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task, emitterEmail);
+        await TaskService.createTask(task);
       } catch (error: any) {
         expect(error.message).to.equal('Requested Project ID was not found');
       }
@@ -178,10 +176,9 @@ describe('Task Service', () => {
     it('Should throw an error if the task already exists', async () => {
       projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(null);
-      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task, emitterEmail);
+        await TaskService.createTask(task);
       } catch (error: any) {
         expect(error.message).to.equal('Task already exists');
       }
@@ -191,10 +188,9 @@ describe('Task Service', () => {
       projectRepositoryStub.resolves(project);
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves(null);
-      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task, emitterEmail);
+        await TaskService.createTask(task);
       } catch (error: any) {
         expect(error.message).to.equal('Requested Employee was not found');
       }
@@ -205,10 +201,9 @@ describe('Task Service', () => {
       taskRepositoryStub.resolves(createdTask);
       employeeRepositoryStub.resolves({ id: task.idEmployee });
       employeeTaskRepositoryStub.resolves(null);
-      const emitterEmail = faker.internet.email();
 
       try {
-        await TaskService.createTask(task, emitterEmail);
+        await TaskService.createTask(task);
       } catch (error: any) {
         expect(error.message).to.equal('Error assigning a task to an employee');
       }
@@ -476,7 +471,6 @@ describe('TaskService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         idCompany: randomUUID(),
-        area: 'Legal',
       };
 
       const roleId = randomUUID();
@@ -491,7 +485,7 @@ describe('TaskService', () => {
         id: employeeId,
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john.doe@outlook.com',
+        email: 'john.doe@example.com',
         imageUrl: 'http://example.com/john.jpg',
         createdAt: new Date(),
         idRole: roleId,

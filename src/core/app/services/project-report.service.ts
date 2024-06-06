@@ -1,6 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import { TaskStatus } from '../../../utils/enums';
-import { isAuthorized } from '../../../utils/is-authorize-deparment';
+import { SupportedRoles, TaskStatus } from '../../../utils/enums';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../infra/repositories/employee.repository';
@@ -78,7 +77,11 @@ async function getReport(id: string, email: string, date?: Date): Promise<Report
     const rawProject = await ProjectRepository.findById(id);
     const company = await CompanyRepository.findById(rawProject.idCompany);
 
-    if (!isAuthorized(role.title, rawProject.area!)) {
+    if (
+      rawProject.area &&
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() != rawProject.area.toUpperCase()
+    ) {
       throw new Error('Unauthorized employee');
     }
 
