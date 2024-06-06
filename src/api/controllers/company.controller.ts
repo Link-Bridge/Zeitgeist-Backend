@@ -112,7 +112,6 @@ async function getUnarchived(_: Request, res: Response) {
   }
 }
 
-
 /**
  * Finds deleteCompany
  *
