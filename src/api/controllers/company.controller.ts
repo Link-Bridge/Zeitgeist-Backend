@@ -93,4 +93,23 @@ async function create(req: Request, res: Response) {
     } else res.status(500).json({ error: error.message });
   }
 }
-export const CompanyController = { getUnique, getAll, create, updateClient };
+
+/**
+ * Retrieves all companies that are not archived.
+ *
+ * @param _ - The request object.
+ * @param res - The response object.
+ * @returns {Promise<void>}
+ * @throws {Error} - If an error occurs while retrieving the companies.
+ */
+
+async function getUnarchived(_: Request, res: Response) {
+  try {
+    const data = await CompanyService.findUnarchived();
+    res.status(200).json(data);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const CompanyController = { getUnique, getAll, create, updateClient, getUnarchived };
