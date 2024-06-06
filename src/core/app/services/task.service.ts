@@ -121,11 +121,6 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
       throw new Error('Worked hours must be lower than or equal to 1000');
     }
 
-    const createdTask = await TaskRepository.createTask(task);
-    if (!createdTask) {
-      throw new Error('Task already exists');
-    }
-
     if (newTask.endDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.endDate, project.endDate))
       throw new Error("Task's end date cannot be after the project's end date");
 
@@ -134,6 +129,11 @@ async function createTask(newTask: BareboneTask): Promise<Task | null> {
 
     if (newTask.startDate && project.endDate && !dateSmallerOrEqualThanOther(newTask.startDate, project.endDate))
       throw new Error("Task's start date cannot be after the project's end date");
+
+    const createdTask = await TaskRepository.createTask(task);
+    if (!createdTask) {
+      throw new Error('Task already exists');
+    }
 
     if (newTask.idEmployee) {
       const employee = await EmployeeRepository.findById(newTask.idEmployee);
