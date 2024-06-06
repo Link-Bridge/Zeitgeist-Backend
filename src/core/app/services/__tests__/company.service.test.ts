@@ -14,6 +14,7 @@ describe('CompanyService', () => {
   let findCompanyByIdStub: sinon.SinonStub;
   let archiveClientdStub: sinon.SinonStub;
   let getArchivedStatusStub: sinon.SinonStub;
+  let deleteCompanyByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
@@ -21,6 +22,7 @@ describe('CompanyService', () => {
     findCompanyByIdStub = sinon.stub(CompanyRepository, 'findById');
     archiveClientdStub = sinon.stub(CompanyRepository, 'archiveClient');
     getArchivedStatusStub = sinon.stub(CompanyRepository, 'getArchivedStatus');
+    deleteCompanyByIdStub = sinon.stub(CompanyRepository, 'deleteCompanyById');
   });
 
   afterEach(() => {
@@ -83,6 +85,27 @@ describe('CompanyService', () => {
 
     expect(archiveClientdStub.calledOnceWith(idCompany1, company.archived)).to.be.false;
     expect(updatedCompany.archived).to.be.true;
+  });
+
+  describe('deleteCompanyById', () => {
+    const companyId = randomUUID();
+    const nonExistentCompanyId = randomUUID();
+
+    it('should delete a company from the repository', async () => {
+      deleteCompanyByIdStub.withArgs(companyId).resolves();
+
+      await CompanyService.deleteCompanyById(companyId);
+
+      expect(deleteCompanyByIdStub.calledOnceWith(companyId)).to.be.true;
+    });
+
+    it('should throw an error if the company does not exist', async () => {
+      deleteCompanyByIdStub.withArgs(nonExistentCompanyId).rejects(new Error('Company not found'));
+
+      await expect(CompanyService.deleteCompanyById(nonExistentCompanyId)).to.be.rejectedWith('Company not found');
+
+      expect(deleteCompanyByIdStub.calledOnceWith(nonExistentCompanyId)).to.be.true;
+    });
   });
 
   it('should get a single company', async () => {
