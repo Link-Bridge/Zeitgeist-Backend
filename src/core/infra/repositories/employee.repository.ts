@@ -15,7 +15,7 @@ async function findAll(): Promise<EmployeeEntity[]> {
 
     return data.map(mapEmployeeEntityFromDbModel);
   } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} Failed to fetch all employees: ${error}`);
+    throw new Error(`Failed to fetch all employees: ${error}`);
   }
 }
 
@@ -33,7 +33,8 @@ async function findById(id: string): Promise<EmployeeEntity> {
 
     return mapEmployeeEntityFromDbModel(data);
   } catch (error: unknown) {
-    throw new Error(`${RESOURCE_NAME} repository error`);
+    console.log(error);
+    throw new Error('Employee repository error');
   }
 }
 
@@ -57,15 +58,6 @@ async function updateRoleById(id: string, roleId: string): Promise<EmployeeEntit
     throw new Error('Employee repository error');
   }
 }
-
-/**
- * A function to delete an employee by id
- * @param id The id of the employee to delete
- * @returns {Promise<EmployeeEntity>} The deleted employee
- * @throws If the employee is not found
- * @throws If an unexpected error occurs
- *
- */
 
 async function deleteEmployeeById(id: string): Promise<EmployeeEntity> {
   try {
@@ -100,24 +92,6 @@ async function findByEmail(email: string): Promise<EmployeeEntity | null> {
     return mapEmployeeEntityFromDbModel(data);
   } catch (error: unknown) {
     throw new Error(`Failed to fetch employee by email: ${error}`);
-  }
-}
-
-async function findByDepartment(departmentId: string): Promise<EmployeeEntity[]> {
-  try {
-    const data = await Prisma.employee.findMany({
-      where: {
-        id_department: departmentId,
-      },
-    });
-
-    if (data.length === 0) {
-      throw new NotFoundError(RESOURCE_NAME);
-    }
-
-    return data.map(mapEmployeeEntityFromDbModel);
-  } catch (error: unknown) {
-    throw new Error(`Failed to fetch employees by department: ${error}`);
   }
 }
 
@@ -162,7 +136,6 @@ export const EmployeeRepository = {
   findAll,
   findByEmail,
   findById,
-  findByDepartment,
   existByEmail,
   updateRoleById,
   deleteEmployeeById,

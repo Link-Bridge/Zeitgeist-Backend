@@ -12,7 +12,7 @@ const app: Express = express();
 const HOST: string = process.env[EnvConfigKeys.HOST] || 'localhost';
 const PORT: number = process.env[EnvConfigKeys.PORT] ? parseInt(process.env[EnvConfigKeys.PORT]) : 4000;
 
-export const CLIENT_URL = process.env[EnvConfigKeys.CLIENT_URL];
+const CLIENT_URL = process.env[EnvConfigKeys.CLIENT_URL];
 
 app.use(
   cors({

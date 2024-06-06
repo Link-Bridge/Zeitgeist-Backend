@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - develop
-      - MBI
 
 jobs:
   build:
@@ -51,4 +50,3 @@ jobs:
         env:
           CI: true
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}

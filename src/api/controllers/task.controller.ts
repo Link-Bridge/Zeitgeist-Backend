@@ -56,10 +56,11 @@ const idProjectSchema = z.object({
  */
 function validateTaskData(data: BareboneTask) {
   const bodyTask = taskSchema.parse(data);
+  const status = data.status as TaskStatus;
 
   return {
     ...bodyTask,
-    status: data.status as TaskStatus,
+    status: status,
     workedHours: Number(bodyTask.workedHours) || 0.0,
     endDate: bodyTask.endDate || null,
     idEmployee: bodyTask.idEmployee,
@@ -80,7 +81,10 @@ function validateTaskData(data: BareboneTask) {
 async function createTask(req: Request, res: Response) {
   try {
     const validatedTaskData = validateTaskData(req.body);
-    const payloadTask = await TaskService.createTask(validatedTaskData, req.body.auth.email);
+    const payloadTask = await TaskService.createTask({
+      ...validatedTaskData,
+      idEmployee: validatedTaskData.idEmployee || '',
+    });
 
     if (!payloadTask) {
       return res.status(409).json({ message: 'Task already exists' });

@@ -58,7 +58,6 @@ describe('ProjectReportService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         idCompany: companyId,
-        area: 'Legal',
       };
 
       const roleId = randomUUID();

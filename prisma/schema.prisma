@@ -1,11 +1,19 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["omitApi"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model comment {
+  id          String    @id @db.Uuid
+  message     String    @db.VarChar(255)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @updatedAt @db.Timestamp(6)
+  id_employee String    @db.Uuid
+  employee    employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model company {
@@ -56,10 +64,23 @@ model employee {
   updated_at            DateTime?               @updatedAt @db.Timestamp(6)
   id_department         String?                 @db.Uuid
   id_role               String                  @db.Uuid
+  device_token          String?                 @db.VarChar(255)
+  comment               comment[]
   department            department?             @relation(fields: [id_department], references: [id], onDelete: NoAction, onUpdate: NoAction)
   role                  role                    @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_notification employee_notification[]
   employee_task         employee_task[]
   expense_report        expense_report[]
+}
+
+model employee_notification {
+  id              String       @id @db.Uuid
+  created_at      DateTime     @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?    @updatedAt @db.Timestamp(6)
+  id_employee     String       @db.Uuid
+  id_notification String       @db.Uuid
+  employee        employee     @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notification    notification @relation(fields: [id_notification], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model employee_task {
@@ -75,28 +96,41 @@ model employee_task {
 model expense {
   id             String         @id @db.Uuid
   title          String         @db.VarChar(70)
-  supplier       String?        @db.VarChar(70)
+  justification  String         @db.VarChar(255)
   total_amount   Decimal        @db.Decimal(18, 2)
+  status         String?        @db.VarChar(256)
+  category       String?        @db.VarChar(70)
   date           DateTime       @db.Date
   created_at     DateTime       @default(now()) @db.Timestamp(6)
   updated_at     DateTime?      @updatedAt @db.Timestamp(6)
   id_report      String         @db.Uuid
-  url_file       String?        @db.VarChar(512)
-  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id_file        String?        @db.Uuid
+  file           file?          @relation(fields: [id_file], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  expense_report expense_report @relation(fields: [id_report], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model expense_report {
+  id           String    @id @db.Uuid
+  description  String    @db.VarChar(255)
+  start_date   DateTime  @db.Date
+  end_date     DateTime? @db.Date
+  status       String?   @db.VarChar(256)
+  total_amount Decimal?  @db.Decimal(8, 2)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @updatedAt @db.Timestamp(6)
+  id_employee  String    @db.Uuid
+  expense      expense[]
+  employee     employee  @relation(fields: [id_employee], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model file {
   id          String    @id @db.Uuid
-  title       String    @db.VarChar(70)
-  start_date  DateTime  @db.Date
-  end_date    DateTime? @db.Date
-  status      String?   @db.VarChar(256)
+  description String?   @db.VarChar(256)
+  format      String    @default(".zip") @db.VarChar(256)
+  url         String    @unique @db.VarChar(256)
   created_at  DateTime  @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @updatedAt @db.Timestamp(6)
-  id_employee String?   @db.Uuid
-  url_voucher String?   @db.VarChar(512)
   expense     expense[]
-  employee    employee?  @relation(fields: [id_employee], references: [id], onDelete: SetNull, onUpdate: NoAction)
 }
 
 model form {
@@ -155,6 +189,15 @@ model form {
   company                        company[]
 }
 
+model notification {
+  id                    String                  @id @db.Uuid
+  title                 String                  @db.VarChar(70)
+  body                  String                  @db.VarChar(256)
+  created_at            DateTime                @default(now()) @db.Timestamp(6)
+  updated_at            DateTime?               @updatedAt @db.Timestamp(6)
+  employee_notification employee_notification[]
+}
+
 model project {
   id            String    @id @db.Uuid
   name          String    @db.VarChar(70)
@@ -173,7 +216,7 @@ model project {
   updated_at    DateTime? @updatedAt @db.Timestamp(6)
   id_company    String    @db.Uuid
   area          String?   @db.VarChar(256)
-  company       company   @relation(fields: [id_company], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  company       company   @relation(fields: [id_company], references: [id], onDelete: NoAction, onUpdate: NoAction)
   task          task[]
 }
 
@@ -198,5 +241,5 @@ model task {
   updated_at    DateTime?       @updatedAt @db.Timestamp(6)
   id_project    String          @db.Uuid
   employee_task employee_task[]
-  project       project         @relation(fields: [id_project], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  project       project         @relation(fields: [id_project], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
