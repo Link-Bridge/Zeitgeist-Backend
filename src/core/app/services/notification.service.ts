@@ -1,68 +1,86 @@
-import { Notification } from '../../domain/entities/notification.entity';
-import { NotificationRepository } from '../../infra/repositories/notification.repository';
+import {
+  notifyAssignedTaskEmailTemplate,
+  notifyOtherDeparmentEmailTemplate,
+} from '../../../utils/email/email.templates';
+import { SupportedDepartments } from '../../../utils/enums';
+import { Task } from '../../domain/entities/task.entity';
+import { EmailProvider } from '../../infra/providers/resend.provider';
+import { DepartmentRepository } from '../../infra/repositories/department.repository';
+import { EmployeeRepository } from '../../infra/repositories/employee.repository';
+import { ProjectRepository } from '../../infra/repositories/project.repository';
 
 /**
- * @brief Interface for the userToken
- *
- * @param email: string
- * @param deviceToken: string
- *
- * @returns userToken
+ * This method is used to validate if the sender is from the same department.
+ * @param email - Emitter email
+ * @param departmentTitle - Department title
+ * @returns boolean
  */
-export interface userToken {
-  email: string;
-  deviceToken: string;
-}
+async function validateSenderDepartment(email: string, departmentTitle: SupportedDepartments): Promise<boolean> {
+  const employee = await EmployeeRepository.findByEmail(email);
+  const department = await DepartmentRepository.findByTitle(departmentTitle);
 
-/**
- * @brief Function that saves the token of the employee
- *
- * @param body: userToken
- */
-
-async function saveToken(body: userToken) {
-  try {
-    return await NotificationRepository.saveToken(body.email, body.deviceToken);
-  } catch (error) {
-    throw new Error('Error saving token.' + error);
+  if (employee?.idDepartment === department.id) {
+    return false;
   }
+
+  return true;
 }
 
 /**
- * Creates notification data in the repository
- *
- * @param {Notification} notification - The notification entity
- *
- * @returns {Promise<Notification>} A promise that resolves to the created
- *
- * @throws {Error} If an unexpected error occurs
+ * This method is used for sending a notification when the task is created and its assigned to the user.
+ * @param userId {string} - The user id to whom the task is assigned
+ * @param task {Task} - The task that is assigned to the user
  */
-
-async function createNotification(notification: Notification): Promise<Notification> {
-  try {
-    const notificationRecord = await NotificationRepository.createNotification(notification);
-    return notificationRecord;
-  } catch (error: any) {
-    throw new Error('Error creating notification.' + error);
+async function sendAssignedTaskNotification(userId: string, task: Task): Promise<void> {
+  const employee = await EmployeeRepository.findById(userId);
+  if (!employee) {
+    throw new Error('Employee not found');
   }
+
+  const { subject, body } = notifyAssignedTaskEmailTemplate(employee.firstName, employee.lastName, task);
+
+  await EmailProvider.sendEmail([employee.email], subject, body);
 }
 
 /**
- * Gets notification data from the repository
- *
- * @returns {Promise<Notification[]>} A promise that resolves to an array of
- *                                  notification entities
- *
- * @throws {Error} If an unexpected error occurs
+ * This method is used for sending a notification to another department when the project status is updated.
+ * @param departmentTitle {SupportedDepartments} - The department to which the notification is to be sent
+ * @param projectId {string} - The project id for which the status is updated
  */
-
-async function getAllNotifications(): Promise<Notification[]> {
-  try {
-    const notificationRecords = await NotificationRepository.findAllNotifications();
-    return notificationRecords;
-  } catch (error: any) {
-    throw new Error('Error getting notifications.' + error);
+async function sendProjectStatusUpdateNotification(
+  emitterEmail: string,
+  departmentTitle: SupportedDepartments,
+  projectId: string
+): Promise<string> {
+  const isSenderValid = await validateSenderDepartment(emitterEmail, departmentTitle);
+  if (!isSenderValid) {
+    return 'Cannot send email to the same department';
   }
+
+  const project = await ProjectRepository.findById(projectId);
+  if (!project) {
+    throw new Error('Project not found');
+  }
+
+  const deparment = await DepartmentRepository.findByTitle(departmentTitle);
+  const employees = await EmployeeRepository.findByDepartment(deparment.id);
+  if (!employees) {
+    throw new Error('Employees not found');
+  }
+
+  const emailList = employees.map(employee => employee.email);
+
+  const deparmentSubject =
+    departmentTitle === SupportedDepartments.ACCOUNTING ? SupportedDepartments.LEGAL : SupportedDepartments.ACCOUNTING;
+  const { subject, body } = notifyOtherDeparmentEmailTemplate(deparmentSubject, project);
+
+  const response = await EmailProvider.sendEmail(emailList, subject, body);
+
+  if (!response.error) {
+    return 'Email sent successfully';
+  }
+
+  return 'Failed to send email';
 }
 
-export const NotificationService = { saveToken, getAllNotifications, createNotification };
+export const NotificationService = { sendAssignedTaskNotification, sendProjectStatusUpdateNotification };

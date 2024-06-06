@@ -28,6 +28,7 @@ describe('ProjectService', () => {
   let findEmployeeByEmailStub: sinon.SinonStub;
   let findRoleByIdStub: sinon.SinonStub;
   let findRoleByEmailStub: sinon.SinonStub;
+  let deleteProjectByIdStub: sinon.SinonStub;
 
   beforeEach(() => {
     createProjectStub = sinon.stub(ProjectRepository, 'createProject');
@@ -38,6 +39,7 @@ describe('ProjectService', () => {
     findEmployeeByEmailStub = sinon.stub(EmployeeRepository, 'findByEmail');
     findRoleByIdStub = sinon.stub(RoleRepository, 'findById');
     findRoleByEmailStub = sinon.stub(RoleRepository, 'findByEmail');
+    deleteProjectByIdStub = sinon.stub(ProjectRepository, 'deleteProjectById');
   });
 
   afterEach(() => {
@@ -218,7 +220,7 @@ describe('ProjectService', () => {
     it('Should return the project information and client name acording its id', async () => {
       const role = {
         title: SupportedRoles.ADMIN,
-        createdAr: new Date(),
+        createdAt: new Date(),
       };
 
       const employee = {
@@ -242,6 +244,7 @@ describe('ProjectService', () => {
         startDate: new Date(),
         createdAt: new Date(),
         totalHours: 20,
+        area: 'Legal',
       };
 
       findProjectByIdStub.resolves(existingProject);
@@ -260,7 +263,7 @@ describe('ProjectService', () => {
     it('Should return the project information acording its id', async () => {
       const role = {
         title: SupportedRoles.ADMIN,
-        createdAr: new Date(),
+        createdAt: new Date(),
       };
 
       const employee = {
@@ -292,10 +295,12 @@ describe('ProjectService', () => {
         createdAt: new Date(),
         totalHours: 28,
         idCompany: companyId,
+        area: 'Legal',
       };
 
       findProjectByIdStub.resolves(existingProject);
       findCompanyByIdStub.resolves(existingCompany);
+      findRoleByEmailStub.resolves(role);
 
       const res = await ProjectService.getProjectById(projectId, employee.email);
       const res2 = await CompanyService.findById(companyId);
@@ -349,6 +354,39 @@ describe('ProjectService', () => {
 
       expect(res).to.equal(mockProject.updateProjectStatus.status);
     });
+  });
+
+  describe('deleteProjectByID', () => {
+    it('it should throw an error if project is not deleted from DB', async () => {
+      const mockProject = prepareMockProject();
+
+      beforeEach(() => {
+        updateProjectStatusStub = sinon.stub(ProjectRepository, 'deleteProjectById');
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      findProjectByIdStub.resolves(mockProject.original.id);
+      deleteProjectByIdStub.resolves(null);
+
+      const res = await ProjectService.deleteProjectById(mockProject.original.id);
+
+      expect(res).to.eql(null);
+      expect(deleteProjectByIdStub.calledOnce);
+    });
+  });
+
+  it('it should delete project by ID', async () => {
+    const mockProject2 = prepareMockProject();
+
+    findProjectByIdStub.resolves(mockProject2.original.id);
+    deleteProjectByIdStub.resolves(mockProject2.original.id);
+
+    await ProjectService.deleteProjectById(mockProject2.original.id);
+
+    expect(deleteProjectByIdStub.calledOnceWith(mockProject2.original.id)).to.be.true;
   });
 });
 
