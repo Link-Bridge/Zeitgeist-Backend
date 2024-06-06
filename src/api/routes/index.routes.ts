@@ -4,6 +4,7 @@ import { AdminRouter } from './admin.routes';
 import { CompanyRouter } from './company.routes';
 import { DepartmentRouter } from './department.routes';
 import { EmployeeRouter } from './employee.routes';
+import { ExpenseRouter } from './expense.routes';
 import { HomeRouter } from './home.routes';
 import { NotificationRouter } from './notification.routes';
 import { ProjectRouter } from './project.routes';
@@ -12,6 +13,9 @@ import { TaskRouter } from './task.routes';
 const baseRouter = Router();
 
 const V1_PATH = '/api/v1';
+
+// Health check
+baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
 
 baseRouter.use(checkAuthToken);
 
@@ -39,7 +43,7 @@ baseRouter.use(`${V1_PATH}/company`, CompanyRouter);
 // Notification
 baseRouter.use(`${V1_PATH}/notification`, NotificationRouter);
 
-// Health check
-baseRouter.use(`${V1_PATH}/health`, (_req, res) => res.send('OK'));
+// Expense
+baseRouter.use(`${V1_PATH}/expense`, ExpenseRouter);
 
 export { baseRouter };
