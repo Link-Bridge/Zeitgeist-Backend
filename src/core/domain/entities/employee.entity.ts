@@ -10,7 +10,6 @@
  * @param updatedAt?: Date - Date when the employee was updated (optional)
  * @param idDepartment?: string - ID of the department where the employee belongs (optional)
  * @param idRole: string - ID of the role of the employee
- * @param deviceToken?: string - Device token of the employee (optional)
  *
  * @return void
  *
@@ -62,9 +61,4 @@ export interface EmployeeEntity {
    * @param idRole string: The id of the role of the employee.
    */
   idRole: string;
-
-  /**
-   * @param deviceToken string: The device token of the employee.
-   */
-  deviceToken?: string;
 }
