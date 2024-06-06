@@ -13,5 +13,6 @@ router.get('/:clientId', ProjectController.getProjectsClient);
 router.post('/create', ProjectController.createProject);
 router.put('/edit/:id', ProjectController.updateProject);
 router.put('/details/:id', ProjectController.updateProjectStatus);
+router.delete('/delete/:id', ProjectController.deleteProject);
 
 export { router as ProjectRouter };

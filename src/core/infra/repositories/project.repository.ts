@@ -1,6 +1,6 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '../../..';
-import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
+import { ProjectStatus, SupportedDepartments, SupportedRoles } from '../../../utils/enums';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { mapProjectEntityFromDbModel } from '../mappers/project-entity-from-db-model-mapper';
@@ -14,44 +14,45 @@ const RESOURCE_NAME = 'Project info';
  */
 async function findAllByRole(role: SupportedRoles): Promise<ProjectEntity[]> {
   try {
-    type PrismaProjectsRes = ReturnType<typeof Prisma.project.findMany>;
-    let projects: PrismaProjectsRes;
-    let doneProjects: PrismaProjectsRes;
-    let res: Awaited<PrismaProjectsRes>;
+    const roleToDepartment = {
+      [SupportedRoles.ADMIN]: {},
+      [SupportedRoles.LEGAL]: { area: { in: [SupportedDepartments.LEGAL, SupportedDepartments.LEGAL_AND_ACCOUNTING] } },
+      [SupportedRoles.ACCOUNTING]: {
+        area: { in: [SupportedDepartments.ACCOUNTING, SupportedDepartments.LEGAL_AND_ACCOUNTING] },
+      },
+      [SupportedRoles.WITHOUT_ROLE]: null,
+    };
 
-    if (role === SupportedRoles.ADMIN) {
-      projects = Prisma.project.findMany({
-        where: {
-          NOT: { status: ProjectStatus.DONE },
-        },
-        orderBy: { status: 'desc' },
-      });
-      doneProjects = Prisma.project.findMany({ where: { status: ProjectStatus.DONE } });
-      res = (await Promise.all([projects, doneProjects])).flat();
-    } else {
-      projects = Prisma.project.findMany({
-        where: {
-          area: role,
-          NOT: { status: ProjectStatus.DONE },
-        },
-        orderBy: { status: 'desc' },
-      });
-      doneProjects = Prisma.project.findMany({
-        where: {
-          status: ProjectStatus.DONE,
-          area: role,
-        },
-        orderBy: { status: 'desc' },
-      });
-      res = (await Promise.all([projects, doneProjects])).flat();
+    const departmentCriteria = roleToDepartment[role];
+    if (departmentCriteria === null) {
+      return [];
     }
-    if (!res) throw new NotFoundError(`${RESOURCE_NAME} error`);
 
-    return res.map(mapProjectEntityFromDbModel);
+    const projects = await Prisma.project.findMany({
+      where: {
+        ...departmentCriteria,
+        status: {
+          not: ProjectStatus.DONE,
+        },
+      },
+      orderBy: { status: 'desc' },
+    });
+
+    const doneProjects = await Prisma.project.findMany({
+      where: {
+        ...departmentCriteria,
+        status: ProjectStatus.DONE,
+      },
+      orderBy: { status: 'desc' },
+    });
+
+    const allProjects = [...projects, ...doneProjects];
+    return allProjects.map(mapProjectEntityFromDbModel);
   } catch (error: unknown) {
     throw new Error(`${RESOURCE_NAME} repository error`);
   }
 }
+
 /**
  * Finds a project status by id
  * @version 1.0.0
@@ -205,6 +206,33 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
   }
 }
 
+/**
+ * A function that deletes a project from the database
+ * @param id ID of the project to delete
+ * @returns {Promise<ProjectEntity>} the deleted project
+ * @throws {Error} if the project is not found
+ * @throws {Error} if an unexpected error occurs
+ *
+ */
+
+async function deleteProjectById(id: string): Promise<ProjectEntity> {
+  try {
+    const data = await Prisma.project.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundError(`${RESOURCE_NAME}`);
+    }
+
+    return mapProjectEntityFromDbModel(data);
+  } catch (error: unknown) {
+    throw new Error(`${RESOURCE_NAME}An unexpected error occurred`);
+  }
+}
+
 export const ProjectRepository = {
   findProjectStatusById,
   findById,
@@ -213,4 +241,5 @@ export const ProjectRepository = {
   updateProject,
   updateProjectStatus,
   findAllByRole,
+  deleteProjectById,
 };
