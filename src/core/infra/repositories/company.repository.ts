@@ -142,6 +142,16 @@ async function archiveClient(id: string, archived: boolean): Promise<CompanyEnti
   }
 }
 
+/**
+ * @brief updates a company in the database
+ *
+ * @param company
+ * @returns {Promise<CompanyEntity>}
+ * @throws {Error} - If an error occurs while updating the company
+ * @throws {Error} - If the email is already registered
+ * @throws {Error} - If the RFC is already registered
+ */
+
 async function update(company: CompanyEntity): Promise<CompanyEntity> {
   try {
     const updatedCompany = await Prisma.company.update({
@@ -167,6 +177,36 @@ async function update(company: CompanyEntity): Promise<CompanyEntity> {
   } catch (error: any) {
     if (error.code == 'P2002' && (error.meta?.target as string[])[0] === 'email')
       throw new Error('Email already registered.');
+    if (error.meta.target[0] == 'rfc') throw new Error('RFC already registered.');
+    throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
+  }
+}
+
+/**
+ * @brief retrieves all companies that are not archived
+ *
+ * @returns {Promise<CompanyEntity[]>}
+ * @throws {Error} - If an error occurs while retrieving the companies
+ */
+
+async function findUnarchived(): Promise<CompanyEntity[]> {
+  try {
+    const data: Array<any> = await Prisma.$queryRaw`
+    SELECT c.*, 
+    COUNT(DISTINCT p.id) as total_projects,
+    SUM(CASE WHEN p.is_chargeable THEN t.worked_hours ELSE 0 END) AS chargeable_hours,
+    SUM(CASE WHEN p.is_chargeable AND p.area='Accounting' THEN t.worked_hours ELSE 0 END) AS accounting_hours,
+    SUM(CASE WHEN p.is_chargeable AND p.area='Legal' THEN t.worked_hours ELSE 0 END) AS legal_hours
+    FROM company c
+    LEFT JOIN project p ON c.id = p.id_company
+    LEFT JOIN task t ON p.id = t.id_project
+    WHERE c.archived = false
+    GROUP BY c.id
+    ORDER BY c.name ASC;
+    `;
+
+    return data.map(mapCompanyEntityFromDbModel);
+  } catch (error: any) {
     throw new Error(`${RESOURCE_NAME} repository error: ${error.message}`);
   }
 }
@@ -204,5 +244,6 @@ export const CompanyRepository = {
   create,
   archiveClient,
   getArchivedStatus,
+  findUnarchived,
   deleteCompanyById,
 };

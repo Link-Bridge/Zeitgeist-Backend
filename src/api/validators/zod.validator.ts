@@ -2,7 +2,13 @@ import { z } from 'zod';
 
 export const zodValidUuid = z.string().uuid({ message: 'Provided UUID is not valid' });
 export const zodValidEmail = z
-  .union([z.string().email({ message: 'Provided email is not valid.' }), z.string().length(0)])
+  .union([
+    z
+      .string()
+      .email({ message: 'Provided email is not valid.' })
+      .max(70, { message: 'Email must be at most 70 characters long.' }),
+    z.string().length(0),
+  ])
   .optional();
 export const zodValidString = z
   .string()
