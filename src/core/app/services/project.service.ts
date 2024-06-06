@@ -1,12 +1,11 @@
 import { randomUUID } from 'crypto';
 import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
-import { isAuthorized } from '../../../utils/is-authorize-deparment';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
-import { CreateProjectData, UpdateProjectBody } from '../interfaces/project.interface';
+import { UpdateProjectBody } from '../interfaces/project.interface';
 import { EmployeeService } from './employee.service';
 
 /**
@@ -19,6 +18,19 @@ const areDatesValid = (start: Date, end: Date): boolean => {
   return new Date(start).getTime() <= new Date(end).getTime();
 };
 
+interface CreateProjectData {
+  name: string;
+  matter: string | null;
+  description: string | null;
+  area: string;
+  status: string;
+  category: string;
+  endDate: Date | null;
+  idCompany: string;
+  isChargeable: boolean;
+  periodicity: string | null;
+  startDate: Date;
+}
 /**
  * A function that calls the repository to create a project in the database
  * @param data The data required to create a project in the database
@@ -107,11 +119,11 @@ async function getProjectById(projectId: string, email: string): Promise<Project
     const role = await RoleRepository.findByEmail(email);
     const project = await ProjectRepository.findById(projectId);
 
-    if (!project) {
-      throw new NotFoundError('Project not found');
-    }
-
-    if (!isAuthorized(role.title, project.area!)) {
+    if (
+      project.area &&
+      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
+      role.title.toUpperCase() != project.area.toUpperCase()
+    ) {
       throw new Error('Unauthorized employee');
     }
 
@@ -178,27 +190,6 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
   }
 }
 
-/**
- * @description Function to delete a project by id
- * @param id
- * @returns {ProjectEntity} - Deleted project
- * @throws {Error} - If the project is not found
- * @throws {Error} - If an unexpected error occurs
- */
-
-async function deleteProjectById(id: string): Promise<ProjectEntity> {
-  try {
-    const project = await ProjectRepository.findById(id);
-    if (!project) {
-      throw new Error('Project not found');
-    }
-
-    return await ProjectRepository.deleteProjectById(id);
-  } catch (error: unknown) {
-    throw new Error('An unexpected error occurred');
-  }
-}
-
 export const ProjectService = {
   createProject,
   findProjectsClient,
@@ -206,5 +197,4 @@ export const ProjectService = {
   updateProject,
   updateProjectStatus,
   getDepartmentProjects,
-  deleteProjectById,
 };

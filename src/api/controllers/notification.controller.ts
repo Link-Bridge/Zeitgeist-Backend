@@ -1,50 +1,104 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
+import * as z from 'zod';
 import { NotificationService } from '../../core/app/services/notification.service';
-import { SupportedDepartments } from '../../utils/enums';
-import { zodValidUuid } from '../validators/zod.validator';
 
-const notificationSchema = z.object({
-  departmentTitle: z.nativeEnum(SupportedDepartments).refine(
-    val => {
-      return val === SupportedDepartments.ACCOUNTING || val === SupportedDepartments.LEGAL;
-    },
-    {
-      message: "departmentTitle must be either 'Accounting' or 'Legal'",
-    }
-  ),
-  projectId: zodValidUuid,
+/**
+ * @brief Schema for the user device token
+ *
+ * @param email: string - Email of the employee
+ * @param deviceToken: string - Token of the device
+ *
+ * @return {z.ZodObject} - The schema for the user device token
+ */
+
+const userToken = z.object({
+  email: z.string().email(),
+  deviceToken: z.string(),
 });
 
 /**
- * Method in charge of sending a notification to a department when the event is trigger.
- * @param req {Request} - The request object
- * @param res {Response} - The response object
- * @returns
+ * @brief Schema for notification
+ *
+ * @param id: uuid - Id of notification
+ * @param title: string - Title of notification
+ * @param body: string - Body of notification
+ * @param createdAt: Date - Date of creation of notification
+ * @param updatedAt: Date - Most recent date of update of notification
+ *
+ * @return {z.ZodObject} - The schema for notification
  */
-async function sendNotificationToDepartment(req: Request, res: Response) {
+
+const notificationSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  body: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
+});
+
+/**
+ * @brief Function that calls the service to save the token of the employee
+ *
+ * @param req: Request
+ * @param res: Response
+ *
+ * @return status 200 if the token was saved successfully, 500 if an error occurred
+ */
+
+async function saveToken(req: Request, res: Response) {
   try {
-    const parsed = notificationSchema.parse(req.body);
+    const data = {
+      email: req.body.auth.email,
+      deviceToken: req.body.deviceToken,
+    };
+    const parsed = userToken.parse(data);
+    const deviceToken = await NotificationService.saveToken(parsed);
 
-    const response = await NotificationService.sendProjectStatusUpdateNotification(
-      req.body.auth.email,
-      parsed.departmentTitle,
-      parsed.projectId
-    );
-
-    if (response === 'Cannot send email to the same department') {
-      return res.status(400).json({ message: 'Cannot send email to the same department' });
-    }
-
-    if (response === 'Failed to send email') {
-      return res.status(400).json({ message: 'Failed to send email' });
-    }
-
-    res.status(200).json({ message: 'Notification sent successfully' });
+    res.status(200).json({ message: 'Device Token registered successfully.', deviceToken });
   } catch (error: any) {
-    console.error(error); // TODO: Delete this
-    res.status(500).json({ message: `Internal server error: ${error}` });
+    res.status(500).json({ message: 'Internal server error occurred.', error });
   }
 }
 
-export const NotificationController = { sendNotificationToDepartment };
+/**
+ * Creates a new notification and sends it as a response
+ *
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ *
+ * @returns {Promise<void>} A promise that resolves to void
+ *
+ * @throws {Error} If an unexpected error occurs
+ */
+
+async function createNotification(req: Request, res: Response) {
+  try {
+    notificationSchema.parse(req.body);
+    const data = await NotificationService.createNotification(req.body);
+    res.status(201).json({ data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+/**
+ * Gets the notificacion data from the service and sends it as a response
+ *
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ *
+ * @returns {Promise<void>} A promise that resolves to void
+ *
+ * @throws {Error} If an unexpected error occurs
+ */
+
+async function getAllNotifications(_: Request, res: Response) {
+  try {
+    const data = await NotificationService.getAllNotifications();
+    res.status(200).json({ data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export const NotificationController = { saveToken, createNotification, getAllNotifications };

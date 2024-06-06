@@ -1,7 +1,7 @@
 ---
 name: Issue de Defecto
 about: Registrar un defecto encontrado
-title: Módulo/RFXX/Detalle
+title: MOD-RF00-ID00/Eliminar tarea cuando se elimina usario
 labels: ''
 assignees: ''
 ---

@@ -64,6 +64,7 @@ export interface Task {
   /**
    * @param updatedAt: Date - Last modification date (optional)
    */
+
   updatedAt?: Date;
 
   /**
