@@ -106,4 +106,19 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyService = { findAll, findById, update, create, archiveClient };
+/**
+ * @brief Retrieves all companies that are not archived.
+ *
+ * @returns {Promise<CompanyEntity[]>}
+ * @throws {Error} - If an error occurs while retrieving the companies.
+ */
+async function findUnarchived(): Promise<CompanyEntity[]> {
+  try {
+    const data = await CompanyRepository.findUnarchived();
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
+export const CompanyService = { findAll, findById, update, create, archiveClient, findUnarchived };
