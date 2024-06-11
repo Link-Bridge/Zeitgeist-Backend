@@ -1,25 +1,24 @@
 import { randomUUID } from 'crypto';
 import { ProjectStatus, SupportedRoles } from '../../../utils/enums';
+import { isAuthorized } from '../../../utils/is-authorize-deparment';
 import { ProjectEntity } from '../../domain/entities/project.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { ProjectRepository } from '../../infra/repositories/project.repository';
 import { RoleRepository } from '../../infra/repositories/role.repository';
-import { UpdateProjectBody } from '../interfaces/project.interface';
+import { CreateProjectData, UpdateProjectBody } from '../interfaces/project.interface';
 import { EmployeeService } from './employee.service';
-interface CreateProjectData {
-  name: string;
-  matter: string | null;
-  description: string | null;
-  area: string;
-  status: string;
-  category: string;
-  endDate: Date | null;
-  idCompany: string;
-  isChargeable: boolean;
-  periodicity: string | null;
-  startDate: Date;
-}
+
+/**
+ * @description Validates that a start date should be before than an end date
+ * @param {Date} start Start date
+ * @param {Date} end End date
+ * @returns {boolean} If dates are valid
+ */
+const areDatesValid = (start: Date, end: Date): boolean => {
+  return new Date(start).getTime() <= new Date(end).getTime();
+};
+
 /**
  * A function that calls the repository to create a project in the database
  * @param data The data required to create a project in the database
@@ -29,6 +28,9 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity | s
   try {
     const company = await CompanyRepository.findById(data.idCompany);
     if (company.archived) throw new Error('Cannot create projects for archived companies');
+    if (data.endDate !== null && !areDatesValid(data.startDate, data.endDate)) {
+      throw new Error('Start date must be before end date');
+    }
 
     const newProject = await ProjectRepository.createProject({
       id: randomUUID(),
@@ -40,7 +42,7 @@ async function createProject(data: CreateProjectData): Promise<ProjectEntity | s
       category: data.category,
       endDate: data.endDate,
       idCompany: data.idCompany,
-      isChargeable: data.isChargeable ? data.isChargeable : undefined,
+      isChargeable: data.isChargeable,
       periodicity: data.periodicity,
       startDate: data.startDate,
       createdAt: new Date(),
@@ -105,11 +107,11 @@ async function getProjectById(projectId: string, email: string): Promise<Project
     const role = await RoleRepository.findByEmail(email);
     const project = await ProjectRepository.findById(projectId);
 
-    if (
-      project.area &&
-      role.title.toUpperCase() != SupportedRoles.ADMIN.toUpperCase() &&
-      role.title.toUpperCase() != project.area.toUpperCase()
-    ) {
+    if (!project) {
+      throw new NotFoundError('Project not found');
+    }
+
+    if (!isAuthorized(role.title, project.area!)) {
       throw new Error('Unauthorized employee');
     }
 
@@ -134,15 +136,22 @@ async function updateProject(body: UpdateProjectBody): Promise<ProjectEntity> {
     throw new NotFoundError('Project not found');
   }
 
+  const startDate = body.startDate ?? project.startDate;
+  const endDate = body.endDate ?? null;
+
+  if (endDate !== null && !areDatesValid(startDate, endDate)) {
+    throw new Error('Start date must be before end date');
+  }
+
   return await ProjectRepository.updateProject({
     id: project.id,
     name: body.name ?? project.name,
     idCompany: body.idCompany ?? project.idCompany,
     category: body.category ?? project.category,
-    matter: body.matter ?? project.matter,
-    description: body.description ?? project.description,
-    startDate: body.startDate ?? project.startDate,
-    endDate: body.endDate ?? null,
+    matter: body.matter ?? null,
+    description: body.description ?? null,
+    startDate,
+    endDate,
     periodicity: body.periodicity ?? project.periodicity,
     area: body.area ?? project.area,
     payed: body.payed,
@@ -169,6 +178,27 @@ async function updateProjectStatus(projectId: string, newStatus: ProjectStatus):
   }
 }
 
+/**
+ * @description Function to delete a project by id
+ * @param id
+ * @returns {ProjectEntity} - Deleted project
+ * @throws {Error} - If the project is not found
+ * @throws {Error} - If an unexpected error occurs
+ */
+
+async function deleteProjectById(id: string): Promise<ProjectEntity> {
+  try {
+    const project = await ProjectRepository.findById(id);
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    return await ProjectRepository.deleteProjectById(id);
+  } catch (error: unknown) {
+    throw new Error('An unexpected error occurred');
+  }
+}
+
 export const ProjectService = {
   createProject,
   findProjectsClient,
@@ -176,4 +206,5 @@ export const ProjectService = {
   updateProject,
   updateProjectStatus,
   getDepartmentProjects,
+  deleteProjectById,
 };

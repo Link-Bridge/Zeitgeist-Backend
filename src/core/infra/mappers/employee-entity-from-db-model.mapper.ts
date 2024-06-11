@@ -12,6 +12,5 @@ export function mapEmployeeEntityFromDbModel(model: employee): EmployeeEntity {
     updatedAt: model.updated_at ? model.updated_at : undefined,
     idDepartment: model.id_department ? model.id_department : undefined,
     idRole: model.id_role,
-    deviceToken: model.device_token ? model.device_token : undefined,
   };
 }

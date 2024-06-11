@@ -45,7 +45,7 @@ async function signIn(req: Request, res: Response) {
  * @param req
  * @param res
  */
-async function getAllEmployees(req: Request, res: Response) {
+async function getAllEmployees(_: Request, res: Response) {
   try {
     const employees = await EmployeeService.getAllEmployees();
     res.status(200).json({ data: employees });

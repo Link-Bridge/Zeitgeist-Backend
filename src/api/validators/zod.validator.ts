@@ -2,7 +2,13 @@ import { z } from 'zod';
 
 export const zodValidUuid = z.string().uuid({ message: 'Provided UUID is not valid' });
 export const zodValidEmail = z
-  .union([z.string().email({ message: 'Provided email is not valid.' }), z.string().length(0)])
+  .union([
+    z
+      .string()
+      .email({ message: 'Provided email is not valid.' })
+      .max(70, { message: 'Email must be at most 70 characters long.' }),
+    z.string().length(0),
+  ])
   .optional();
 export const zodValidString = z
   .string()
@@ -17,7 +23,7 @@ export const zodValidPhoneNumber = z
 
 export const zodValidRfc = z
   .union([
-    z.string().regex(/^[A-Z&Ñ]{3,4}\d{6}(?:[A-Z\d]{3})?$/, {
+    z.string().regex(/^[a-zA-Z]{3,4}[0-9]{6}[a-zA-Z0-9]{3}$/, {
       message: 'Provided RFC is not valid',
     }),
     z.string().length(0),

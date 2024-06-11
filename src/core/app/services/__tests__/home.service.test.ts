@@ -1,9 +1,15 @@
+import { faker } from '@faker-js/faker';
 import { Decimal } from '@prisma/client/runtime/library';
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import { randomUUID } from 'crypto';
 import sinon from 'sinon';
-import { SupportedRoles } from '../../../../utils/enums';
+import { ProjectStatus, SupportedRoles, TaskStatus } from '../../../../utils/enums';
+import { CompanyEntity } from '../../../domain/entities/company.entity';
+import { EmployeeTask } from '../../../domain/entities/employee-task.entity';
+import { EmployeeEntity } from '../../../domain/entities/employee.entity';
+import { ProjectEntity } from '../../../domain/entities/project.entity';
+import { RoleEntity } from '../../../domain/entities/role.entity';
+import { Task } from '../../../domain/entities/task.entity';
 import { CompanyRepository } from '../../../infra/repositories/company.repository';
 import { EmployeeTaskRepository } from '../../../infra/repositories/employee-task.repository';
 import { EmployeeRepository } from '../../../infra/repositories/employee.repository';
@@ -12,170 +18,174 @@ import { RoleRepository } from '../../../infra/repositories/role.repository';
 import { TaskRepository } from '../../../infra/repositories/tasks.repository';
 import { HomeService } from '../home.service';
 
-chai.use(chaiAsPromised);
-
 describe('HomeService', () => {
-  let findAllProjectsStub: sinon.SinonStub;
-  let findTaskByEmployeeIdStub: sinon.SinonStub;
-  let findAllTasksStub: sinon.SinonStub;
-  let findAllCompaniesStub: sinon.SinonStub;
-  let findEmployeeByEmail: sinon.SinonStub;
-  let findEmployeeById: sinon.SinonStub;
-  let findRoleById: sinon.SinonStub;
+  let findByEmployeeIdStub: sinon.SinonStub;
+  let findRoleByIdStub: sinon.SinonStub;
+  let findProjectsByRoleStub: sinon.SinonStub;
+  let findEmployeeTasksStub: sinon.SinonStub;
+  let findTasksStub: sinon.SinonStub;
+  let findCompaniesStub: sinon.SinonStub;
 
   beforeEach(() => {
-    findAllProjectsStub = sinon.stub(ProjectRepository, 'findAllByRole');
-    findTaskByEmployeeIdStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
-    findAllTasksStub = sinon.stub(TaskRepository, 'findAll');
-    findAllCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
-    findEmployeeByEmail = sinon.stub(EmployeeRepository, 'findByEmail');
-    findEmployeeById = sinon.stub(EmployeeRepository, 'findById');
-    findRoleById = sinon.stub(RoleRepository, 'findById');
+    findByEmployeeIdStub = sinon.stub(EmployeeRepository, 'findById');
+    findRoleByIdStub = sinon.stub(RoleRepository, 'findById');
+    findProjectsByRoleStub = sinon.stub(ProjectRepository, 'findAllByRole');
+    findEmployeeTasksStub = sinon.stub(EmployeeTaskRepository, 'findByEmployeeId');
+    findTasksStub = sinon.stub(TaskRepository, 'findAll');
+    findCompaniesStub = sinon.stub(CompanyRepository, 'findAll');
   });
 
   afterEach(() => {
     sinon.restore();
   });
 
-  describe('getHomeInfo', () => {
-    it('should return the projects an employee has assigned and the companies of those projects', async () => {
-      const employeeId = randomUUID();
-
-      const accountingRole = randomUUID();
-
-      const role = {
-        title: SupportedRoles.ACCOUNTING,
-        createdAr: new Date(),
+  describe('getMyInfo', () => {
+    it('Should return the user info', async () => {
+      const employee: EmployeeEntity = {
+        id: randomUUID(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        imageUrl: faker.image.url(),
+        createdAt: faker.date.recent(),
+        idRole: randomUUID(),
       };
 
-      const employee = {
-        id: employeeId,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'joe.doe@email.com',
-        imageUrl: 'http://example.com/john.jpg',
-        createdAt: new Date(),
-        idRole: accountingRole,
+      const role: RoleEntity = {
+        id: employee.idRole,
+        title: faker.helpers.enumValue(SupportedRoles),
+        createdAt: faker.date.recent(),
       };
 
-      const companyId = randomUUID();
-      const companyId2 = randomUUID();
-      const existingCompanies = [
-        {
-          id: companyId,
-          name: 'Tecnológico de Monterrey',
-          email: 'tec@itesm.mx',
-          phoneNumber: '4421234567',
-          landlinePhone: '4420987654',
-          archived: false,
-          createdAt: new Date(),
-        },
-        {
-          id: companyId2,
-          name: 'Oracle',
-          email: 'support@oracle.com.mx',
-          phoneNumber: '4421234567',
-          landlinePhone: '4420987654',
-          archived: true,
-          createdAt: new Date(),
-        },
-      ];
+      const MIN_PROJECTS = 5;
+      const MIN_TASKS_PER_PROJECT = 2;
 
-      const projectId = randomUUID();
-      const projectId2 = randomUUID();
-      const existingProjects = [
-        {
-          id: projectId,
-          name: 'ITESM Project',
-          matter: 'SAT',
-          description: 'ITESM Project description',
-          status: 'IN PROGRESS',
-          totalHours: new Decimal(100),
-          startDate: new Date(),
-          createdAt: new Date(),
-          idCompany: companyId,
-        },
-        {
-          id: projectId2,
-          name: 'Oracle Cloud',
-          matter: 'OCI',
-          description: 'The cloud',
-          status: 'ACCEPTED',
-          totalHours: new Decimal(100),
-          startDate: new Date(),
-          createdAt: new Date(),
-          idCompany: companyId2,
-        },
-      ];
+      const companies: CompanyEntity[] = Array.from({ length: 3 }, () => ({
+        id: randomUUID(),
+        name: faker.company.name(),
+        email: faker.internet.email(),
+        phoneNumber: faker.phone.number(),
+        landlinePhone: faker.phone.number(),
+        archived: faker.datatype.boolean(),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      }));
 
-      const taskId = randomUUID();
-      const taskId2 = randomUUID();
-      const existingTasks = [
-        {
-          id: taskId,
-          title: 'ITESM task',
-          description: 'ITESM task description',
-          status: 'DELAYED',
-          startDate: new Date(),
-          workedHours: 100,
-          createdAt: new Date(),
-          idProject: projectId,
-        },
-        {
-          id: taskId2,
-          title: 'Oracle task',
-          description: 'ORACLE task description',
-          status: 'CANCELLED',
-          startDate: new Date(),
-          workedHours: 100,
-          createdAt: new Date(),
-          idProject: projectId2,
-        },
-      ];
+      const projects: ProjectEntity[] = Array.from({ length: MIN_PROJECTS }, (_, index) => ({
+        id: randomUUID(),
+        name: faker.word.sample(),
+        matter: faker.lorem.sentence(),
+        description: faker.lorem.paragraph(),
+        category: faker.word.words(3),
+        status: faker.helpers.enumValue(ProjectStatus),
+        totalHours: new Decimal(faker.number.int()),
+        startDate: faker.date.recent(),
+        createdAt: faker.date.recent(),
+        idCompany: companies[index % companies.length].id,
+        isChargeable: false,
+      }));
 
-      const existingEmployeeTasks = [
-        {
+      const tasks: Task[] = Array.from({ length: projects.length * MIN_TASKS_PER_PROJECT }, (_, index) => ({
+        id: randomUUID(),
+        title: faker.lorem.words(3),
+        description: faker.lorem.paragraph(),
+        status: faker.helpers.enumValue(TaskStatus),
+        startDate: faker.date.recent(),
+        workedHours: faker.number.int(),
+        createdAt: faker.date.recent(),
+        idProject: projects[index % projects.length].id,
+      }));
+
+      const employeeTasks: EmployeeTask[] = Array.from(
+        { length: projects.length * MIN_TASKS_PER_PROJECT },
+        (_, index) => ({
           id: randomUUID(),
-          createdAt: new Date(),
-          idEmployee: employeeId,
-          idTask: taskId,
-        },
-        {
-          id: randomUUID(),
-          createdAt: new Date(),
-          idEmployee: employeeId,
-          idTask: taskId2,
-        },
-      ];
+          createdAt: faker.date.recent(),
+          idEmployee: employee.id,
+          idTask: tasks[index].id,
+        })
+      );
 
-      findEmployeeByEmail.resolves(employee);
-      findEmployeeById.resolves(employee);
-      findRoleById.resolves(role);
+      findByEmployeeIdStub.withArgs(employee.id).resolves(employee);
+      findRoleByIdStub.withArgs(employee.idRole).returns(role);
+      findProjectsByRoleStub.withArgs(role.title).resolves(projects);
+      findEmployeeTasksStub.withArgs(employee.id).resolves(employeeTasks);
+      findTasksStub.resolves(tasks);
+      findCompaniesStub.resolves(companies);
 
-      findAllProjectsStub.resolves(existingProjects);
-      findAllCompaniesStub.resolves(existingCompanies);
-      findAllTasksStub.resolves(existingTasks);
-      findTaskByEmployeeIdStub.resolves(existingEmployeeTasks);
+      const result = await HomeService.getMyInfo(employee.id);
 
-      const home = {
-        projects: existingProjects,
-        companies: existingCompanies,
-      };
+      expect(result).to.be.an('object');
 
-      const result = await HomeService.getMyInfo(employeeId);
+      expect(result).to.have.property('projects').to.be.an('array');
+      expect(result.projects).to.deep.equal(projects);
+      expect(result.projects).to.have.lengthOf(5);
 
-      expect(result).to.eql(home);
-      expect(findAllCompaniesStub.calledOnce).to.be.true;
-      expect(findAllProjectsStub.calledOnce).to.be.true;
-      expect(findAllTasksStub.calledOnce).to.be.true;
-      expect(findTaskByEmployeeIdStub.calledOnce).to.be.true;
+      expect(result).to.have.property('companies').to.be.an('array');
+      expect(result.companies).to.deep.equal(companies);
+      expect(result.companies).to.have.lengthOf(3);
+
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+      sinon.assert.calledOnce(findRoleByIdStub);
+      sinon.assert.calledOnce(findProjectsByRoleStub);
+      sinon.assert.calledOnce(findEmployeeTasksStub);
+      sinon.assert.calledOnce(findTasksStub);
+      sinon.assert.calledOnce(findCompaniesStub);
     });
 
-    it('should throw an error if the employee id does not exist', async () => {
-      const errorMessage = 'An unexpected error occurred';
-      findTaskByEmployeeIdStub.rejects(new Error(errorMessage));
+    it('Should throw an error if the employee does not exist', async () => {
+      const employeeId = randomUUID();
 
-      await expect(HomeService.getMyInfo(randomUUID())).to.be.rejectedWith(Error, errorMessage);
+      findByEmployeeIdStub.withArgs(employeeId).resolves(null);
+
+      try {
+        await HomeService.getMyInfo(employeeId);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Requested Employee was not found');
+      }
+
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+    });
+
+    it('Should throw an error if an error occurs', async () => {
+      const employeeId = randomUUID();
+
+      findByEmployeeIdStub.withArgs(employeeId).throws(new Error('An unexpected error occurred'));
+
+      try {
+        await HomeService.getMyInfo(employeeId);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: An unexpected error occurred');
+      }
+
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+    });
+
+    it('Should throw an error if the role does not exist', async () => {
+      const employee: EmployeeEntity = {
+        id: randomUUID(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        imageUrl: faker.image.url(),
+        createdAt: faker.date.recent(),
+        idRole: randomUUID(),
+      };
+
+      findByEmployeeIdStub.withArgs(employee.id).resolves(employee);
+      findRoleByIdStub.withArgs(employee.idRole).resolves(null);
+
+      try {
+        await HomeService.getMyInfo(employee.id);
+      } catch (error: any) {
+        expect(error).to.be.an('error');
+        expect(error.message).to.equal('Error: Requested Role was not found');
+      }
+
+      sinon.assert.calledOnce(findByEmployeeIdStub);
+      sinon.assert.calledOnce(findRoleByIdStub);
     });
   });
 });

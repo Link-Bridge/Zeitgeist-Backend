@@ -3,7 +3,6 @@ import { CompanyEntity } from '../../domain/entities/company.entity';
 import { NotFoundError } from '../../errors/not-found.error';
 import { CompanyRepository } from '../../infra/repositories/company.repository';
 import { UpdateCompanyBody } from '../interfaces/company.interface';
-
 /**
  * Gets all data from a unique company
  * @returns {Promise<CompanyEntity>} a promise that resolves a unique company entity
@@ -59,25 +58,29 @@ async function findAll(): Promise<CompanyEntity[]> {
  * @returns {Promise<CompanyEntity>} a promise that resolves to the updated company entity
  */
 async function update(body: UpdateCompanyBody): Promise<CompanyEntity> {
-  const company = await CompanyRepository.findById(body.id);
+  try {
+    const company = await CompanyRepository.findById(body.id);
 
-  if (!company) throw new NotFoundError('Company not found');
+    if (!company) throw new NotFoundError('Company not found');
 
-  return await CompanyRepository.update({
-    id: company.id,
-    name: body.name ?? company.name,
-    email: body.email,
-    phoneNumber: body.phoneNumber,
-    landlinePhone: body.landlinePhone,
-    archived: body.archived,
-    constitutionDate: body.constitutionDate,
-    rfc: body.rfc,
-    taxResidence: body.taxResidence,
-    idCompanyDirectContact: company.idCompanyDirectContact,
-    idForm: company.idForm,
-    createdAt: company.createdAt,
-    updatedAt: new Date(),
-  });
+    return await CompanyRepository.update({
+      id: company.id,
+      name: body.name ?? company.name,
+      email: body.email,
+      phoneNumber: body.phoneNumber,
+      landlinePhone: body.landlinePhone,
+      archived: body.archived,
+      constitutionDate: body.constitutionDate,
+      rfc: body.rfc,
+      taxResidence: body.taxResidence,
+      idCompanyDirectContact: company.idCompanyDirectContact,
+      idForm: company.idForm,
+      createdAt: company.createdAt,
+      updatedAt: new Date(),
+    });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 /**
@@ -102,4 +105,37 @@ async function archiveClient(id: string): Promise<CompanyEntity> {
   }
 }
 
-export const CompanyService = { findAll, findById, update, create, archiveClient };
+/**
+ * @brief Retrieves all companies that are not archived.
+ *
+ * @returns {Promise<CompanyEntity[]>}
+ * @throws {Error} - If an error occurs while retrieving the companies.
+ */
+async function findUnarchived(): Promise<CompanyEntity[]> {
+  try {
+    const data = await CompanyRepository.findUnarchived();
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * @brief Delete a client
+ *
+ * @param id
+ * @param email
+ * @returns {Promise<CompanyEntity>}
+ */
+async function deleteCompanyById(id: string): Promise<CompanyEntity> {
+  try {
+    return await CompanyRepository.deleteCompanyById(id);
+  } catch (error: any) {
+    if (error.message === 'Company not found') {
+      throw new Error('Company not found');
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}
+
+export const CompanyService = { findAll, findById, update, create, archiveClient, findUnarchived, deleteCompanyById };
